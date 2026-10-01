@@ -61,6 +61,6 @@ Then open http://localhost:8000. Use a web server rather than double-clicking `i
 - `dist/ambience.js`: ambient loop and mouse pitch behavior.
 - `dist/sound-config.js`: default hover/click sound paths.
 
-All three provided audio files are included. Google Fonts, YouTube embeds, and YouTube thumbnails require an internet connection. Browsers may require Enable sound before starting audio. Sound settings previews are local to the current tab; to change the website's defaults, edit the files and commit them.
+All three provided audio files are included. Google Fonts, YouTube embeds, and YouTube thumbnails require an internet connection. Sound defaults to on; browsers that block autoplay wait for the first interaction before starting audio. Sound settings previews are local to the current tab; to change the website's defaults, edit the files and commit them.
 
 See [CUSTOMIZATION.md](CUSTOMIZATION.md) for implementation and audio details.

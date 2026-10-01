@@ -2,7 +2,7 @@
 // Detune changes pitch and speed together, including the crossfade region.
 (() => {
   let context, master, source, bufferPromise, wanted=false, level=.22;
-  let targetCents=0, ducked=false, preparing=null;
+  let targetCents=0, ducked=false, preparing=null, gainTarget=null;
   const status = text => { document.getElementById('ambienceStatus').textContent=text; };
   const report = () => window.dispatchEvent(new CustomEvent('atmospherestate'));
   function makeLoop(raw, seconds=4) {
@@ -26,10 +26,21 @@
     status(`Atmosphere ready · ${(overlap/raw.sampleRate).toFixed(1)} s crossfade`);
     return loop;
   }
-  function updateGain(){if(master)master.gain.setTargetAtTime(wanted&&!ducked?level:0,context.currentTime,.25)}
+  function updateGain(){
+    if(!master)return;
+    const gain=master.gain,now=context.currentTime;
+    const target=wanted&&!ducked?level:0;
+    // Repeated focus/recovery events must not restart an in-progress fade.
+    if(target===gainTarget)return;
+    gainTarget=target;
+    // A finite ramp reaches exact silence, unlike an asymptotic target.
+    // Hold the instantaneous gain so rapid open/close actions never jump.
+    gain.cancelAndHoldAtTime(now);
+    gain.linearRampToValueAtTime(target,now+(target===0?.45:.7));
+  }
   async function prepare(){
     if(!context||context.state==='closed'){
-      context=new AudioContext();source=null;master=context.createGain();master.gain.value=0;master.connect(context.destination);
+      context=new AudioContext();source=null;gainTarget=null;master=context.createGain();master.gain.value=0;master.connect(context.destination);
       context.addEventListener('statechange',()=>{
         report();
         if(context.state==='running')updateGain();

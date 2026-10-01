@@ -27,7 +27,7 @@ Media links and project descriptions were taken from https://iamastrale.carrd.co
 
 ## Performance and accessibility
 
-No application framework, WebGL, or animation dependencies. Subtle transform-based hover motion honors reduced-motion settings. The main showreel loads when you enter its screen and is unloaded when you leave, stopping playback. Other videos load only when opened, and images load lazily. Native dialogs support Escape and keyboard focus management. Third-party Google Fonts and YouTube media require network access.
+No application framework, WebGL, or animation dependencies. Subtle transform-based hover motion honors reduced-motion settings. The showreel and work videos all open in the same modal player. Closing it unloads the video. Images load lazily. Native dialogs support Escape and keyboard focus management. Third-party Google Fonts and YouTube media require network access.
 
 
 
@@ -40,8 +40,8 @@ The animated wire surface is in dist/hologram.js. It rotates and deforms continu
 
 Your files are saved in `dist/sounds/`: `atmosphere.mp3`, `hover.mp3`, and `click.mp3`. Hover uses Hover.mp3; clicks and screen transitions use Click.mp3. Change paths in `sound-config.js` to replace them.
 
-The atmosphere attempts playback on the main menu. Browsers that block autoplay show Enable sound; a user gesture starts it. Sound on/off is available on both the main menu and portfolio. Returning to the main menu does not stop it. Hidden tabs no longer suspend the atmosphere. Recovery handles unexpected source endings and tries to resume interrupted browser audio on focus or interaction. Browser/OS restrictions can still require a gesture.
+The atmosphere attempts playback on the main menu. The toggle defaults to Sound on and reflects the selected preference. If a browser blocks autoplay, playback waits for the first interaction. Sound on/off is available on both the main menu and portfolio. Returning to the main menu resets sound to enabled. Hidden tabs no longer suspend the atmosphere. Recovery handles unexpected source endings and tries to resume interrupted browser audio on focus or interaction. Browser/OS restrictions can still require a gesture.
 
-Sound settings has independent atmosphere and interface volume controls. Project video dialogs fade the atmosphere out while open; use Sound off or the atmosphere slider when playing the inline showreel.
+Sound settings has independent atmosphere and interface volume controls. Showreel and project video dialogs fade the atmosphere to exact zero over 450 ms and restore it over 700 ms on close (including Escape and clicking the backdrop). Repeated focus events do not restart fades. An explicit mute is still respected when closing a video.
 
 `ambience.js` blends the last four seconds into the beginning with an equal-power crossfade, normalizing only if needed to prevent clipping. The resulting 26.04-second buffer loops natively with explicit loop boundaries. A native OfflineAudioContext test rendered three full cycles of the supplied MP3 with identical, nonzero audio in every cycle. Mouse movement controls 0–100 cents of pitch with 350ms smoothing; speed changes slightly with pitch. Touch devices keep the base pitch.
