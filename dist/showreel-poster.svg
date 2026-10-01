@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#dce7ef"/><stop offset="1" stop-color="#f5f7f9"/></linearGradient></defs>
+<path fill="url(#bg)" d="M0 0h1280v720H0z"/>
+<g fill="none" stroke="#9eafbc" opacity=".45"><path d="M-100 600 750-100M100 800 1050-100M450 800 1350 50"/><circle cx="1000" cy="200" r="280"/><circle cx="1000" cy="200" r="310"/></g>
+<path fill="#d92232" d="M90 90h90v6H90z"/>
+<text x="90" y="160" fill="#20262c" font-family="Arial,sans-serif" font-size="24" letter-spacing="7">TREVOR HIGUERA</text>
+<text x="90" y="615" fill="#20262c" font-family="Arial,sans-serif" font-size="70" font-weight="700" letter-spacing="8">SHOWREEL</text>
+</svg>

@@ -17,8 +17,8 @@ function renderProjects(filter='all') {
 }
 renderProjects();
 document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-filter]').forEach(x=>{const active=x===b;x.classList.toggle('active',active);x.setAttribute('aria-pressed',active)});renderProjects(b.dataset.filter)});
-function openVideo(id,title){window.ASTRALE_AMBIENCE.duck(true);playSound('open');$('#playerTitle').textContent=title;const frame=document.createElement('iframe');frame.src=`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;frame.title=title;frame.allow='autoplay; encrypted-media; picture-in-picture';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';$('#playerFrame').replaceChildren(frame);$('#player').showModal()}
-$('#playShowreel').onclick=()=>openVideo('BOy8cAxPjGc','Trevor Higuera / Showreel');
+function openVideo(id,title,provider='youtube'){window.ASTRALE_AMBIENCE.duck(true);playSound('open');$('#playerTitle').textContent=title;const frame=document.createElement('iframe');frame.src=provider==='vimeo'?'https://player.vimeo.com/video/'+id+'?autoplay=1&title=0&byline=0&portrait=0':'https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0';frame.title=title;frame.allow='autoplay; encrypted-media; picture-in-picture';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';$('#playerFrame').replaceChildren(frame);$('#player').showModal()}
+$('#playShowreel').onclick=()=>openVideo('1231938684','Trevor Higuera / Showreel','vimeo');
 
 document.querySelectorAll('dialog').forEach(d=>{d.querySelector('.close').onclick=()=>d.close();d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}})});
 $('#player').addEventListener('close',()=>{ $('#playerFrame').replaceChildren();window.ASTRALE_AMBIENCE.duck(false) });
