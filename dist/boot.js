@@ -33,9 +33,10 @@
     fadeFrame=requestAnimationFrame(frame);
   }
   function cleanup(){
-    cleaned=true;stopStartup();
+    if(cleaned)return;cleaned=true;
     clearTimeout(cleanupTimer);overlay.remove();
     document.body.classList.remove('boot-running');
+    try{stopStartup()}catch(error){console.warn('Startup audio cleanup failed',error)}
     window.dispatchEvent(new Event('bootcomplete'));
   }
   function finish(immediate=false){
@@ -43,8 +44,12 @@
     document.removeEventListener('keydown',skip);
     reduced.removeEventListener('change',preferenceChanged);
     document.body.classList.remove('booting');menu.inert=false;
-    window.ASTRALE_AMBIENCE?.duck(false,2.4);
-    if(immediate)cleanup();else{fadeStartup();overlay.classList.add('boot-exit');cleanupTimer=setTimeout(cleanup,720)}
+    // Schedule the visual exit before any optional audio operation.
+    if(immediate)cleanup();else{overlay.classList.add('boot-exit');cleanupTimer=setTimeout(cleanup,720)}
+    try{
+      window.ASTRALE_AMBIENCE?.duck(false,2.4);
+      if(!immediate)fadeStartup();
+    }catch(error){console.warn('Startup audio handoff failed',error)}
   }
   function skip(e){if(started&&e.key==='Escape'){e.preventDefault();finish(true)}}
   function preferenceChanged(){if(started&&reduced.matches)finish(true)}
@@ -56,10 +61,12 @@
     document.getElementById('startBoot').hidden=true;
     overlay.setAttribute('aria-label','Starting Astrale');
     document.body.classList.add('boot-running');
-    // Unlock the atmosphere in this gesture, but keep it silent until the reveal.
-    window.ASTRALE_AMBIENCE?.duck(true);
-    window.ASTRALE_AMBIENCE?.enable(true);
-    tryStartup();
+    // Audio must never prevent the visual completion timer from being armed.
     finishTimer=setTimeout(()=>finish(),2200);
+    try{
+      window.ASTRALE_AMBIENCE?.duck(true);
+      window.ASTRALE_AMBIENCE?.enable(true);
+    }catch(error){console.warn('Startup atmosphere unavailable',error)}
+    tryStartup();
   });
 })();

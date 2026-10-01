@@ -36,7 +36,8 @@
     // A finite ramp reaches exact silence, unlike an asymptotic target.
     // Hold the instantaneous gain so rapid open/close actions never jump.
     const current=gain.value;
-    gain.cancelAndHoldAtTime(now);
+    if(typeof gain.cancelAndHoldAtTime==='function')gain.cancelAndHoldAtTime(now);
+    else gain.cancelScheduledValues(now);
     // Anchor the ramp at this handoff, not at an older automation event.
     gain.setValueAtTime(current,now);
     const duration=target===0?.45:fadeInSeconds;
