@@ -11,6 +11,7 @@
     pixels.data[i+3]=Math.round(value*.24);
   }
   ctx.putImageData(pixels,0,0);
-  document.querySelector('.display-grain').style.backgroundImage=`url(${canvas.toDataURL()})`;
+  const grainImage=`url(${canvas.toDataURL()})`;
+  document.querySelectorAll('.display-grain').forEach(layer=>layer.style.backgroundImage=grainImage);
   document.addEventListener('visibilitychange',()=>document.documentElement.classList.toggle('display-idle',document.hidden));
 })();

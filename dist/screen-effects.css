@@ -22,7 +22,16 @@
 .display-sweep{inset:-70% 0 0;height:55%;background:linear-gradient(180deg,transparent,#e2f4ff00 35%,#ffffff26 50%,#bedce00a 62%,transparent);animation:display-scan 19s linear infinite;will-change:transform}
 @keyframes display-scan{from{transform:translateY(0)}to{transform:translateY(330vh)}}
 .display-idle .display-sweep,.display-idle .display-grain,.display-idle #titleScreen,.display-idle #experience,.display-idle .boot-lockup{animation-play-state:paused}
-body:has(dialog[open]) #experience,body:has(dialog[open]) .display-grain{animation-play-state:paused}
+body:has(dialog[open]) #experience,body:has(dialog[open])>.display-surface .display-grain{animation-play-state:paused}
+
+/* Dialogs live in the browser top layer, so the showreel carries its own display surface. */
+.cinema-display-surface{position:absolute;inset:0;z-index:7;pointer-events:none;overflow:hidden;isolation:isolate}
+.cinema-display-surface .display-grain{opacity:.28;mix-blend-mode:soft-light}
+.cinema-display-surface .display-lines{opacity:.42;mix-blend-mode:multiply}
+.cinema-display-surface .display-glass{border-color:#8399a655;box-shadow:inset 0 0 0 2px #263e5012,inset 0 0 45px #1838491c,inset 0 0 130px #2c526f10}
+.cinema-display-surface .display-sweep{opacity:.65;animation-duration:13s}
+.cinema-header h3,#reelTime{text-shadow:-.45px 0 #6097ad42,.45px 0 #d9223238,0 0 1px #20262c3d}
+#reelVideo{filter:blur(.32px) saturate(.96) contrast(1.025)}
 /* Small colored fringes and broad highlights soften just the display type. */
 .title-lockup h1,h2,.boot-name{ text-shadow:-.55px 0 #6097ad36,.55px 0 #d9223226,0 0 1.2px #20262c33 }
 .title-lockup h1 span,h2 span{ text-shadow:-.65px 0 #578fa936,.65px 0 #d922324d,0 0 13px #d9223229,0 0 32px #d9223217 }
@@ -34,5 +43,5 @@ body:has(dialog[open]) #experience,body:has(dialog[open]) .display-grain{animati
 dialog{box-shadow:0 22px 100px #172d4466,0 0 0 1px #ffffff88,inset 0 1px 0 #ffffff}
 dialog::backdrop{background:#203c50b3;backdrop-filter:blur(3px)}
 @media(max-width:700px){.display-glass{box-shadow:inset 0 0 0 3px #263e5012,inset 0 0 65px #18384916}.display-lines{opacity:.4}.display-grain{opacity:.3;animation-duration:1.6s}#titleScreen,#experience,.boot-lockup{animation:none;filter:blur(.45px)}}
-@media(prefers-reduced-motion:reduce){.display-sweep{animation:none;display:none}.display-grain{animation:none;will-change:auto}#titleScreen,#experience,.boot-lockup{animation:none;filter:none}}
+@media(prefers-reduced-motion:reduce){.display-sweep{animation:none;display:none}.display-grain{animation:none;will-change:auto}#titleScreen,#experience,.boot-lockup{animation:none;filter:none}.cinema-display-surface .display-grain{opacity:.2}}
 @media(forced-colors:active){.display-surface{display:none}.title-lockup h1,h2,.game-nav a{text-shadow:none}#titleScreen,#experience,.boot-lockup{animation:none;filter:none}}
