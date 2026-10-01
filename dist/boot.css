@@ -1,0 +1,31 @@
+.boot-sequence{position:fixed;inset:0;z-index:200;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at 50% 44%,#fff 0%,#eef3f6 56%,#dce5eb 100%);transition:opacity .7s ease,transform .9s cubic-bezier(.2,.7,.2,1),filter .7s ease}
+.boot-lockup{display:flex;align-items:center;flex-direction:column;position:relative}
+.boot-mark{width:clamp(130px,16vw,210px);height:auto;overflow:visible;filter:drop-shadow(0 8px 20px #8ba9bc26)}
+.boot-mark path,.boot-mark circle{transform-box:fill-box;transform-origin:center}
+.boot-ring{fill:none;stroke:#9eb8c8;stroke-width:.45;stroke-dasharray:190 62;opacity:0}
+.boot-left,.boot-right{fill:none;stroke:#202a32;stroke-width:4;stroke-linecap:square;stroke-linejoin:miter;opacity:0}
+.boot-core{fill:#d92232;opacity:0;filter:drop-shadow(0 0 5px #d9223255) drop-shadow(0 0 14px #d9223226)}
+.boot-name{font:700 clamp(16px,2vw,23px) var(--display);letter-spacing:.35em;padding-left:.35em;margin:32px 0 0;color:#202a32;opacity:0}
+.boot-pulse{position:absolute;width:170px;height:170px;border-radius:50%;border:1px solid #d9223244;top:0;opacity:0;pointer-events:none}
+.boot-running .boot-left{animation:boot-left 1.3s cubic-bezier(.16,1,.3,1) .1s both}
+.boot-running .boot-right{animation:boot-right 1.3s cubic-bezier(.16,1,.3,1) .1s both}
+.boot-running .boot-core{animation:boot-core 1.1s cubic-bezier(.16,1,.3,1) .5s both}
+.boot-running .boot-ring{animation:boot-ring 2.2s cubic-bezier(.2,.7,.2,1) both}
+.boot-running .boot-name{animation:boot-name 1s cubic-bezier(.16,1,.3,1) .8s both}
+.boot-running .boot-pulse{animation:boot-pulse 1.4s ease-out .8s both}
+@keyframes boot-left{0%{opacity:0;transform:translate(-34px,15px) rotate(-65deg);filter:blur(5px)}35%{opacity:1}100%{opacity:1;transform:translate(0,0) rotate(0);filter:blur(0)}}
+@keyframes boot-right{0%{opacity:0;transform:translate(34px,-15px) rotate(-65deg);filter:blur(5px)}35%{opacity:1}100%{opacity:1;transform:translate(0,0) rotate(0);filter:blur(0)}}
+@keyframes boot-core{0%{opacity:0;transform:scale(.05) rotate(-135deg)}60%{opacity:1;transform:scale(1.1) rotate(8deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes boot-ring{0%{opacity:0;transform:rotate(-150deg) scale(.7)}28%{opacity:.65}75%{opacity:.5}100%{opacity:0;transform:rotate(95deg) scale(1.2)}}
+@keyframes boot-name{from{opacity:0;transform:translateY(12px);filter:blur(6px);letter-spacing:.65em}to{opacity:1;transform:translateY(0);filter:blur(0);letter-spacing:.35em}}
+@keyframes boot-pulse{0%{opacity:0;transform:scale(.65)}20%{opacity:.45}100%{opacity:0;transform:scale(2.5)}}
+.booting #titleScreen{opacity:0;transform:scale(1.035);pointer-events:none}
+#titleScreen{transition:opacity .85s ease,transform 1.1s cubic-bezier(.16,1,.3,1)}
+.booting .title-lockup h1{animation:none}
+.boot-sequence.boot-exit{opacity:0;transform:scale(1.055);filter:blur(6px);pointer-events:none}
+@media(prefers-reduced-motion:reduce){.boot-running .boot-mark path,.boot-running .boot-name{animation:none;opacity:1}.boot-running .boot-ring,.boot-running .boot-pulse{animation:none}.boot-sequence,#titleScreen{transition:none}.boot-sequence.boot-exit{transform:none;filter:none}}
+
+.boot-start{position:absolute;border:1px solid #d9223277;border-radius:4px;padding:20px 30px;background:#ffffff80;color:#d92232;font:700 clamp(12px,1.4vw,16px) var(--display);letter-spacing:.13em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 28px #d9223214;transition:background .2s,box-shadow .2s}
+.boot-start:hover,.boot-start:focus-visible{background:#fff;box-shadow:0 0 32px #d9223230;outline:2px solid #d92232;outline-offset:5px}
+.boot-start[hidden]{display:none}
+body:not(.boot-running) .boot-lockup{visibility:hidden}

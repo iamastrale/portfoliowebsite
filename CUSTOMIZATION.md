@@ -49,3 +49,11 @@ Sound settings has independent atmosphere and interface volume controls. Showree
 ## Display treatment
 
 `dist/screen-effects.css` controls the fine scanlines, glass edge shading, reflected light, accent bloom, and subtle color fringes on display headings. `dist/screen-effects.js` generates a 96px grain tile once; irregular compositor-only tile jumps refresh the grain at 10 Hz (about 6 Hz on mobile), with no continuous noise generation. The UI has a slow 0.45–0.75px focus drift on desktop and a fixed 0.45px softening on mobile. Video dialogs remain sharp. The slow scan sweep uses only a transform and pauses while hidden. Reduced-motion preferences disable the sweep, grain motion, and blur, and forced-colors mode removes the display overlay. The overlay ignores all pointer input, and native video dialogs remain above it so playback stays clear.
+
+## Click-to-start boot sequence
+
+The initial Begin experience button starts the emblem animation and Startup.mp3 together. Nothing advances until this button is activated (mouse, touch, or keyboard). This gesture also unlocks the atmosphere audio, kept silent until the menu reveal. The sequence lasts roughly 2.9 seconds, including a 700 ms sound fade. Escape skips after starting; reduced motion shows a static emblem. Returning to Main menu does not replay the intro.
+
+The startup cue is configured in dist/sound-config.js and plays at 20% volume. The animation uses the shared moving grain, scanlines, glass shading, light sweep, focus drift, red-core bloom, and text fringing.
+The revised startup MP3 uses a content-versioned URL to refresh browser caches. Atmosphere now fades in over 2.4 seconds starting with the visual menu reveal, overlapping the startup fade. Gain automation waits until the loop source is ready so slower decoding cannot consume the fade before playback. Video duck/restore timings remain 450/700 ms.
+Startup gain now has an explicit current-time anchor and a smooth eased envelope, preventing reliance on older gain events and softening the initial rise out of silence.

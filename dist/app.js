@@ -23,7 +23,7 @@ $('#playShowreel').onclick=()=>openVideo('BOy8cAxPjGc','Trevor Higuera / Showree
 document.querySelectorAll('dialog').forEach(d=>{d.querySelector('.close').onclick=()=>d.close();d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}})});
 $('#player').addEventListener('close',()=>{ $('#playerFrame').replaceChildren();window.ASTRALE_AMBIENCE.duck(false) });
 $('#openSettings').onclick=()=>$('#settings').showModal();$('#year').textContent=new Date().getFullYear();
-let enabled=false,volume=.2,ctx,lastHover=0;const sounds={...window.ASTRALE_SOUNDS},buffers={},activeAudio=new Set();
+let enabled=false,volume=.6,ctx,lastHover=0;const sounds={...window.ASTRALE_SOUNDS},buffers={},activeAudio=new Set();
 function stopSounds(){activeAudio.forEach(a=>{a.pause();a.currentTime=0});activeAudio.clear();if(ctx&&ctx.state==='running')ctx.suspend().catch(()=>{})}
 function syncSoundLabels(){for(const button of [$('#soundToggle'),$('#titleAudio')]){button.setAttribute('aria-pressed',enabled);button.textContent=enabled?'◉ Sound on':'◌ Sound off'}}
 function setSound(value,cue=true){enabled=value;window.ASTRALE_AMBIENCE.enable(enabled);syncSoundLabels();if(enabled&&cue)playSound('open');else if(!enabled)stopSounds()}
@@ -51,12 +51,12 @@ function showView(id,focus=true){if(!screenIds.includes(id))id='reel';
  document.querySelectorAll('[data-view]').forEach(a=>{if(a.dataset.view===id)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
  if(focus)document.querySelector('#'+id+' h2').focus({preventScroll:true});document.querySelector('main').scrollTop=0;
 }
-function enter(){if(entered)return;entered=true;window.ASTRALE_AMBIENCE.enable(enabled);document.body.classList.remove('at-title');document.querySelector('#titleScreen').hidden=true;document.querySelector('#experience').inert=false;showView(location.hash.slice(1)||'reel');playSound('open')}
+function enter(){if(entered||document.body.classList.contains('booting'))return;entered=true;window.ASTRALE_AMBIENCE.enable(enabled);document.body.classList.remove('at-title');document.querySelector('#titleScreen').hidden=true;document.querySelector('#experience').inert=false;showView(location.hash.slice(1)||'reel');playSound('open')}
 document.querySelector('#enterPortfolio').onclick=enter;
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!entered){e.preventDefault();enter()}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!entered&&!document.body.classList.contains('booting')){e.preventDefault();enter()}});
 document.querySelectorAll('[data-view]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();history.pushState(null,'',a.getAttribute('href'));showView(a.dataset.view);playSound('open')}));
 window.addEventListener('hashchange',()=>{if(entered)showView(location.hash.slice(1))});
 document.querySelector('.brand').onclick=e=>{e.preventDefault();history.pushState(null,'','#reel');showView('reel')};
 document.querySelector('#backToTitle').onclick=()=>{entered=false;document.querySelector('#experience').inert=true;document.querySelector('#titleScreen').hidden=false;document.body.classList.add('at-title');window.ASTRALE_AMBIENCE.duck(false);setSound(true,false);document.querySelector('#enterPortfolio').focus()};
-setSound(true,false);
-
+if(document.body.classList.contains('booting'))window.addEventListener('bootcomplete',()=>setSound(true,false),{once:true});
+else setSound(true,false);

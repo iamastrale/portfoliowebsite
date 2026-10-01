@@ -1,8 +1,8 @@
 // Bake the overlap once, then let Web Audio loop it sample-accurately.
 // Detune changes pitch and speed together, including the crossfade region.
 (() => {
-  let context, master, source, bufferPromise, wanted=false, level=.22;
-  let targetCents=0, ducked=false, preparing=null, gainTarget=null;
+  let context, master, source, bufferPromise, wanted=false, level=.6;
+  let targetCents=0, ducked=false, preparing=null, gainTarget=null, fadeInSeconds=.7;
   const status = text => { document.getElementById('ambienceStatus').textContent=text; };
   const report = () => window.dispatchEvent(new CustomEvent('atmospherestate'));
   function makeLoop(raw, seconds=4) {
@@ -27,7 +27,7 @@
     return loop;
   }
   function updateGain(){
-    if(!master)return;
+    if(!master||!source)return;
     const gain=master.gain,now=context.currentTime;
     const target=wanted&&!ducked?level:0;
     // Repeated focus/recovery events must not restart an in-progress fade.
@@ -35,8 +35,20 @@
     gainTarget=target;
     // A finite ramp reaches exact silence, unlike an asymptotic target.
     // Hold the instantaneous gain so rapid open/close actions never jump.
+    const current=gain.value;
     gain.cancelAndHoldAtTime(now);
-    gain.linearRampToValueAtTime(target,now+(target===0?.45:.7));
+    // Anchor the ramp at this handoff, not at an older automation event.
+    gain.setValueAtTime(current,now);
+    const duration=target===0?.45:fadeInSeconds;
+    if(target>0&&duration>1){
+      // Ease gently out of silence; a linear amplitude fade feels front-loaded.
+      for(let step=1;step<=48;step++){
+        const progress=step/48;
+        const eased=progress*progress*(3-2*progress);
+        gain.linearRampToValueAtTime(current+(target-current)*eased,now+duration*progress);
+      }
+    }else gain.linearRampToValueAtTime(target,now+duration);
+    if(target>0)fadeInSeconds=.7;
   }
   async function prepare(){
     if(!context||context.state==='closed'){
@@ -73,7 +85,7 @@
   window.ASTRALE_AMBIENCE={
     enable(value){wanted=value;if(value)recover();else updateGain();report()},
     isPlaying(){return wanted&&context?.state==='running'&&!!source},
-    duck(value){ducked=value;updateGain()},
+    duck(value,seconds=.7){ducked=value;if(!value)fadeInSeconds=seconds;updateGain()},
     volume(value){level=Math.max(0,Math.min(.6,Number(value)));updateGain()}
   };
   document.getElementById('ambientVolume').addEventListener('input',e=>window.ASTRALE_AMBIENCE.volume(e.target.value));
