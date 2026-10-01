@@ -5,7 +5,7 @@
   if (!context) return;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const pointer = { x: 0, y: 0, targetX: 0, targetY: 0 };
-  let width = 1, height = 1, frame = 0, last = 0, phase = 0;
+  let width = 1, height = 1, frame = 0, last = 0, phase = 0, pulse = 0;
   function resize() {
     width = innerWidth; height = innerHeight;
     const scale = Math.min(devicePixelRatio || 1, 1.25, 1800 / width);
@@ -26,7 +26,7 @@
     gradient.addColorStop(.36, 'rgba(83,137,169,.5)');
     gradient.addColorStop(.65, 'rgba(117,163,187,.42)');
     gradient.addColorStop(1, 'rgba(217,34,50,.3)');
-    context.strokeStyle = gradient; context.lineWidth = .75;
+    context.strokeStyle = gradient; context.lineWidth = .75 + pulse * .45;
     const rings = small ? 22 : 34, steps = small ? 84 : 112;
     for (let ring = 0; ring < rings; ring++) {
       const v = ring / rings * Math.PI * 2;
@@ -34,7 +34,7 @@
       for (let step = 0; step <= steps; step++) {
         const u = step / steps * Math.PI * 2;
         const breathing = Math.sin(u * 3 + phase * .7 + v * 2) * .075;
-        const radius = .66 + Math.cos(v + u * 2) * .24 + breathing;
+        const radius = .66 + Math.cos(v + u * 2) * .24 + breathing + pulse * .055 * Math.sin(u * 5 + v * 3 - phase * 8);
         const x = Math.cos(u) * radius;
         const y = Math.sin(u) * radius;
         const z = Math.sin(v + u * 2) * .27 + Math.cos(u * 3 - phase * .4) * .1;
@@ -53,6 +53,7 @@
     if (now - last < 1000 / 30) return;
     const delta = Math.min((now - last) / 1000, .06); last = now;
     phase += delta;
+    pulse *= Math.exp(-delta * 2.6);
     pointer.x += (pointer.targetX - pointer.x) * .065;
     pointer.y += (pointer.targetY - pointer.y) * .065;
     draw();
@@ -71,6 +72,6 @@
   window.addEventListener('resize', resize, { passive: true });
   document.addEventListener('visibilitychange', sync);
   reduced.addEventListener('change', sync);
+  window.addEventListener('astralenote',()=>{if(!reduced.matches)pulse=Math.min(1.6,pulse+.9)});
   resize(); sync();
 })();
-

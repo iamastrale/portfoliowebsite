@@ -22,26 +22,21 @@ $('#playShowreel').onclick=()=>openVideo('1231938684','Trevor Higuera / Showreel
 
 document.querySelectorAll('dialog').forEach(d=>{d.querySelector('.close').onclick=()=>d.close();d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}})});
 $('#player').addEventListener('close',()=>{ $('#playerFrame').replaceChildren();window.ASTRALE_AMBIENCE.duck(false) });
-$('#openSettings').onclick=()=>$('#settings').showModal();$('#year').textContent=new Date().getFullYear();
-let enabled=false,volume=.6,ctx,lastHover=0;const sounds={...window.ASTRALE_SOUNDS},buffers={},activeAudio=new Set();
+document.querySelectorAll('#openSettings,#titleSettings').forEach(button=>button.onclick=()=>$('#settings').showModal());
+let enabled=false,volume=.6,ctx,lastHover=0;const sounds={...window.ASTRALE_SOUNDS},activeAudio=new Set();
 function stopSounds(){activeAudio.forEach(a=>{a.pause();a.currentTime=0});activeAudio.clear();if(ctx&&ctx.state==='running')ctx.suspend().catch(()=>{})}
-function syncSoundLabels(){for(const button of [$('#soundToggle'),$('#titleAudio')]){button.setAttribute('aria-pressed',enabled);button.textContent=enabled?'◉ Sound on':'◌ Sound off'}}
+function syncSoundLabels(){for(const button of [$('#soundToggle')]){button.setAttribute('aria-pressed',enabled);button.textContent=enabled?'◉ Sound on':'◌ Sound off'}}
 function setSound(value,cue=true){enabled=value;window.ASTRALE_AMBIENCE.enable(enabled);syncSoundLabels();if(enabled&&cue)playSound('open');else if(!enabled)stopSounds()}
 $('#soundToggle').onclick=()=>setSound(!enabled);
-$('#titleAudio').onclick=()=>setSound(!enabled);
+
 window.addEventListener('atmospherestate',syncSoundLabels);
 $('#volume').oninput=e=>{volume=Number(e.target.value);activeAudio.forEach(a=>a.volume=volume)};
 function playSound(type,force=false){if((!enabled&&!force)||document.hidden)return;
- if(sounds[type]){const audio=new Audio(sounds[type]);audio.volume=volume;activeAudio.add(audio);audio.onended=()=>activeAudio.delete(audio);audio.play().catch(()=>{activeAudio.delete(audio);$('#soundStatus').textContent='That sound could not play. Try a different MP3, WAV, or OGG file.'});return}
+ if(sounds[type]){const audio=new Audio(sounds[type]);audio.volume=volume;activeAudio.add(audio);audio.onended=()=>activeAudio.delete(audio);audio.play().catch(()=>{activeAudio.delete(audio);$('#soundStatus').textContent='That sound could not play. Please try again.'});return}
  try{ctx??=new (window.AudioContext||window.webkitAudioContext)();ctx.resume();const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';const t=ctx.currentTime;osc.frequency.setValueAtTime(type==='hover'?820:type==='click'?440:330,t);osc.frequency.exponentialRampToValueAtTime(type==='open'?660:240,t+.09);gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(volume*.11,t+.005);gain.gain.exponentialRampToValueAtTime(.0001,t+.13);osc.connect(gain);gain.connect(ctx.destination);osc.start(t);osc.stop(t+.14);osc.onended=()=>{osc.disconnect();gain.disconnect()}}catch{ $('#soundStatus').textContent='Audio is not supported in this browser.' }
 }
 document.addEventListener('pointerover',e=>{if(e.pointerType==='touch')return;const control=e.target.closest('button,a');if(!control||control.contains(e.relatedTarget))return;const now=performance.now();if(now-lastHover>100){lastHover=now;playSound('hover')}});
-document.addEventListener('click',e=>{if(e.target.closest('button,a')&&!e.target.closest('#soundToggle,#titleAudio,#enterPortfolio,#playShowreel,.project,[data-view]'))playSound('click')});
-for(const [key,label] of Object.entries({hover:'Hover',click:'Click',open:'Open / transition'})){
- const row=document.createElement('div');row.className='sound-input';row.innerHTML=`<label for="sound-${key}">${label}</label><button type="button">Test sound</button><input id="sound-${key}" type="file" accept="audio/*">`;
- row.querySelector('button').onclick=()=>playSound(key,true);row.querySelector('input').onchange=e=>{const file=e.target.files[0];if(!file)return;if(file.size>10*1024*1024){$('#soundStatus').textContent='Choose a sound smaller than 10 MB.';e.target.value='';return}if(!file.type.startsWith('audio/')){$('#soundStatus').textContent='Please choose an audio file.';e.target.value='';return}if(buffers[key])URL.revokeObjectURL(buffers[key]);buffers[key]=URL.createObjectURL(file);sounds[key]=buffers[key];$('#soundStatus').textContent=`${label}: ${file.name} ready to preview.`};$('#soundInputs').append(row)
-}
-$('#resetSounds').onclick=()=>{stopSounds();for(const key of Object.keys(sounds)){if(buffers[key])URL.revokeObjectURL(buffers[key]);delete buffers[key];sounds[key]=window.ASTRALE_SOUNDS[key]||''}document.querySelectorAll('input[type=file]').forEach(x=>x.value='');$('#soundStatus').textContent='Demo sounds restored.'};
+document.addEventListener('click',e=>{if(e.target.closest('button,a')&&!e.target.closest('#soundToggle,#enterPortfolio,#playShowreel,.project,[data-view]'))playSound('click')});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSounds()});
 
 // Screen-based navigation. No simulated loading or animation framework.
@@ -53,7 +48,7 @@ function showView(id,focus=true){if(!screenIds.includes(id))id='reel';
 }
 function enter(){if(entered||document.body.classList.contains('booting'))return;entered=true;window.ASTRALE_AMBIENCE.enable(enabled);document.body.classList.remove('at-title');document.querySelector('#titleScreen').hidden=true;document.querySelector('#experience').inert=false;showView(location.hash.slice(1)||'reel');playSound('open')}
 document.querySelector('#enterPortfolio').onclick=enter;
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!entered&&!document.body.classList.contains('booting')){e.preventDefault();enter()}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!entered&&!document.body.classList.contains('booting')&&!document.querySelector('dialog[open]')&&!e.target.closest('button,a,input')){e.preventDefault();enter()}});
 document.querySelectorAll('[data-view]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();history.pushState(null,'',a.getAttribute('href'));showView(a.dataset.view);playSound('open')}));
 window.addEventListener('hashchange',()=>{if(entered)showView(location.hash.slice(1))});
 document.querySelector('.brand').onclick=e=>{e.preventDefault();history.pushState(null,'','#reel');showView('reel')};

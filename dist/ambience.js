@@ -3,6 +3,64 @@
 (() => {
   let context, master, source, bufferPromise, wanted=false, level=.6;
   let targetCents=0, ducked=false, preparing=null, gainTarget=null, fadeInSeconds=.7;
+  const noteBuffers=new Map(),voices=new Set();
+  let lastNote=-1,noteEpoch=0;
+  function loadNote(index){
+    if(!noteBuffers.has(index)){
+      const loading=fetch('sounds/notes/note'+(index+1)+'.mp3')
+        .then(r=>{if(!r.ok)throw Error('Note unavailable');return r.arrayBuffer()})
+        .then(data=>context.decodeAudioData(data))
+        .catch(error=>{noteBuffers.delete(index);throw error});
+      noteBuffers.set(index,loading);
+    }
+    return noteBuffers.get(index);
+  }
+  function releaseNotes(){
+    noteEpoch++;
+    for(const voice of voices){
+      const now=context.currentTime;
+      voice.gain.gain.cancelScheduledValues(now);
+      voice.gain.gain.setTargetAtTime(0,now,.025);
+      voice.node.stop(now+.15);
+    }
+  }
+  async function playNote(){
+    const clickedAt=performance.now(),epoch=noteEpoch;
+    if(!wanted||ducked||!source||document.hidden)return;
+
+    // Avoid immediately repeating the same note.
+    const index=lastNote<0?Math.floor(Math.random()*8):(lastNote+1+Math.floor(Math.random()*7))%8;
+    lastNote=index;
+    try{
+      const buffer=await loadNote(index);
+      if(epoch!==noteEpoch||!wanted||ducked||context.state!=='running'||performance.now()-clickedAt>500)return;
+      // Keep every new press responsive: retire the oldest tail at capacity.
+      if(voices.size>=4){
+        const oldest=voices.values().next().value;
+        voices.delete(oldest);
+        oldest.gain.gain.cancelScheduledValues(context.currentTime);
+        oldest.gain.gain.setTargetAtTime(0,context.currentTime,.008);
+        oldest.node.stop(context.currentTime+.04);
+      }
+      const node=context.createBufferSource(),gain=context.createGain();
+      node.buffer=buffer;
+      node.detune.value=source.detune.value;
+      node.detune.setTargetAtTime(targetCents,context.currentTime,.35);
+      gain.gain.setValueAtTime(0,context.currentTime);
+      gain.gain.linearRampToValueAtTime(.45,context.currentTime+.012);
+      node.connect(gain);gain.connect(master);
+      const voice={node,gain};voices.add(voice);
+      node.onended=()=>{voices.delete(voice);node.disconnect();gain.disconnect()};
+      node.start();
+      window.dispatchEvent(new CustomEvent('astralenote',{detail:{index}}));
+    }catch{/* An unavailable note must not interrupt navigation or ambience. */}
+  }
+  document.addEventListener('pointerdown',event=>{
+    if(event.button!==0||document.body.classList.contains('boot-running')||document.body.classList.contains('booting'))return;
+    if(document.querySelector('dialog[open]')||event.target.closest('button,a,input,label,select,textarea,summary,[role="button"],[contenteditable],video,iframe'))return;
+
+    playNote();
+  });
   const status = text => { document.getElementById('ambienceStatus').textContent=text; };
   const report = () => window.dispatchEvent(new CustomEvent('atmospherestate'));
   function makeLoop(raw, seconds=4) {
@@ -60,6 +118,7 @@
         else if(context.state==='interrupted'&&wanted)recover();
       });
     }
+    for(let index=0;index<8;index++)loadNote(index).catch(()=>{});
     // Autoplay can be denied until a gesture. Still decode and prepare the loop.
     context.resume().catch(()=>{});
     if(!bufferPromise){
@@ -84,9 +143,9 @@
     return preparing;
   }
   window.ASTRALE_AMBIENCE={
-    enable(value){wanted=value;if(value)recover();else updateGain();report()},
+    enable(value){if(!value)releaseNotes();wanted=value;if(value)recover();else updateGain();report()},
     isPlaying(){return wanted&&context?.state==='running'&&!!source},
-    duck(value,seconds=.7){ducked=value;if(!value)fadeInSeconds=seconds;updateGain()},
+    duck(value,seconds=.7){if(value)releaseNotes();ducked=value;if(!value)fadeInSeconds=seconds;updateGain()},
     volume(value){level=Math.max(0,Math.min(.6,Number(value)));updateGain()}
   };
   document.getElementById('ambientVolume').addEventListener('input',e=>window.ASTRALE_AMBIENCE.volume(e.target.value));
@@ -94,6 +153,7 @@
     if(e.pointerType==='touch')return;
     targetCents=Math.max(0,Math.min(100,e.clientX/innerWidth*100));
     if(source)source.detune.setTargetAtTime(targetCents,context.currentTime,.35);
+    for(const voice of voices)voice.node.detune.setTargetAtTime(targetCents,context.currentTime,.35);
     document.getElementById('pitchValue').textContent=`+${Math.round(targetCents)} cents`;
   },{passive:true});
   // Never suspend merely because the tab is hidden: ambience keeps looping.
