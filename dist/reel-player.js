@@ -114,6 +114,7 @@
    window.ASTRALE_AMBIENCE.duck(false);
  });
  window.ASTRALE_REEL={open(){
+   window.ASTRALE_PLAY_SOUND?.('videoLoad');
    status();video.currentTime=0;window.ASTRALE_AMBIENCE.duck(true);dialog.showModal();sync();reveal();
    video.play().catch(()=>status('Press play to start the showreel.'));
  }};

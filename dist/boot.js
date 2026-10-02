@@ -1,7 +1,7 @@
 // A short visual introduction, independent of audio, embeds, or network readiness.
 (() => {
   const overlay=document.getElementById('bootSequence');
-  const menu=document.getElementById('titleScreen');
+  const menu=document.getElementById('experience');
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   const startup=new Audio(window.ASTRALE_SOUNDS?.startup||'sounds/startup.mp3');
   startup.preload='auto';startup.volume=.2;

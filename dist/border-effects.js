@@ -2,7 +2,8 @@
 (() => {
  const panel=document.querySelector('.content-shell');
  const links=[...document.querySelectorAll('[data-view]')];
- const frames=[panel,...links];
+ const settings=document.getElementById('openSettings');
+ const frames=[panel,...links,settings].filter(Boolean);
  const markup='<svg class="edge-trails" aria-hidden="true" focusable="false"><rect class="edge-trail edge-trail-red" pathLength="100"/><rect class="edge-trail edge-trail-blue" pathLength="100"/><rect class="edge-trail edge-trail-sparks" pathLength="100"/></svg>';
  for(const frame of frames)frame.insertAdjacentHTML('beforeend',markup);
  let timer;
@@ -14,5 +15,5 @@
    links.find(link=>link.dataset.view===event.detail.id)?.classList.add('edge-burst');
    timer=setTimeout(settle,200);
  });
- document.getElementById('backToTitle').addEventListener('click',settle);
+ document.getElementById('backToTitle')?.addEventListener('click',settle);
 })();

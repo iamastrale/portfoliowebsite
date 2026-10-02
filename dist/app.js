@@ -35,8 +35,9 @@ function playSound(type,force=false){if((!enabled&&!force)||document.hidden||doc
  if(sounds[type]){const audio=new Audio(sounds[type]);audio.volume=volume;activeAudio.add(audio);audio.onended=()=>activeAudio.delete(audio);audio.play().catch(()=>{activeAudio.delete(audio);$('#soundStatus').textContent='That sound could not play. Please try again.'});return}
  try{ctx??=new (window.AudioContext||window.webkitAudioContext)();ctx.resume();const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';const t=ctx.currentTime;osc.frequency.setValueAtTime(type==='hover'?820:type==='click'?440:330,t);osc.frequency.exponentialRampToValueAtTime(type==='open'?660:240,t+.09);gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(volume*.11,t+.005);gain.gain.exponentialRampToValueAtTime(.0001,t+.13);osc.connect(gain);gain.connect(ctx.destination);osc.start(t);osc.stop(t+.14);osc.onended=()=>{osc.disconnect();gain.disconnect()}}catch{ $('#soundStatus').textContent='Audio is not supported in this browser.' }
 }
+window.ASTRALE_PLAY_SOUND=playSound;
 document.addEventListener('pointerover',e=>{if(e.pointerType==='touch')return;const control=e.target.closest('button,a');if(!control||control.contains(e.relatedTarget))return;const now=performance.now();if(now-lastHover>100){lastHover=now;playSound('hover')}});
-document.addEventListener('click',e=>{if(e.target.closest('button,a')&&!e.target.closest('#soundToggle,#enterPortfolio,#playShowreel,.project,[data-view]'))playSound('click')});
+document.addEventListener('click',e=>{if(e.target.closest('button,a')&&!e.target.closest('#soundToggle,#playShowreel,.project,[data-view]'))playSound('click')});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSounds()});
 
 // Persistent navigation with cancellable, lightweight screen transitions.
@@ -66,7 +67,7 @@ async function showView(id,focus=true){
  const revision=++transitionId;
  clearMosaic();
  screenAnimation?.cancel();
- document.querySelector('.game-nav').hidden=false;contentPane.hidden=false;
+ contentPane.hidden=false;
  document.querySelectorAll('[data-view]').forEach(a=>{
    if(a.dataset.view===id)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
  });
@@ -98,25 +99,20 @@ async function showView(id,focus=true){
  }
 }
 function navigate(id){history.pushState(null,'','#'+id);showView(id)}
-function enter(){
+function enter(id='reel'){
  if(entered||document.body.classList.contains('booting'))return;
  entered=true;window.ASTRALE_AMBIENCE.enable(enabled);
- document.body.classList.remove('at-title');document.querySelector('#titleScreen').hidden=true;
  document.querySelector('#experience').inert=false;
- navigate('reel');playSound('open');
+ navigate(id);playSound('open');
 }
-document.querySelector('#enterPortfolio').onclick=enter;
-document.addEventListener('keydown',e=>{
- if(e.key==='Enter'&&!entered&&!document.body.classList.contains('booting')&&!document.querySelector('dialog[open]')&&!e.target.closest('button,a,input')){e.preventDefault();enter()}
-});
-document.querySelectorAll('[data-view]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();navigate(a.dataset.view);playSound('open')}));
+document.querySelectorAll('[data-view]').forEach(a=>a.addEventListener('click',e=>{
+ e.preventDefault();
+ if(entered){navigate(a.dataset.view);playSound('open')}else enter(a.dataset.view);
+}));
 
 window.addEventListener('hashchange',()=>{if(entered)showView(location.hash.slice(1))});
-document.querySelector('.brand').onclick=e=>{e.preventDefault();navigate('reel')};
-document.querySelector('#backToTitle').onclick=()=>{
- entered=false;++transitionId;clearMosaic();screenAnimation?.cancel();document.querySelector('#experience').inert=true;
- document.querySelector('#titleScreen').hidden=false;document.body.classList.add('at-title');
- window.ASTRALE_AMBIENCE.duck(false);setSound(true,false);document.querySelector('#enterPortfolio').focus();
-};
-if(document.body.classList.contains('booting'))window.addEventListener('bootcomplete',()=>setSound(true,false),{once:true});
-else setSound(true,false);
+document.querySelector('.brand')?.addEventListener('click',e=>{e.preventDefault();navigate('reel')});
+if(document.body.classList.contains('booting'))window.addEventListener('bootcomplete',()=>{
+ setSound(true,false);enter(location.hash.slice(1)||'reel');
+},{once:true});
+else{setSound(true,false);enter(location.hash.slice(1)||'reel')}
