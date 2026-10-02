@@ -1,23 +1,22 @@
 'use strict';
 const $ = s => document.querySelector(s);
 const projects = [
- {title:'VALORANT',detail:'Sunset map · Music production',kind:'music',video:'96z6Kg4r_IE'},
- {title:'Deadline Delivery',detail:'Trailer · Sound design & composition',kind:'sound',video:'xaNMYG0I_Lw'},
- {title:'Apex Legends',detail:'Sound redesign',kind:'sound',video:'sy8lc9iooEE'},
- {title:'Valley of the Ancient',detail:'Wwise implementation',kind:'sound',video:'T1bYiNzXpJQ'},
- {title:'Jusant',detail:'Sound redesign',kind:'sound',video:'viVpRabL7ks'},
- {title:'Deadline Delivery',detail:'Soundtrack · Music composition',kind:'music',video:'xaNMYG0I_Lw'}
+ {title:'ASTRALE',detail:'Original music · 8 tracks',kind:'music',player:'music'},
+ {title:'VALORANT',detail:'Sunset map · Music production',kind:'music',src:'video/work/valorant-sunset-map-music.mov'},
+ {title:'Deadline Delivery',detail:'Sound design',kind:'sound',src:'video/work/deadline-delivery.mov'},
+ {title:'Deadline Delivery',detail:'Explosion implementation',kind:'sound',src:'video/work/deadline-delivery-explosion.mov'},
+ {title:'Apex Legends',detail:'Sound redesign',kind:'sound',src:'video/work/apex-redesign.mp4'},
+ {title:'Marathon',detail:'Sound redesign',kind:'sound',src:'video/work/marathon-sound-redesign.mp4'}
 ];
 function renderProjects(filter='all') {
  $('#projects').replaceChildren();
  projects.forEach((p,i)=>{if(filter!=='all'&&p.kind!==filter)return;
  const b=document.createElement('button');b.className='project';b.setAttribute('aria-label','Play '+p.title+' — '+p.detail);
  b.innerHTML=`<svg class="project-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span class="project-info"><span><h3>${p.title}</h3><p>${p.detail}</p></span></span><svg class="project-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
- b.onclick=()=>openVideo(p.video,p.title+' / '+p.detail);$('#projects').append(b);});
+ b.onclick=()=>p.player==='music'?window.ASTRALE_MUSIC.open():window.ASTRALE_REEL.open({src:p.src,title:p.title+' / '+p.detail});$('#projects').append(b);});
 }
 renderProjects();
 document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-filter]').forEach(x=>{const active=x===b;x.classList.toggle('active',active);x.setAttribute('aria-pressed',active)});renderProjects(b.dataset.filter)});
-function openVideo(id,title,provider='youtube'){window.ASTRALE_AMBIENCE.duck(true);playSound('open');$('#playerTitle').textContent=title;const frame=document.createElement('iframe');frame.src=provider==='vimeo'?'https://player.vimeo.com/video/'+id+'?autoplay=1&title=0&byline=0&portrait=0':'https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0';frame.title=title;frame.allow='autoplay; encrypted-media; picture-in-picture';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';$('#playerFrame').replaceChildren(frame);$('#player').showModal()}
 const reelPreview=$('#reelHoverPreview');
 const startReelPreview=()=>{if(!reelPreview||matchMedia('(prefers-reduced-motion: reduce)').matches)return;reelPreview.play().catch(()=>{})};
 const stopReelPreview=()=>{if(reelPreview&&!reelPreview.paused)reelPreview.pause()};
@@ -29,7 +28,6 @@ $('#playShowreel').addEventListener('blur',stopReelPreview);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopReelPreview()});
 
 document.querySelectorAll('dialog').forEach(d=>{d.querySelector('.close').onclick=()=>d.close();d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}})});
-$('#player').addEventListener('close',()=>{ $('#playerFrame').replaceChildren();window.ASTRALE_AMBIENCE.duck(false) });
 let enabled=false,volume=.6,ctx,lastHover=0;const sounds={...window.ASTRALE_SOUNDS},activeAudio=new Set();
 function stopSounds(){activeAudio.forEach(a=>{a.pause();a.currentTime=0});activeAudio.clear();if(ctx&&ctx.state==='running')ctx.suspend().catch(()=>{})}
 function syncSoundLabels(){for(const button of [$('#soundToggle')]){button.setAttribute('aria-pressed',enabled);button.textContent=enabled?'Sound on':'Sound off'}}
@@ -38,7 +36,7 @@ $('#soundToggle').onclick=()=>setSound(!enabled);
 
 window.addEventListener('atmospherestate',syncSoundLabels);
 $('#volume').oninput=e=>{volume=Number(e.target.value);activeAudio.forEach(a=>a.volume=volume)};
-function playSound(type,force=false){if((!enabled&&!force)||document.hidden||document.querySelector('#reelPlayer[open]'))return;
+function playSound(type,force=false){if((!enabled&&!force)||document.hidden||document.querySelector('dialog[open]'))return;
  if(sounds[type]){const audio=new Audio(sounds[type]);audio.volume=volume;activeAudio.add(audio);audio.onended=()=>activeAudio.delete(audio);audio.play().catch(()=>{activeAudio.delete(audio);$('#soundStatus').textContent='That sound could not play. Please try again.'});return}
  try{ctx??=new (window.AudioContext||window.webkitAudioContext)();ctx.resume();const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';const t=ctx.currentTime;osc.frequency.setValueAtTime(type==='hover'?820:type==='click'?440:330,t);osc.frequency.exponentialRampToValueAtTime(type==='open'?660:240,t+.09);gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(volume*.11,t+.005);gain.gain.exponentialRampToValueAtTime(.0001,t+.13);osc.connect(gain);gain.connect(ctx.destination);osc.start(t);osc.stop(t+.14);osc.onended=()=>{osc.disconnect();gain.disconnect()}}catch{ $('#soundStatus').textContent='Audio is not supported in this browser.' }
 }

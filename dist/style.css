@@ -132,6 +132,28 @@
  #experience>footer{left:max(3vw,calc(50vw - 818px))}
 }
 
+/* Final short-screen override must follow every desktop sizing pass. */
+@media(min-width:901px) and (max-height:950px){
+ #experience{--panel-height:min(520px,calc(100dvh - 300px));min-height:100dvh;max-height:100dvh}
+ #experience>.experience-title{top:20px}
+ #experience>.experience-title>p{margin-bottom:9px;font-size:9px;letter-spacing:2.2px}
+ #experience>.experience-title h1{font-size:clamp(42px,3.7vw,58px);line-height:.93}
+ #experience>.game-nav,#experience>.content-shell{align-self:center}
+ #experience>.game-nav{gap:7px}
+ #experience>.game-nav a{padding:11px 18px;font-size:clamp(17px,1.5vw,25px)}
+ #experience>footer{bottom:4px;padding-block:6px}
+}
+@media(min-width:901px) and (max-height:760px){
+ #experience{--panel-height:min(430px,calc(100dvh - 245px))}
+ #experience>.experience-title{top:12px}
+ #experience>.experience-title>p{margin-bottom:6px;font-size:8px}
+ #experience>.experience-title h1{font-size:clamp(38px,3.2vw,50px)}
+ #experience>.game-nav{gap:5px}
+ #experience>.game-nav a{padding:8px 16px;font-size:clamp(15px,1.3vw,22px)}
+ .content-shell{padding:16px}
+ #experience .content-shell main>.view{padding-bottom:10px}
+}
+
 /* Work launches share the Showreel panel language. */
 #work .section-heading{align-items:end;margin:0 0 22px}
 #work .projects{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
@@ -182,6 +204,28 @@
 #about .resume-button:hover .resume-arrow,#about .resume-button:focus-visible .resume-arrow{transform:translateX(5px)}
 @media(max-width:600px){#about .resume-button{min-height:68px;margin-top:20px;padding:13px 15px;gap:13px}#about .resume-button strong{font-size:12px}}
 @media(prefers-reduced-motion:reduce){#about .resume-button,#about .resume-button:before,#about .resume-arrow{transition:none}}
+
+/* Keep the console layout inside shorter desktop viewports, including 1080p screens with browser chrome. */
+@media(min-width:901px) and (max-height:950px){
+ #experience{--panel-height:min(520px,calc(100dvh - 300px));min-height:100dvh;max-height:100dvh}
+ #experience>.experience-title{top:20px}
+ #experience>.experience-title>p{margin-bottom:9px;font-size:9px;letter-spacing:2.2px}
+ #experience>.experience-title h1{font-size:clamp(42px,3.7vw,58px);line-height:.93}
+ #experience>.game-nav,#experience>.content-shell{align-self:center}
+ #experience>.game-nav{gap:7px}
+ #experience>.game-nav a{padding:11px 18px;font-size:clamp(17px,1.5vw,25px)}
+ #experience>footer{bottom:4px;padding-block:6px}
+}
+@media(min-width:901px) and (max-height:760px){
+ #experience{--panel-height:min(430px,calc(100dvh - 245px))}
+ #experience>.experience-title{top:12px}
+ #experience>.experience-title>p{margin-bottom:6px;font-size:8px}
+ #experience>.experience-title h1{font-size:clamp(38px,3.2vw,50px)}
+ #experience>.game-nav{gap:5px}
+ #experience>.game-nav a{padding:8px 16px;font-size:clamp(15px,1.3vw,22px)}
+ .content-shell{padding:16px}
+ #experience .content-shell main>.view{padding-bottom:10px}
+}
 
 /* Let the showreel action reach the content frame's far edge. */
 #experience .showreel{width:100%;max-width:none}
@@ -446,4 +490,26 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text}
  #experience>.experience-title{left:max(3vw,calc(50vw - 818px));width:clamp(520px,46vw,800px)}
  #experience>.content-shell{max-width:1160px}
  #experience>footer{left:max(3vw,calc(50vw - 818px))}
+}
+
+/* Short desktop screens keep the title, panels, and footer within the viewport. */
+@media(min-width:901px) and (max-height:950px){
+ #experience{--panel-height:min(520px,calc(100dvh - 300px));min-height:100dvh;max-height:100dvh}
+ #experience>.experience-title{top:20px}
+ #experience>.experience-title>p{margin-bottom:9px;font-size:9px;letter-spacing:2.2px}
+ #experience>.experience-title h1{font-size:clamp(42px,3.7vw,58px);line-height:.93}
+ #experience>.game-nav,#experience>.content-shell{align-self:center}
+ #experience>.game-nav{gap:7px}
+ #experience>.game-nav a{padding:11px 18px;font-size:clamp(17px,1.5vw,25px)}
+ #experience>footer{bottom:4px;padding-block:6px}
+}
+@media(min-width:901px) and (max-height:760px){
+ #experience{--panel-height:min(430px,calc(100dvh - 245px))}
+ #experience>.experience-title{top:12px}
+ #experience>.experience-title>p{margin-bottom:6px;font-size:8px}
+ #experience>.experience-title h1{font-size:clamp(38px,3.2vw,50px)}
+ #experience>.game-nav{gap:5px}
+ #experience>.game-nav a{padding:8px 16px;font-size:clamp(15px,1.3vw,22px)}
+ .content-shell{padding:16px}
+ #experience .content-shell main>.view{padding-bottom:10px}
 }

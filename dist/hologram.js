@@ -1,48 +1,59 @@
-// A procedural wire surface: Canvas 2D, bounded geometry, no WebGL/dependencies.
+// A calm procedural wire surface: stable geometry with restrained pointer response.
 (() => {
   const canvas = document.getElementById('hologram');
   const context = canvas.getContext('2d', { alpha: true });
   if (!context) return;
+
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, lastClientX: 0, lastClientY: 0, seen: false };
-  let width = 1, height = 1, frame = 0, last = 0, phase = 0, pulse = 0, energy = 0, shock = 0;
+  const pointer = { x: 0, y: 0, targetX: 0, targetY: 0 };
+  let width = 1, height = 1, frame = 0, last = 0, phase = 0, pulse = 0;
+
   function resize() {
-    width = innerWidth; height = innerHeight;
+    width = innerWidth;
+    height = innerHeight;
     const scale = Math.min(devicePixelRatio || 1, 1.25, 1800 / width);
-    canvas.width = Math.round(width * scale); canvas.height = Math.round(height * scale);
+    canvas.width = Math.round(width * scale);
+    canvas.height = Math.round(height * scale);
     context.setTransform(scale, 0, 0, scale, 0, 0);
     draw();
   }
+
   function draw() {
     context.clearRect(0, 0, width, height);
     const small = width < 700;
-    const interaction = Math.min(.95, energy + pulse * .24);
-    const size = Math.min(width * (small ? .64 : .36), height * .52) * (1 + interaction * .04);
-    const cx = width * (small ? .65 : .72) + pointer.x * (small ? 12 : 30), cy = height * .48 + pointer.y * (small ? 10 : 20);
-    const tilt = -.55 + pointer.y * (.3 + interaction * .1);
-    const turn = phase * (.17 + interaction * .025) + pointer.x * (.48 + interaction * .12);
+    const size = Math.min(width * (small ? .64 : .36), height * .52) * (1 + pulse * .018);
+    const cx = width * (small ? .65 : .72) + pointer.x * (small ? 8 : 18);
+    const cy = height * .48 + pointer.y * (small ? 7 : 12);
+    const tilt = -.55 + pointer.y * .2;
+    const turn = phase * .14 + pointer.x * .34;
     const ct = Math.cos(turn), st = Math.sin(turn), cp = Math.cos(tilt), sp = Math.sin(tilt);
+
     const gradient = context.createLinearGradient(cx - size, cy - size, cx + size, cy + size);
-    gradient.addColorStop(0, `rgba(75,119,145,${.14 + interaction * .04})`);
-    gradient.addColorStop(.36, `rgba(83,137,169,${.5 + interaction * .09})`);
-    gradient.addColorStop(.65, `rgba(117,163,187,${.42 + interaction * .08})`);
-    gradient.addColorStop(1, `rgba(217,34,50,${.3 + interaction * .12})`);
-    context.strokeStyle = gradient; context.lineWidth = .75 + pulse * .34 + energy * .2;
-    const rings = small ? 22 : 34, steps = small ? 84 : 112;
+    gradient.addColorStop(0, 'rgba(75,119,145,.14)');
+    gradient.addColorStop(.36, 'rgba(83,137,169,.5)');
+    gradient.addColorStop(.65, 'rgba(117,163,187,.42)');
+    gradient.addColorStop(1, `rgba(217,34,50,${.3 + pulse * .07})`);
+    context.strokeStyle = gradient;
+    context.lineWidth = .75 + pulse * .2;
+
+    const rings = small ? 22 : 34;
+    const steps = small ? 82 : 108;
     for (let ring = 0; ring < rings; ring++) {
       const v = ring / rings * Math.PI * 2;
       context.beginPath();
       for (let step = 0; step <= steps; step++) {
         const u = step / steps * Math.PI * 2;
-        const breathing = Math.sin(u * 3 + phase * .7 + v * 2) * .075;
-        const response = interaction * .045 * Math.sin(u * 4 - v * 3 + phase * 4.5 + pointer.x * 3);
-        const impact = shock * .065 * Math.sin(u * 7 + v * 5 - phase * 10);
-        const radius = .66 + Math.cos(v + u * 2) * .24 + breathing + response + impact + pulse * .065 * Math.sin(u * 5 + v * 3 - phase * 8);
+        const breathing = Math.sin(u * 3 + phase * .62 + v * 2) * .06;
+        const pointerBias = (pointer.x * Math.cos(u) + pointer.y * Math.sin(u)) * .018;
+        const pulseWave = pulse * .022 * (1 + Math.cos(u * 2 + v)) * .5;
+        const radius = .66 + Math.cos(v + u * 2) * .24 + breathing + pointerBias + pulseWave;
         const x = Math.cos(u) * radius;
         const y = Math.sin(u) * radius;
-        const z = Math.sin(v + u * 2) * (.27 + interaction * .035) + Math.cos(u * 3 - phase * .4) * (.1 + interaction * .015);
-        const rx = x * ct + z * st, rz = -x * st + z * ct;
-        const ry = y * cp - rz * sp, depth = y * sp + rz * cp;
+        const z = Math.sin(v + u * 2) * .27 + Math.cos(u * 3 - phase * .34) * .09;
+        const rx = x * ct + z * st;
+        const rz = -x * st + z * ct;
+        const ry = y * cp - rz * sp;
+        const depth = y * sp + rz * cp;
         const perspective = 2.5 / (2.5 - depth);
         const px = cx + rx * size * perspective;
         const py = cy + ry * size * perspective;
@@ -51,43 +62,49 @@
       context.stroke();
     }
   }
+
   function animate(now) {
     frame = requestAnimationFrame(animate);
     if (now - last < 1000 / 30) return;
-    const delta = Math.min((now - last) / 1000, .06); last = now;
+    const delta = Math.min((now - last) / 1000, .06);
+    last = now;
     phase += delta;
-    pulse *= Math.exp(-delta * 2.4);
-    energy *= Math.exp(-delta * 2);
-    shock *= Math.exp(-delta * 5.5);
-    pointer.x += (pointer.targetX - pointer.x) * .072;
-    pointer.y += (pointer.targetY - pointer.y) * .072;
+    pulse *= Math.exp(-delta * 2.8);
+    pointer.x += (pointer.targetX - pointer.x) * .055;
+    pointer.y += (pointer.targetY - pointer.y) * .055;
     draw();
   }
+
   function sync() {
     cancelAnimationFrame(frame);
-    if (!document.hidden && !reduced.matches) { last = performance.now(); frame = requestAnimationFrame(animate); }
-    else draw();
+    if (!document.hidden && !reduced.matches) {
+      last = performance.now();
+      frame = requestAnimationFrame(animate);
+    } else draw();
   }
+
   window.addEventListener('pointermove', event => {
     if (reduced.matches || event.pointerType === 'touch') return;
-    if (pointer.seen) {
-      const distance = Math.hypot(event.clientX - pointer.lastClientX, event.clientY - pointer.lastClientY) / Math.max(width, height);
-      energy = Math.min(.85, energy + distance * 3.2);
-    }
-    pointer.lastClientX = event.clientX; pointer.lastClientY = event.clientY; pointer.seen = true;
     pointer.targetX = event.clientX / width * 2 - 1;
     pointer.targetY = event.clientY / height * 2 - 1;
   }, { passive: true });
-  document.documentElement.addEventListener('pointerleave', () => { pointer.targetX = pointer.targetY = 0; pointer.seen = false; });
+  document.documentElement.addEventListener('pointerleave', () => {
+    pointer.targetX = 0;
+    pointer.targetY = 0;
+  });
   document.addEventListener('pointerdown', event => {
     if (reduced.matches || event.target.closest('button,a,input,label,dialog')) return;
     pointer.targetX = event.clientX / width * 2 - 1;
     pointer.targetY = event.clientY / height * 2 - 1;
-    energy = Math.min(.9, energy + .38); shock = .65; pulse = Math.min(1.45, pulse + .45);
+    pulse = Math.min(1, pulse + .38);
   }, { passive: true });
+  window.addEventListener('astralenote', () => {
+    if (!reduced.matches) pulse = Math.min(1, pulse + .52);
+  });
   window.addEventListener('resize', resize, { passive: true });
   document.addEventListener('visibilitychange', sync);
   reduced.addEventListener('change', sync);
-  window.addEventListener('astralenote',()=>{if(!reduced.matches){pulse=Math.min(1.55,pulse+.75);energy=Math.min(.95,energy+.3);shock=Math.max(shock,.5)}});
-  resize(); sync();
+
+  resize();
+  sync();
 })();
