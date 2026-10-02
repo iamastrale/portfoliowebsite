@@ -154,6 +154,25 @@
  #experience .content-shell main>.view{padding-bottom:10px}
 }
 
+/* Editorial restraint: motion is reserved for navigation changes and media launches. */
+.game-nav a{ text-shadow:none }
+.game-nav a:after{animation:none;opacity:.08}
+.game-nav a[aria-current=page]{text-shadow:0 0 9px #d9223238}
+.game-nav a[aria-current=page]:after{opacity:.22}
+.game-nav a:hover:after,.game-nav a:focus-visible:after{opacity:.35}
+.content-shell:after{width:58px;box-shadow:none;opacity:.7}
+.edge-trails{opacity:0!important}
+.edge-trail{animation-play-state:paused;stroke-width:1}
+.edge-burst>.edge-trails{opacity:.62!important}
+.edge-burst>.edge-trails .edge-trail{animation-play-state:running}
+.edge-burst>.edge-trails .edge-trail-red{stroke-width:1.5;opacity:.68}
+.edge-burst>.edge-trails .edge-trail-blue{stroke-width:1.25;opacity:.5}
+.edge-burst>.edge-trails .edge-trail-sparks{opacity:.28}
+@keyframes panel-charge{0%{border-color:#d922326e;box-shadow:inset 0 0 12px #d922320d,0 0 14px #65a5c31b}100%{border-color:#9dafbd99;box-shadow:inset 0 0 0 5px #ffffff33,0 10px 40px #46678112}}
+#work .filters button{min-width:86px;padding-left:14px;letter-spacing:.1em}
+#work .filters button:before{display:none}
+#work .filters button.active:after{animation:none}
+
 /* Work modes use a compact game-interface selector. */
 #work .filters{position:relative;display:flex;gap:3px;flex-wrap:nowrap;padding:4px;border:1px solid #8198a75c;background:linear-gradient(110deg,#ffffffa8,#dfeaf075);clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));isolation:isolate}
 #work .filters:before{content:"";position:absolute;left:4px;top:0;width:32%;height:1px;background:linear-gradient(90deg,var(--accent),transparent);pointer-events:none}

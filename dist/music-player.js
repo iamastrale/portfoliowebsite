@@ -101,9 +101,9 @@
     const height = canvas.height;
     context.clearRect(0, 0, width, height);
     const wash = context.createRadialGradient(width * .5, height * .5, 0, width * .5, height * .5, Math.max(width, height) * .52);
-    wash.addColorStop(0, 'rgba(89,160,190,.17)');
-    wash.addColorStop(.58, 'rgba(13,27,39,.08)');
-    wash.addColorStop(1, 'rgba(7,15,23,0)');
+    wash.addColorStop(0, 'rgba(255,255,255,.14)');
+    wash.addColorStop(.58, 'rgba(118,132,139,.035)');
+    wash.addColorStop(1, 'rgba(86,99,106,0)');
     context.fillStyle = wash;
     context.fillRect(0, 0, width, height);
     const left = width * .075;
@@ -111,21 +111,7 @@
     const centerY = height * .48;
     const span = right - left;
 
-    context.lineWidth = Math.max(1, width / 1300);
-    context.strokeStyle = 'rgba(135,190,211,.09)';
-    context.shadowBlur = 0;
-    for (let column = 0; column <= 12; column++) {
-      const x = left + span * column / 12;
-      context.beginPath();context.moveTo(x, height * .16);context.lineTo(x, height * .79);context.stroke();
-    }
-    for (let row = 0; row <= 6; row++) {
-      const y = height * (.16 + row * .105);
-      context.beginPath();context.moveTo(left, y);context.lineTo(right, y);context.stroke();
-    }
-    context.strokeStyle = 'rgba(217,34,50,.2)';
-    context.beginPath();context.moveTo(left, centerY);context.lineTo(right, centerY);context.stroke();
-
-    const traces = reduced.matches ? 1 : 6;
+    const traces = reduced.matches ? 1 : 3;
     for (let depth = traces - 1; depth >= 0; depth--) {
       const depthRatio = depth / Math.max(1, traces - 1);
       const inset = span * depthRatio * .045;
@@ -145,18 +131,12 @@
       }
       const main = depth === 0;
       context.lineWidth = main ? Math.max(1.6, width / 800) : Math.max(.7, width / 1600);
-      context.strokeStyle = main ? 'rgba(229,247,252,.94)' : `rgba(112,196,225,${.08 + (1 - depthRatio) * .15})`;
-      context.shadowBlur = main ? Math.min(15, width / 70) : 0;
-      context.shadowColor = main ? 'rgba(119,216,244,.7)' : 'transparent';
+      context.strokeStyle = main ? 'rgba(47,59,65,.94)' : `rgba(91,107,114,${.07 + (1 - depthRatio) * .13})`;
+      context.shadowBlur = main ? Math.min(7, width / 120) : 0;
+      context.shadowColor = main ? 'rgba(47,59,65,.24)' : 'transparent';
       context.stroke();
     }
 
-    const sweepX = left + span * ((phase * .1) % 1);
-    const sweep = context.createLinearGradient(sweepX - width * .035, 0, sweepX + width * .012, 0);
-    sweep.addColorStop(0, 'rgba(217,34,50,0)');
-    sweep.addColorStop(1, 'rgba(217,34,50,.32)');
-    context.fillStyle = sweep;
-    context.fillRect(sweepX - width * .035, height * .16, width * .047, height * .63);
     context.shadowBlur = 0;
     if (!reduced.matches && dialog.open) animationFrame = requestAnimationFrame(draw);
   }

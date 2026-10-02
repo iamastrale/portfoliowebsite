@@ -45,3 +45,14 @@ dialog::backdrop{background:#203c50b3;backdrop-filter:blur(3px)}
 @media(max-width:700px){.display-glass{box-shadow:inset 0 0 65px #18384916}.display-lines{opacity:.4}.display-grain{opacity:.3;animation-duration:1.6s}#titleScreen,#experience,.boot-lockup{animation:none;filter:blur(.45px)}}
 @media(prefers-reduced-motion:reduce){.display-sweep{animation:none;display:none}.display-grain{animation:none;will-change:auto}#titleScreen,#experience,.boot-lockup{animation:none;filter:none}.cinema-display-surface .display-grain{opacity:.2}}
 @media(forced-colors:active){.display-surface{display:none}.title-lockup h1,h2,.game-nav a{text-shadow:none}#titleScreen,#experience,.boot-lockup{animation:none;filter:none}}
+
+/* Restraint pass: retain a soft display texture without constant visual noise. */
+#titleScreen,#experience,.boot-lockup{animation-duration:16s}
+@keyframes display-focus{0%,100%{filter:blur(.28px)}45%{filter:blur(.4px)}76%{filter:blur(.33px)}}
+.display-lines{opacity:.3}
+.display-grain{opacity:.22;animation-duration:1.8s}
+.display-sweep{opacity:.16;animation-duration:28s}
+.display-glass{box-shadow:inset 0 0 60px #18384914,inset 0 0 150px #2c526f0a;background:linear-gradient(125deg,#ffffff17,transparent 40%,#adced905 68%,#ffffff10),radial-gradient(ellipse at 50% 44%,transparent 62%,#243f5810 100%)}
+.cinema-display-surface .display-grain{opacity:.17}
+.cinema-display-surface .display-lines{opacity:.25}
+.cinema-display-surface .display-sweep{opacity:.2;animation-duration:21s}
