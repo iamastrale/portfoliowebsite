@@ -124,6 +124,13 @@ body.reel-transition-dark:after{background:#111d2b;animation:menu-mosaic-blackou
 #reelPlayer .cinema-glitch .cinema-screen{animation:none}
 @media(prefers-reduced-motion:reduce){.menu-mosaic{display:none}#experience.reel-fragmenting{filter:none}#experience.reel-fragmenting>.experience-title,#experience.reel-fragmenting>.game-nav,#experience.reel-fragmenting>.content-shell{animation:none;opacity:0}}
 
+/* Media handoff radiates from the center in a quiet mosaic ripple. */
+body.reel-transition-dark:after{animation:menu-ripple-blackout 820ms cubic-bezier(.3,.7,.2,1) both;clip-path:circle(0 at 50% 50%)}
+.menu-mosaic span{animation-name:menu-mosaic-ripple;animation-timing-function:cubic-bezier(.2,.7,.2,1);animation-fill-mode:both;will-change:transform,opacity}
+@keyframes menu-ripple-blackout{0%{opacity:0;clip-path:circle(0 at 50% 50%)}30%{opacity:.16}72%{opacity:.72}100%{opacity:1;clip-path:circle(76vmax at 50% 50%)}}
+@keyframes menu-mosaic-ripple{0%{opacity:0;transform:translate(var(--pull-x),var(--pull-y)) scale(.38)}22%{opacity:.94;transform:translate(0,0) scale(1.04)}58%{opacity:.8;transform:translate(0,0) scale(.98)}100%{opacity:0;transform:translate(var(--push-x),var(--push-y)) scale(.78)}}
+@media(prefers-reduced-motion:reduce){body.reel-transition-dark:after{clip-path:none;animation:none;opacity:.72}}
+
 /* Cinematic Showreel preview: still poster at rest, muted motion on hover/focus. */
 #experience .reel-preview-button{position:relative;display:block;width:100%;height:auto;min-height:0;aspect-ratio:16/9;margin-top:18px;padding:0;overflow:hidden;border:1px solid #8fa3b177;border-left:4px solid var(--accent);background:#101a22;color:#fff;isolation:isolate}
 .reel-preview-media{position:absolute;inset:0;display:block;overflow:hidden;background:#111d2b}

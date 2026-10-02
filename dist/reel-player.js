@@ -8,7 +8,7 @@
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const canvas=document.createElement('canvas');canvas.width=32;canvas.height=18;
  const ctx=canvas.getContext('2d',{willReadFrequently:true});
- let glow=!reduced.matches,timer=null,revealTimer,revealLayer,preparedRevealLayer,revealAnimation,opening=false,menuFragments;
+ let glow=!reduced.matches,timer=null,revealTimer,revealLayer,preparedRevealLayer,revealAnimation,opening=false,menuFragments,openRevision=0;
  const wait=duration=>new Promise(resolve=>setTimeout(resolve,duration));
  function clearReveal(){
    clearTimeout(revealTimer);revealLayer?.remove();revealLayer=null;
@@ -67,16 +67,21 @@
    const columns=20,rows=12;
    const fragment=document.createDocumentFragment();
    const colors=['#edf3f8','#dce8ef','#eff4f8','#bbcfdb','#718c9e','#d92232'];
-   for(let row=0;row<rows;row++)for(let col=0;col<columns;col++){
-     const tile=document.createElement('span');
-     const distance=Math.hypot((col+.5)/columns-.58,(row+.5)/rows-.52);
-     const accent=Math.random();
-     tile.style.setProperty('--tile-color',colors[accent>.965?5:accent>.78?4:Math.floor(Math.random()*4)]);
-     tile.style.setProperty('--delay',Math.round(35+distance*265+Math.random()*90)+'ms');
-     tile.style.setProperty('--life',Math.round(330+Math.random()*95)+'ms');
-     tile.style.setProperty('--tile-scale',(.55+Math.random()*.4).toFixed(2));
-     fragment.append(tile);
-   }
+  for(let row=0;row<rows;row++)for(let col=0;col<columns;col++){
+    const tile=document.createElement('span');
+    const nx=(col+.5)/columns-.5,ny=(row+.5)/rows-.5;
+    const distance=Math.min(1,Math.hypot(nx,ny)/Math.SQRT1_2);
+    const accent=Math.random();
+    tile.style.setProperty('--tile-color',colors[accent>.965?5:accent>.78?4:Math.floor(Math.random()*4)]);
+    tile.style.setProperty('--delay',Math.round(24+distance*410+Math.random()*26)+'ms');
+    tile.style.setProperty('--life',Math.round(285+Math.random()*70)+'ms');
+    tile.style.setProperty('--tile-scale',(.55+Math.random()*.4).toFixed(2));
+    tile.style.setProperty('--pull-x',(-nx*6).toFixed(2)+'px');
+    tile.style.setProperty('--pull-y',(-ny*6).toFixed(2)+'px');
+    tile.style.setProperty('--push-x',(nx*14).toFixed(2)+'px');
+    tile.style.setProperty('--push-y',(ny*14).toFixed(2)+'px');
+    fragment.append(tile);
+  }
    menuFragments.append(fragment);document.body.append(menuFragments);
    experience.classList.add('reel-fragmenting');document.body.classList.add('reel-transition-dark');
    await wait(820);
@@ -139,7 +144,10 @@
  };
  document.addEventListener('fullscreenchange',()=>full.setAttribute('aria-label',document.fullscreenElement?'Exit fullscreen':'Enter fullscreen'));
  for(const event of ['loadedmetadata','timeupdate','volumechange','ended'])video.addEventListener(event,sync);
- video.addEventListener('play',()=>{status();sync();sampling()});
+ video.addEventListener('play',()=>{
+   if(!dialog.open){video.pause();return}
+   status();sync();sampling();
+ });
  video.addEventListener('pause',()=>{sync();stopSampling()});
  video.addEventListener('seeked',sample);
  video.addEventListener('playing',()=>status());
@@ -152,6 +160,7 @@
    if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();if(Number.isFinite(video.duration))video.currentTime=Math.max(0,Math.min(video.duration,video.currentTime+(event.key==='ArrowRight'?5:-5)))}
  });
  dialog.addEventListener('close',()=>{
+   openRevision++;
    video.pause();stopSampling();clearGlow();clearReveal();
    shell.classList.remove('cinema-preroll','cinema-ready');clearMenuTransition();opening=false;
    if(document.fullscreenElement===shell)document.exitFullscreen().catch(()=>{});
@@ -161,14 +170,20 @@
  window.ASTRALE_PLAYER_TRANSITION={fragmentMenu,clearMenuTransition};
  window.ASTRALE_REEL={async open(options={}){
  if(opening||dialog.open)return;
+   const revision=++openRevision;
    const source=options.src||defaultSource,title=options.title||'Showreel',poster=options.poster===undefined?(source===defaultSource?defaultPoster:''):options.poster;
    opening=true;window.ASTRALE_PLAY_SOUND?.('videoClick');status();video.pause();video.src=source;video.poster=poster;video.load();video.currentTime=0;playerTitle.textContent=title;video.setAttribute('aria-label',title);window.ASTRALE_AMBIENCE.duck(true);sync();
    await fragmentMenu();
+   if(revision!==openRevision)return;
    window.ASTRALE_PLAY_SOUND?.('videoLoad');
    shell.classList.add('cinema-preroll');dialog.showModal();sync();reveal();
    await wait(reduced.matches?120:690);
+   if(revision!==openRevision)return;
+   if(!dialog.open){opening=false;return}
    shell.classList.remove('cinema-preroll');shell.classList.add('cinema-ready');
    await wait(reduced.matches?80:360);
+   if(revision!==openRevision)return;
+   if(!dialog.open){opening=false;return}
    video.play().catch(()=>status('Press play to start the showreel.'));
    opening=false;
  }};
