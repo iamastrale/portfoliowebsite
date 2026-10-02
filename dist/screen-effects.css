@@ -3,7 +3,7 @@
 @keyframes display-focus{0%,100%{filter:blur(.45px)}38%{filter:blur(.75px)}72%{filter:blur(.6px)}}
 .display-surface{position:fixed;inset:0;z-index:300;pointer-events:none;overflow:hidden;isolation:isolate}
 .display-glass,.display-lines,.display-grain,.display-sweep{position:absolute;inset:0;pointer-events:none}
-.display-glass{border:1px solid #73889455;box-shadow:inset 0 0 0 5px #263e5012,inset 0 0 0 6px #ffffff80,inset 0 0 70px #18384920,inset 0 0 190px #2c526f12;background:linear-gradient(125deg,#ffffff22,transparent 36%,#adced90a 64%,#ffffff1a),radial-gradient(ellipse at 50% 44%,transparent 52%,#243f581c 100%)}
+.display-glass{border:0;box-shadow:inset 0 0 70px #18384920,inset 0 0 190px #2c526f12;background:linear-gradient(125deg,#ffffff22,transparent 36%,#adced90a 64%,#ffffff1a),radial-gradient(ellipse at 50% 44%,transparent 52%,#243f581c 100%)}
 .display-lines{background:repeating-linear-gradient(0deg,#152e4210 0,#152e4210 1px,transparent 1px,transparent 3px);opacity:.6}
 .display-grain{inset:-64px;background-repeat:repeat;opacity:.42;mix-blend-mode:multiply;animation:grain-refresh 1s steps(1,end) infinite;will-change:transform}
 /* Irregular tile offsets refresh the noise at 10 Hz without per-frame painting. */
@@ -22,7 +22,7 @@
 .display-sweep{inset:-70% 0 0;height:55%;background:linear-gradient(180deg,transparent,#e2f4ff00 35%,#ffffff26 50%,#bedce00a 62%,transparent);animation:display-scan 19s linear infinite;will-change:transform}
 @keyframes display-scan{from{transform:translateY(0)}to{transform:translateY(330vh)}}
 .display-idle .display-sweep,.display-idle .display-grain,.display-idle #titleScreen,.display-idle #experience,.display-idle .boot-lockup{animation-play-state:paused}
-body:has(dialog[open]) #experience,body:has(dialog[open])>.display-surface .display-grain{animation-play-state:paused}
+body:has(dialog[open]) #experience{animation-play-state:paused}
 
 /* Dialogs live in the browser top layer, so the showreel carries its own display surface. */
 .cinema-display-surface{position:absolute;inset:0;z-index:7;pointer-events:none;overflow:hidden;isolation:isolate}
@@ -42,6 +42,6 @@ body:has(dialog[open]) #experience,body:has(dialog[open])>.display-surface .disp
 #enterPortfolio,.main-menu-button,#titleAudio{box-shadow:inset 0 1px 0 #ffffffaa,0 3px 16px #293f5012}
 dialog{box-shadow:0 22px 100px #172d4466,0 0 0 1px #ffffff88,inset 0 1px 0 #ffffff}
 dialog::backdrop{background:#203c50b3;backdrop-filter:blur(3px)}
-@media(max-width:700px){.display-glass{box-shadow:inset 0 0 0 3px #263e5012,inset 0 0 65px #18384916}.display-lines{opacity:.4}.display-grain{opacity:.3;animation-duration:1.6s}#titleScreen,#experience,.boot-lockup{animation:none;filter:blur(.45px)}}
+@media(max-width:700px){.display-glass{box-shadow:inset 0 0 65px #18384916}.display-lines{opacity:.4}.display-grain{opacity:.3;animation-duration:1.6s}#titleScreen,#experience,.boot-lockup{animation:none;filter:blur(.45px)}}
 @media(prefers-reduced-motion:reduce){.display-sweep{animation:none;display:none}.display-grain{animation:none;will-change:auto}#titleScreen,#experience,.boot-lockup{animation:none;filter:none}.cinema-display-surface .display-grain{opacity:.2}}
 @media(forced-colors:active){.display-surface{display:none}.title-lockup h1,h2,.game-nav a{text-shadow:none}#titleScreen,#experience,.boot-lockup{animation:none;filter:none}}

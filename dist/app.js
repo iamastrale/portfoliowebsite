@@ -12,17 +12,24 @@ function renderProjects(filter='all') {
  $('#projects').replaceChildren();
  projects.forEach((p,i)=>{if(filter!=='all'&&p.kind!==filter)return;
  const b=document.createElement('button');b.className='project';b.setAttribute('aria-label','Play '+p.title+' — '+p.detail);
- b.innerHTML=`<div class="project-visual"><img src="https://i.ytimg.com/vi/${p.video}/hqdefault.jpg" alt="" loading="lazy"><div class="play-icon"><span>▷</span></div></div><div class="project-info"><div><h3>${p.title}</h3><p>${p.detail}</p></div></div>`;
+ b.innerHTML=`<svg class="project-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span class="project-info"><span><h3>${p.title}</h3><p>${p.detail}</p></span></span><svg class="project-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
  b.onclick=()=>openVideo(p.video,p.title+' / '+p.detail);$('#projects').append(b);});
 }
 renderProjects();
 document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-filter]').forEach(x=>{const active=x===b;x.classList.toggle('active',active);x.setAttribute('aria-pressed',active)});renderProjects(b.dataset.filter)});
 function openVideo(id,title,provider='youtube'){window.ASTRALE_AMBIENCE.duck(true);playSound('open');$('#playerTitle').textContent=title;const frame=document.createElement('iframe');frame.src=provider==='vimeo'?'https://player.vimeo.com/video/'+id+'?autoplay=1&title=0&byline=0&portrait=0':'https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0';frame.title=title;frame.allow='autoplay; encrypted-media; picture-in-picture';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';$('#playerFrame').replaceChildren(frame);$('#player').showModal()}
-$('#playShowreel').onclick=()=>window.ASTRALE_REEL.open();
+const reelPreview=$('#reelHoverPreview');
+const startReelPreview=()=>{if(!reelPreview||matchMedia('(prefers-reduced-motion: reduce)').matches)return;reelPreview.play().catch(()=>{})};
+const stopReelPreview=()=>{if(reelPreview&&!reelPreview.paused)reelPreview.pause()};
+$('#playShowreel').onclick=()=>{stopReelPreview();window.ASTRALE_REEL.open()};
+$('#playShowreel').addEventListener('pointerenter',startReelPreview);
+$('#playShowreel').addEventListener('pointerleave',stopReelPreview);
+$('#playShowreel').addEventListener('focus',startReelPreview);
+$('#playShowreel').addEventListener('blur',stopReelPreview);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopReelPreview()});
 
 document.querySelectorAll('dialog').forEach(d=>{d.querySelector('.close').onclick=()=>d.close();d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}})});
 $('#player').addEventListener('close',()=>{ $('#playerFrame').replaceChildren();window.ASTRALE_AMBIENCE.duck(false) });
-document.querySelectorAll('#openSettings,#titleSettings').forEach(button=>button.onclick=()=>$('#settings').showModal());
 let enabled=false,volume=.6,ctx,lastHover=0;const sounds={...window.ASTRALE_SOUNDS},activeAudio=new Set();
 function stopSounds(){activeAudio.forEach(a=>{a.pause();a.currentTime=0});activeAudio.clear();if(ctx&&ctx.state==='running')ctx.suspend().catch(()=>{})}
 function syncSoundLabels(){for(const button of [$('#soundToggle')]){button.setAttribute('aria-pressed',enabled);button.textContent=enabled?'Sound on':'Sound off'}}
@@ -41,7 +48,7 @@ document.addEventListener('click',e=>{if(e.target.closest('button,a')&&!e.target
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSounds()});
 
 // Persistent navigation with cancellable, lightweight screen transitions.
-const screenIds=['reel','work','about','credits'];let entered=false,transitionId=0;
+const screenIds=['reel','work','about','credits','settings'];let entered=false,transitionId=0;
 const contentPane=document.querySelector('main');
 const transitionMotion=matchMedia('(prefers-reduced-motion: reduce)');
 let screenAnimation,mosaicTimer;
@@ -87,7 +94,7 @@ async function showView(id,focus=true){
  document.querySelectorAll('.view').forEach(v=>{v.hidden=v!==next;v.inert=v!==next});
  contentPane.scrollTop=0;
  window.dispatchEvent(new CustomEvent('astraleviewopen',{detail:{id}}));
- if(focus)next.querySelector('h2').focus({preventScroll:true});
+ if(focus)next.querySelector('h2,button,a')?.focus({preventScroll:true});
  if(canAnimate&&previous!==next){
    revealMosaic();
    screenAnimation=next.animate([
@@ -98,7 +105,7 @@ async function showView(id,focus=true){
    try{await screenAnimation.finished}catch{}
  }
 }
-function navigate(id){history.pushState(null,'','#'+id);showView(id)}
+function navigate(id,focus=true){history.pushState(null,'','#'+id);showView(id,focus)}
 function enter(id='reel'){
  if(entered||document.body.classList.contains('booting'))return;
  entered=true;window.ASTRALE_AMBIENCE.enable(enabled);
@@ -109,6 +116,28 @@ document.querySelectorAll('[data-view]').forEach(a=>a.addEventListener('click',e
  e.preventDefault();
  if(entered){navigate(a.dataset.view);playSound('open')}else enter(a.dataset.view);
 }));
+
+// Game-menu keyboard controls. Arrow navigation stays out of forms and media controls.
+const navigationItems=[...document.querySelectorAll('.game-nav [data-view]')];
+document.addEventListener('keydown',event=>{
+ const target=event.target;
+ const inForm=target.closest('input,textarea,select,[contenteditable="true"],.cinema-controls');
+ if(document.querySelector('dialog[open]')||inForm)return;
+ const key=event.key;
+ if((key===' '||key==='Spacebar')&&target.matches('.game-nav a')){
+   event.preventDefault();target.click();return;
+ }
+ const direction=key==='ArrowUp'||key==='ArrowLeft'?-1:key==='ArrowDown'||key==='ArrowRight'?1:0;
+ const edge=key==='Home'?0:key==='End'?navigationItems.length-1:-1;
+ if(!direction&&edge<0)return;
+ event.preventDefault();
+ const active=document.querySelector('.game-nav [data-view][aria-current="page"]');
+ let index=Math.max(0,navigationItems.indexOf(active));
+ index=edge>=0?edge:(index+direction+navigationItems.length)%navigationItems.length;
+ const item=navigationItems[index];
+ if(!entered)enter(item.dataset.view);else{navigate(item.dataset.view,false);playSound('open')}
+ item.focus({preventScroll:true});
+});
 
 window.addEventListener('hashchange',()=>{if(entered)showView(location.hash.slice(1))});
 document.querySelector('.brand')?.addEventListener('click',e=>{e.preventDefault();navigate('reel')});

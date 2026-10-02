@@ -1,5 +1,5 @@
 #reelPlayer{width:min(1120px,94vw);max-width:94vw;max-height:94dvh;padding:0;border:0;background:transparent;overflow:visible;box-shadow:none}
-#reelPlayer::backdrop{background:#111d2be0;backdrop-filter:blur(12px)}
+#reelPlayer::backdrop{background:transparent;backdrop-filter:none}
 .cinema-shell{--glow-top:transparent;--glow-right:transparent;--glow-bottom:transparent;--glow-left:transparent;position:relative;background:#eef3f6;border:1px solid #d7e3eb;border-radius:0;color:#202b34;box-shadow:0 -22px 65px -20px var(--glow-top),28px 0 65px -20px var(--glow-right),0 24px 65px -20px var(--glow-bottom),-28px 0 65px -20px var(--glow-left);transition:box-shadow .5s ease;overflow:hidden}
 .cinema-header{height:52px;display:flex;align-items:center;gap:16px;padding:0 18px 0 24px;background:linear-gradient(120deg,#fff,#e5edf2);border-bottom:1px solid #abbac5;position:relative}
 .cinema-header:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:#d92232}
@@ -49,7 +49,7 @@
 
 /* Sparse random signal fragments keep the reveal lively without hundreds of filtered layers. */
 .cinema-mosaic{display:block;contain:strict}
-.cinema-mosaic span{position:absolute;left:var(--x);top:var(--y);width:var(--tile-width);height:var(--tile-height);background:var(--tile-color);box-shadow:none;animation:cinema-mosaic-resolve var(--tile-duration) steps(3,end) var(--delay) both;transform-origin:center;will-change:transform,opacity}
+.cinema-mosaic span{position:absolute;left:var(--x);top:var(--y);width:var(--tile-width);height:var(--tile-height);background:var(--tile-color);box-shadow:none;animation:cinema-mosaic-resolve var(--tile-duration) steps(3,end) var(--delay) both;transform-origin:center}
 @keyframes cinema-mosaic-resolve{0%{opacity:1;transform:scale(var(--tile-scale)) scaleY(var(--tile-y))}42%{opacity:.9;transform:scale(.94) scaleY(1.08)}72%{opacity:.38;transform:scale(1)}100%{opacity:0;transform:scale(1)}}
 .cinema-shell:before,.cinema-shell:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:9;opacity:0}
 .cinema-shell:before{background:repeating-linear-gradient(0deg,transparent 0 37px,#c3edff33 37px 39px,transparent 39px 81px);mix-blend-mode:screen}
@@ -82,3 +82,70 @@ body.reel-transition-dark:after{content:"";position:fixed;inset:0;z-index:79;poi
 .cinema-shell.cinema-ready>.cinema-header,.cinema-shell.cinema-ready>.cinema-screen,.cinema-shell.cinema-ready>.cinema-controls,.cinema-shell.cinema-ready>#reelMessage{opacity:1;transform:none;filter:none}
 .cinema-shell.cinema-preroll .cinema-mosaic{inset:8%;overflow:visible}
 @media(prefers-reduced-motion:reduce){#experience.reel-fragmenting>.experience-title,#experience.reel-fragmenting>.game-nav,#experience.reel-fragmenting>.content-shell{animation:none;opacity:0}.menu-fragmentation{display:none}body.reel-transition-dark:after{animation:none;opacity:.72}.cinema-shell>.cinema-header,.cinema-shell>.cinema-screen,.cinema-shell>.cinema-controls,.cinema-shell>#reelMessage{transition:opacity .1s linear}}
+
+/* Several fast sync losses make the menu tear apart before the player resolves. */
+#experience.reel-fragmenting>.experience-title,#experience.reel-fragmenting>.game-nav,#experience.reel-fragmenting>.content-shell{animation:menu-signal-collapse 790ms steps(1,end) both}
+#experience.reel-fragmenting .experience-title h1,#experience.reel-fragmenting .game-nav a,#experience.reel-fragmenting .content-shell h2{animation:menu-chromatic-split 790ms steps(1,end) both}
+.menu-fragmentation .signal-band{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);background:linear-gradient(90deg,#66cde688,#f5faffad 24%,#d92232a3 65%,transparent);border-top:1px solid #6ed9f2a8;box-shadow:3px 2px 0 #d922326e,-3px -1px 0 #65cce78c;mix-blend-mode:multiply;opacity:0;animation:menu-signal-sweep 340ms steps(4,end) var(--delay) both;will-change:transform,opacity}
+.menu-fragmentation .signal-band:nth-child(3n){animation-duration:230ms;background:linear-gradient(90deg,transparent,#d92232a6 40%,#ecf7fb 72%,#78d4e6a6)}
+@keyframes menu-signal-collapse{0%,8%{opacity:1;transform:none;filter:none;clip-path:inset(0)}10%{transform:translate(7px,-2px);clip-path:inset(3% 0 10% 0)}16%{transform:translate(-6px,2px);clip-path:inset(0)}23%{transform:translate(13px,0);filter:contrast(1.25);clip-path:polygon(0 0,100% 0,100% 19%,38% 19%,38% 28%,100% 28%,100% 52%,0 52%,0 59%,100% 59%,100% 100%,0 100%)}29%{transform:translate(-10px,-3px);clip-path:inset(0)}37%{transform:translate(4px,3px);clip-path:polygon(0 0,100% 0,100% 34%,0 34%,0 42%,100% 42%,100% 72%,48% 72%,48% 80%,100% 80%,100% 100%,0 100%)}45%{transform:translate(-15px,1px);filter:contrast(1.65);clip-path:inset(0)}52%{transform:translate(9px,-4px);clip-path:polygon(0 0,100% 0,100% 12%,67% 12%,67% 22%,100% 22%,100% 62%,19% 62%,19% 73%,100% 73%,100% 100%,0 100%)}60%{transform:translate(-5px,2px);clip-path:inset(0)}68%{opacity:.82;transform:translate(18px,-3px);filter:blur(.5px) contrast(2);clip-path:polygon(0 0,100% 0,100% 15%,0 15%,0 39%,75% 39%,75% 51%,0 51%,0 78%,35% 78%,35% 89%,0 89%)}78%{opacity:.45;transform:translate(-22px,5px) scale(.99);filter:blur(2px) contrast(2);clip-path:inset(0 0 21% 0)}100%{opacity:0;transform:translate(0,-8px) scale(.965);filter:blur(6px);clip-path:inset(0 0 95% 0)}}
+@keyframes menu-chromatic-split{0%,7%,16%,30%,45%,61%,100%{text-shadow:none}10%,23%,52%{text-shadow:-5px 0 #62cde7a8,5px 0 #d92232a6}37%,68%,78%{text-shadow:6px 0 #62cde7a8,-6px 0 #d92232a6}}
+@keyframes menu-signal-sweep{0%{opacity:0;transform:translateX(-45px) scaleX(.35)}20%{opacity:.95;transform:translateX(12px) scaleX(1)}46%{opacity:.4;transform:translateX(-16px) scaleX(.8)}72%{opacity:.9;transform:translateX(var(--drift)) scaleX(1.08)}100%{opacity:0;transform:translateX(calc(var(--drift) * -1)) scaleX(.2)}}
+@media(prefers-reduced-motion:reduce){#experience.reel-fragmenting>.experience-title,#experience.reel-fragmenting>.game-nav,#experience.reel-fragmenting>.content-shell{animation:none;opacity:0}#experience.reel-fragmenting .experience-title h1,#experience.reel-fragmenting .game-nav a,#experience.reel-fragmenting .content-shell h2{animation:none}.menu-fragmentation .signal-band{display:none}}
+
+/* The interference starts at the menu and accelerates outward into the full viewport. */
+.menu-fragmentation:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 17px,#c7ebf417 18px,transparent 19px 46px),linear-gradient(90deg,transparent 0 37%,#d922322a 52%,transparent 69%);mix-blend-mode:multiply;opacity:0;animation:menu-chaos-field 790ms steps(1,end) both}
+.menu-fragmentation .screen-band{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);background:#e9f8fccc;box-shadow:-4px 0 #60c7dfb8,5px 0 #d92232ba;opacity:0;animation:menu-screen-tear var(--life) steps(3,end) var(--delay) both;will-change:transform,opacity}
+.menu-fragmentation .screen-band:nth-child(3n){background:#d92232b8;box-shadow:-5px 0 #64c9e2bd;transform-origin:left}
+.menu-fragmentation .screen-band:nth-child(5n){height:2px;background:#71c9dfd9}
+@keyframes menu-chaos-field{0%,30%{opacity:0;transform:none}42%{opacity:.1;transform:translateY(2px)}55%{opacity:.2;transform:translateY(-4px)}67%{opacity:.35;transform:translateY(5px)}77%{opacity:.55;transform:translateY(-7px)}88%{opacity:.78;transform:translateY(9px)}96%{opacity:.92;transform:translateY(-3px)}100%{opacity:0;transform:none}}
+@keyframes menu-screen-tear{0%{opacity:0;transform:translateX(0) scaleX(.2)}20%{opacity:.85;transform:translateX(-12px) scaleX(.75)}50%{opacity:1;transform:translateX(var(--drift)) scaleX(1.3)}78%{opacity:.8;transform:translateX(calc(var(--drift) * -1)) scaleX(.7)}100%{opacity:0;transform:translateX(var(--drift)) scaleX(.1)}}
+@media(prefers-reduced-motion:reduce){.menu-fragmentation:before,.menu-fragmentation .screen-band{display:none}}
+
+/* Individual controls scatter on separate paths; the frame loses cohesion around them. */
+#experience.reel-fragmenting>.experience-title,#experience.reel-fragmenting>.game-nav,#experience.reel-fragmenting>.content-shell{animation:menu-scaffold-fail 790ms steps(1,end) both;clip-path:none}
+#experience.reel-fragmenting>.content-shell,#experience.reel-fragmenting .content-shell>main{overflow:visible}
+@keyframes menu-scaffold-fail{0%,10%{opacity:1;transform:none;filter:none}22%{transform:translate(3px,-1px)}33%{transform:translate(-7px,2px)}45%{transform:translate(6px,-2px);filter:contrast(1.3)}57%{transform:translate(-11px,4px)}68%{opacity:.9;transform:translate(13px,-4px);filter:contrast(1.6)}79%{opacity:.68;transform:translate(-18px,6px);filter:blur(.7px)}89%{opacity:.35;transform:translate(9px,-3px);filter:blur(2px)}100%{opacity:0;transform:translate(0,-12px);filter:blur(5px)}}
+@media(prefers-reduced-motion:reduce){#experience.reel-fragmenting>.experience-title,#experience.reel-fragmenting>.game-nav,#experience.reel-fragmenting>.content-shell{animation:none;opacity:0}}
+
+/* Match the portfolio tab transitions with a full-screen mosaic handoff. */
+#experience.reel-fragmenting{animation:none;filter:blur(8px)}
+#experience.reel-fragmenting>.experience-title,#experience.reel-fragmenting>.game-nav,#experience.reel-fragmenting>.content-shell{animation:menu-mosaic-exit 820ms ease-out both;animation-delay:0ms;clip-path:none;will-change:auto}
+#experience.reel-fragmenting>.content-shell{overflow:hidden}
+#experience.reel-fragmenting .content-shell>main{overflow:auto}
+#experience.reel-fragmenting .experience-title h1,#experience.reel-fragmenting .game-nav a,#experience.reel-fragmenting .content-shell h2{animation:none;text-shadow:none}
+body.reel-transition-dark:after{background:#111d2b;animation:menu-mosaic-blackout 820ms ease-in-out both}
+.menu-mosaic{position:fixed;inset:0;z-index:80;display:grid;grid-template-columns:repeat(20,minmax(0,1fr));grid-template-rows:repeat(12,minmax(0,1fr));overflow:hidden;pointer-events:none;contain:strict;background:transparent}
+.menu-mosaic span{min-width:0;min-height:0;margin:1px;background:var(--tile-color);opacity:0;animation:menu-mosaic-tile var(--life) steps(3,end) var(--delay) both;transform-origin:center}
+@keyframes menu-mosaic-exit{0%,18%{opacity:1;transform:none;filter:none}48%{opacity:.84;transform:none;filter:none}72%{opacity:.35;transform:none;filter:none}100%{opacity:0;transform:none;filter:none}}
+@keyframes menu-mosaic-blackout{from{opacity:0}to{opacity:1}}
+@keyframes menu-mosaic-tile{0%{opacity:0;transform:scale(var(--tile-scale))}26%{opacity:.9;transform:scale(1)}62%{opacity:.78;transform:scale(.97)}100%{opacity:0;transform:scale(.74)}}
+#reelPlayer .cinema-glitch:before,#reelPlayer .cinema-glitch:after{display:none}
+#reelPlayer .cinema-glitch .cinema-screen{animation:none}
+@media(prefers-reduced-motion:reduce){.menu-mosaic{display:none}#experience.reel-fragmenting{filter:none}#experience.reel-fragmenting>.experience-title,#experience.reel-fragmenting>.game-nav,#experience.reel-fragmenting>.content-shell{animation:none;opacity:0}}
+
+/* Cinematic Showreel preview: still poster at rest, muted motion on hover/focus. */
+#experience .reel-preview-button{position:relative;display:block;width:100%;height:auto;min-height:0;aspect-ratio:16/9;margin-top:18px;padding:0;overflow:hidden;border:1px solid #8fa3b177;border-left:4px solid var(--accent);background:#101a22;color:#fff;isolation:isolate}
+.reel-preview-media{position:absolute;inset:0;display:block;overflow:hidden;background:#111d2b}
+.reel-preview-media video{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.78) contrast(1.05) brightness(.78);transform:scale(1.01);transition:filter .45s ease,transform 1.2s cubic-bezier(.16,1,.3,1)}
+.reel-preview-shade{position:absolute;inset:0;background:linear-gradient(90deg,#09111bcc 0%,#0d172187 42%,transparent 78%),linear-gradient(0deg,#081019a8,transparent 48%);transition:opacity .4s ease}
+.reel-preview-label{position:absolute;inset:auto 0 0;z-index:2;display:flex;align-items:center;gap:20px;min-height:100px;padding:22px 26px;border-top:1px solid #d922326b;background:linear-gradient(90deg,#0b141ee8,#172532bd 64%,#17253273);text-align:left}
+.reel-preview-label>span{display:flex;flex-direction:column;gap:7px;min-width:0}
+.reel-preview-label small{font:10px var(--mono);letter-spacing:.16em;color:#b7c8d3}
+.reel-preview-label strong{font:700 clamp(16px,1.8vw,25px) var(--display);letter-spacing:-.05em;text-transform:uppercase;color:#fff}
+.reel-preview-play{width:31px;height:31px;flex:0 0 31px;color:var(--accent)}
+#experience .reel-preview-button .reel-launch-arrow{width:24px;height:24px;margin-left:auto;flex:0 0 24px;color:#fff}
+#experience .reel-preview-button:hover,#experience .reel-preview-button:focus-visible{color:#fff;border-color:#d92232b0;box-shadow:0 0 36px #d9223221}
+.reel-preview-button:hover .reel-preview-media video,.reel-preview-button:focus-visible .reel-preview-media video{filter:saturate(.96) contrast(1.04) brightness(.92);transform:scale(1.035)}
+.reel-preview-button:hover .reel-preview-shade,.reel-preview-button:focus-visible .reel-preview-shade{opacity:.62}
+.reel-preview-button:hover .reel-launch-arrow,.reel-preview-button:focus-visible .reel-launch-arrow{transform:translateX(5px)}
+@media(max-width:600px){#experience .reel-preview-button{aspect-ratio:4/3}.reel-preview-label{min-height:78px;padding:15px 16px;gap:13px}.reel-preview-label small{font-size:8px}.reel-preview-label strong{font-size:14px}.reel-preview-play{width:25px;height:25px;flex-basis:25px}}
+@media(hover:none){.reel-preview-media video{filter:saturate(.85) contrast(1.04) brightness(.86)}}
+@media(prefers-reduced-motion:reduce){.reel-preview-media video{transition:none}.reel-preview-shade{transition:none}}
+
+/* The Showreel preview fills its panel without creating an inner scroll. */
+#experience #reel{height:100%;padding:0}
+#experience #reel .hero-grid,#experience #reel .showreel{width:100%;height:100%;min-height:0}
+#experience #reel .hero-grid{display:block}
+#experience #reel .reel-preview-button{height:100%;max-height:100%;aspect-ratio:auto;margin:0}
+@media(max-width:600px){#experience #reel .reel-preview-button{aspect-ratio:auto}}

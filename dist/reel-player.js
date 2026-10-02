@@ -6,21 +6,18 @@
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const canvas=document.createElement('canvas');canvas.width=32;canvas.height=18;
  const ctx=canvas.getContext('2d',{willReadFrequently:true});
- let glow=!reduced.matches,timer=null,revealTimer,revealLayer,revealAnimation,opening=false,menuFragments;
+ let glow=!reduced.matches,timer=null,revealTimer,revealLayer,preparedRevealLayer,revealAnimation,opening=false,menuFragments;
  const wait=duration=>new Promise(resolve=>setTimeout(resolve,duration));
  function clearReveal(){
    clearTimeout(revealTimer);revealLayer?.remove();revealLayer=null;
    shell.classList.remove('cinema-glitch');
    revealAnimation?.cancel();revealAnimation=null;
  }
- function reveal(){
-   clearReveal();
-   if(reduced.matches)return;
-   revealLayer=document.createElement('div');
-   revealLayer.className='mosaic-reveal cinema-mosaic';
-   shell.classList.add('cinema-glitch');revealLayer.setAttribute('aria-hidden','true');
+ function makeRevealLayer(){
+   const layer=document.createElement('div');
+   layer.className='mosaic-reveal cinema-mosaic';layer.setAttribute('aria-hidden','true');
    const fragment=document.createDocumentFragment();
-   for(let i=0;i<220;i++){
+   for(let i=0;i<110;i++){
      const tile=document.createElement('span');
      const accent=Math.random();
      tile.style.setProperty('--x',(Math.random()*98).toFixed(2)+'%');
@@ -34,7 +31,19 @@
      tile.style.setProperty('--tile-color',accent>.94?'#d92232':accent>.86?'#9fd2e7':accent>.68?'#cbd8e1':'#edf3f8');
      fragment.append(tile);
    }
-   revealLayer.append(fragment);shell.append(revealLayer);
+   layer.append(fragment);
+   return layer;
+ }
+ function prepareReveal(){
+   if(reduced.matches||preparedRevealLayer)return;
+   const build=()=>{if(!preparedRevealLayer)preparedRevealLayer=makeRevealLayer()};
+   if('requestIdleCallback'in window)requestIdleCallback(build,{timeout:2000});else setTimeout(build,200);
+ }
+ function reveal(){
+   clearReveal();
+   if(reduced.matches)return;
+   revealLayer=preparedRevealLayer||makeRevealLayer();preparedRevealLayer=null;
+   shell.classList.add('cinema-glitch');shell.append(revealLayer);
    if(shell.animate)revealAnimation=shell.animate([
      {transform:'scale(.72)',opacity:.35},
      {transform:'scale(1.035)',opacity:1,offset:.58},
@@ -52,26 +61,25 @@
    const experience=document.getElementById('experience');
    if(!experience||reduced.matches)return;
    menuFragments=document.createElement('div');
-   menuFragments.className='menu-fragmentation';menuFragments.setAttribute('aria-hidden','true');
-   const targets=experience.querySelectorAll('.experience-title,.game-nav,.content-shell');
+   menuFragments.className='menu-mosaic';menuFragments.setAttribute('aria-hidden','true');
+   const columns=20,rows=12;
    const fragment=document.createDocumentFragment();
-   targets.forEach((target,targetIndex)=>{
-     const rect=target.getBoundingClientRect();
-     const amount=target.classList.contains('content-shell')?46:target.classList.contains('game-nav')?30:20;
-     for(let i=0;i<amount;i++){
-       const shard=document.createElement('i');
-       const x=rect.left+Math.random()*rect.width,y=rect.top+Math.random()*rect.height;
-       const width=6+Math.random()*(targetIndex===2?42:28),height=2+Math.random()*11;
-       const direction=x<innerWidth/2?-1:1;
-       shard.style.cssText=`--x:${x}px;--y:${y}px;--w:${width}px;--h:${height}px;--dx:${direction*(55+Math.random()*190)}px;--dy:${-85+Math.random()*170}px;--turn:${-35+Math.random()*70}deg;--delay:${Math.random()*145}ms;--tone:${Math.random()};`;
-       fragment.append(shard);
-     }
-   });
+   const colors=['#edf3f8','#dce8ef','#eff4f8','#bbcfdb','#718c9e','#d92232'];
+   for(let row=0;row<rows;row++)for(let col=0;col<columns;col++){
+     const tile=document.createElement('span');
+     const distance=Math.hypot((col+.5)/columns-.58,(row+.5)/rows-.52);
+     const accent=Math.random();
+     tile.style.setProperty('--tile-color',colors[accent>.965?5:accent>.78?4:Math.floor(Math.random()*4)]);
+     tile.style.setProperty('--delay',Math.round(35+distance*265+Math.random()*90)+'ms');
+     tile.style.setProperty('--life',Math.round(330+Math.random()*95)+'ms');
+     tile.style.setProperty('--tile-scale',(.55+Math.random()*.4).toFixed(2));
+     fragment.append(tile);
+   }
    menuFragments.append(fragment);document.body.append(menuFragments);
    experience.classList.add('reel-fragmenting');document.body.classList.add('reel-transition-dark');
    await wait(820);
    experience.classList.add('reel-menu-suspended');menuFragments.remove();menuFragments=null;
-   await wait(260);
+   await wait(80);
  }
  const clock=s=>Math.floor((s||0)/60)+':'+String(Math.floor((s||0)%60)).padStart(2,'0');
  function status(text=''){message.textContent=text;message.hidden=!text}
@@ -113,6 +121,8 @@
  function sampling(){stopSampling();if(glow&&dialog.open&&!document.hidden){sample();if(!video.paused)timer=setInterval(sample,125)}}
  async function toggle(){if(!video.paused){video.pause();return}status();try{await video.play()}catch{status('Press play to start the showreel.')}}
  play.onclick=toggle;center.onclick=toggle;video.onclick=toggle;
+ video.addEventListener('contextmenu',event=>event.preventDefault());
+ video.addEventListener('dragstart',event=>event.preventDefault());
  seek.oninput=()=>{video.currentTime=Number(seek.value);sync()};
  volume.oninput=()=>{video.volume=Number(volume.value);video.muted=false;sync()};
  mute.onclick=()=>{if(video.volume===0){video.volume=1;volume.value=1;video.muted=false}else video.muted=!video.muted;sync()};
@@ -144,6 +154,7 @@
    shell.classList.remove('cinema-preroll','cinema-ready');clearMenuTransition();opening=false;
    if(document.fullscreenElement===shell)document.exitFullscreen().catch(()=>{});
    window.ASTRALE_AMBIENCE.duck(false);
+   prepareReveal();
  });
  window.ASTRALE_REEL={async open(){
  if(opening||dialog.open)return;
@@ -157,5 +168,5 @@
    video.play().catch(()=>status('Press play to start the showreel.'));
    opening=false;
  }};
- sync();
+ sync();prepareReveal();
 })();

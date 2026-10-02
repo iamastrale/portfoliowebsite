@@ -132,6 +132,57 @@
  #experience>footer{left:max(3vw,calc(50vw - 818px))}
 }
 
+/* Work launches share the Showreel panel language. */
+#work .section-heading{align-items:end;margin:0 0 22px}
+#work .projects{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#work .project{position:relative;display:flex;align-items:center;gap:18px;width:100%;min-height:92px;padding:18px 20px;border:1px solid #d9223257;border-left:4px solid var(--accent);background:linear-gradient(110deg,#ffffffbb,#e6eef566);color:var(--text);text-align:left;overflow:hidden;transition:background .2s,color .2s,box-shadow .2s,border-color .2s}
+#work .project:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#d922320c,transparent 46%);opacity:0;transition:opacity .2s;pointer-events:none}
+#work .project:hover,#work .project:focus-visible{color:var(--accent);border-color:#d9223285;background:#ffffffdf;box-shadow:0 0 28px #d9223214}
+#work .project:hover:before,#work .project:focus-visible:before{opacity:1}
+#work .project-play{position:relative;width:27px;height:27px;flex:0 0 27px;color:var(--accent)}
+#work .project-info{position:relative;display:block;min-width:0;flex:1;padding:0;background:transparent}
+#work .project-info h3{margin:0 0 6px;font:700 clamp(12px,1.1vw,16px)/1.35 var(--display);letter-spacing:-.04em;text-transform:uppercase;overflow-wrap:normal}
+#work .project-info p{margin:0;color:var(--muted);font:11px/1.45 var(--mono);letter-spacing:.02em}
+#work .project-arrow{position:relative;width:21px;height:21px;flex:0 0 21px;color:var(--accent);transition:transform .2s}
+#work .project:hover .project-arrow,#work .project:focus-visible .project-arrow{transform:translateX(4px)}
+#player{padding:0;border:1px solid #9dafbd;background:#eef3f6;box-shadow:0 24px 100px #111d2b66}
+#player .dialog-head{height:52px;margin:0;padding:0 16px 0 22px;border-bottom:2px solid var(--accent);background:linear-gradient(120deg,#fff,#e5edf2)}
+#player .dialog-head h3{font:700 11px var(--display);letter-spacing:.02em;text-transform:uppercase}
+#player .close{width:42px;height:42px;color:var(--text)}
+#player .close:hover{color:#fff;background:var(--accent)}
+#playerFrame{background:#05090d}
+#playerFrame iframe{display:block;width:100%;aspect-ratio:16/9;border:0}
+@media(max-width:700px){#work .projects{grid-template-columns:1fr}#work .project{min-height:78px;padding:14px 16px;gap:14px}#work .project-info h3{font-size:12px}}
+@media(prefers-reduced-motion:reduce){#work .project,#work .project:before,#work .project-arrow{transition:none}}
+
+/* Settings is a regular portfolio view, with the same panel language as the other tabs. */
+#experience #settings{width:100%;max-width:none;padding:4px 0 18px}
+#experience #settings>h2{margin:0 0 28px}
+#experience #settings p{color:var(--muted);font:11px/1.6 var(--mono)}
+.settings-panel{width:min(100%,760px);display:grid;gap:14px}
+#settings .settings-toggle{height:70px;padding:0 126px 0 52px;font-size:14px}
+#settings .volume{position:relative;display:grid;grid-template-columns:minmax(150px,1fr) minmax(220px,1.3fr);align-items:center;gap:30px;min-height:78px;margin:0;padding:18px 22px;border:1px solid #9eb0bd7a;border-left:3px solid #6f899b;background:linear-gradient(110deg,#ffffffc2,#e6eef47d);font:700 11px var(--display);letter-spacing:-.025em;text-transform:uppercase}
+#settings .volume:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#7199af0d,transparent 48%);pointer-events:none}
+#settings .volume span,#settings .volume input{position:relative}
+#settings .volume input{width:100%;height:30px;accent-color:var(--accent);cursor:pointer}
+#settings .volume:hover{border-left-color:var(--accent);background:#ffffffd9}
+#settings #soundStatus{min-height:22px;margin:0;padding:0 4px}
+@media(max-width:600px){#experience #settings>h2{margin-bottom:18px}.settings-panel{gap:10px}#settings .settings-toggle{height:58px;padding-left:44px;font-size:12px}#settings .volume{grid-template-columns:1fr;gap:8px;min-height:82px;padding:14px 16px}}
+
+/* Prominent profile document action. */
+#about .resume-button{position:relative;display:flex;align-items:center;gap:18px;width:min(100%,560px);min-height:82px;margin-top:28px;padding:17px 20px;border:1px solid #d9223266;border-left:4px solid var(--accent);background:linear-gradient(110deg,#ffffffc7,#e6eef477);color:var(--text);overflow:hidden;transition:color .2s,background .2s,border-color .2s,box-shadow .2s}
+#about .resume-button:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#d922320e,transparent 55%);opacity:0;transition:opacity .2s;pointer-events:none}
+#about .resume-button>span{position:relative;display:flex;flex-direction:column;gap:5px}
+#about .resume-button small{font:9px var(--mono);letter-spacing:.16em;color:var(--muted)}
+#about .resume-button strong{font:700 clamp(13px,1.25vw,18px) var(--display);letter-spacing:-.04em;text-transform:uppercase}
+#about .resume-document{position:relative;width:27px;height:27px;flex:0 0 27px;color:var(--accent)}
+#about .resume-arrow{position:relative;width:22px;height:22px;flex:0 0 22px;margin-left:auto;color:var(--accent);transition:transform .2s}
+#about .resume-button:hover,#about .resume-button:focus-visible{color:var(--accent);background:#ffffffea;border-color:#d92232a3;box-shadow:0 0 30px #d9223218}
+#about .resume-button:hover:before,#about .resume-button:focus-visible:before{opacity:1}
+#about .resume-button:hover .resume-arrow,#about .resume-button:focus-visible .resume-arrow{transform:translateX(5px)}
+@media(max-width:600px){#about .resume-button{min-height:68px;margin-top:20px;padding:13px 15px;gap:13px}#about .resume-button strong{font-size:12px}}
+@media(prefers-reduced-motion:reduce){#about .resume-button,#about .resume-button:before,#about .resume-arrow{transition:none}}
+
 /* Let the showreel action reach the content frame's far edge. */
 #experience .showreel{width:100%;max-width:none}
 #experience .reel-launch-button{width:100%;max-width:none}
@@ -146,6 +197,11 @@
 #settings .settings-toggle:hover{border-color:var(--accent);background:#fff}
 #settings #soundStatus{min-height:22px;margin:14px 0 0;font:11px/22px var(--mono);letter-spacing:.25px}
 @media(max-width:520px){#settings .settings-toggle{height:54px;padding-right:98px;font-size:12px}#settings .settings-toggle:after{right:14px}}
+
+/* Keep the presentation screen-like rather than selectable document text. */
+body{-webkit-user-select:none;user-select:none}
+input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text}
+#reelVideo{-webkit-user-drag:none;user-drag:none}
 @container(max-width:480px){
  #experience .projects{grid-template-columns:1fr}
 }
