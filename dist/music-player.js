@@ -44,7 +44,7 @@
   let audioContext;
   let analyser;
   let source;
-  let frequencyData = new Uint8Array(96);
+  let waveformData = new Uint8Array(256);
   let animationFrame = 0;
   let lastFrame = 0;
   let phase = 0;
@@ -61,12 +61,12 @@
       audioContext ??= new (window.AudioContext || window.webkitAudioContext)();
       if (!source) {
         analyser = audioContext.createAnalyser();
-        analyser.fftSize = 256;
+        analyser.fftSize = 512;
         analyser.smoothingTimeConstant = .88;
         source = audioContext.createMediaElementSource(audio);
         source.connect(analyser);
         analyser.connect(audioContext.destination);
-        frequencyData = new Uint8Array(analyser.frequencyBinCount);
+        waveformData = new Uint8Array(analyser.fftSize);
       }
       audioContext.resume().catch(() => {});
     } catch {
@@ -85,24 +85,6 @@
     }
   }
 
-  function projectPoint(x, y, z, width, height) {
-    const turn = phase * .13;
-    const tilt = -.42;
-    const ct = Math.cos(turn), st = Math.sin(turn), cp = Math.cos(tilt), sp = Math.sin(tilt);
-    const rx = x * ct + z * st;
-    const rz = -x * st + z * ct;
-    const ry = y * cp - rz * sp;
-    const depth = y * sp + rz * cp;
-    const perspective = 2.65 / (2.65 - depth);
-    const size = Math.min(width, height) * .31;
-    return [width * .5 + rx * size * perspective, height * .5 + ry * size * perspective, perspective];
-  }
-
-  function amplitude(index) {
-    if (!analyser) return .12 + Math.sin(phase * 1.2 + index) * .025;
-    return frequencyData[index % frequencyData.length] / 255;
-  }
-
   function draw(now = 0) {
     animationFrame = 0;
     if (!dialog.open) return;
@@ -114,7 +96,7 @@
     lastFrame = now;
     if (!reduced.matches) phase += delta * (audio.paused ? .35 : .75);
     resizeCanvas();
-    if (analyser) analyser.getByteFrequencyData(frequencyData);
+    if (analyser) analyser.getByteTimeDomainData(waveformData);
     const width = canvas.width;
     const height = canvas.height;
     context.clearRect(0, 0, width, height);
@@ -124,52 +106,57 @@
     wash.addColorStop(1, 'rgba(7,15,23,0)');
     context.fillStyle = wash;
     context.fillRect(0, 0, width, height);
-    context.lineWidth = Math.max(1, width / 1200);
-    context.shadowBlur = Math.min(12, width / 85);
+    const left = width * .075;
+    const right = width * .925;
+    const centerY = height * .48;
+    const span = right - left;
 
-    const latitudeCount = 12;
-    const longitudeSteps = 52;
-    for (let latitude = 1; latitude < latitudeCount; latitude++) {
-      const phi = latitude / latitudeCount * Math.PI;
-      const energy = amplitude(latitude * 5);
+    context.lineWidth = Math.max(1, width / 1300);
+    context.strokeStyle = 'rgba(135,190,211,.09)';
+    context.shadowBlur = 0;
+    for (let column = 0; column <= 12; column++) {
+      const x = left + span * column / 12;
+      context.beginPath();context.moveTo(x, height * .16);context.lineTo(x, height * .79);context.stroke();
+    }
+    for (let row = 0; row <= 6; row++) {
+      const y = height * (.16 + row * .105);
+      context.beginPath();context.moveTo(left, y);context.lineTo(right, y);context.stroke();
+    }
+    context.strokeStyle = 'rgba(217,34,50,.2)';
+    context.beginPath();context.moveTo(left, centerY);context.lineTo(right, centerY);context.stroke();
+
+    const traces = reduced.matches ? 1 : 6;
+    for (let depth = traces - 1; depth >= 0; depth--) {
+      const depthRatio = depth / Math.max(1, traces - 1);
+      const inset = span * depthRatio * .045;
+      const traceLeft = left + inset;
+      const traceRight = right - inset;
+      const traceCenter = centerY - depth * height * .022;
+      const amplitude = height * .18 * (1 - depthRatio * .28);
       context.beginPath();
-      for (let step = 0; step <= longitudeSteps; step++) {
-        const theta = step / longitudeSteps * Math.PI * 2;
-        const bin = latitude * 4 + step;
-        const ripple = (amplitude(bin) - .2) * .16 + Math.sin(theta * 3 + phase + phi * 2) * .025;
-        const radius = .86 + ripple;
-        const x = Math.sin(phi) * Math.cos(theta) * radius;
-        const y = Math.cos(phi) * radius;
-        const z = Math.sin(phi) * Math.sin(theta) * radius;
-        const point = projectPoint(x, y, z, width, height);
-        if (!step) context.moveTo(point[0], point[1]); else context.lineTo(point[0], point[1]);
+      const points = 180;
+      for (let point = 0; point < points; point++) {
+        const ratio = point / (points - 1);
+        const sampleIndex = Math.min(waveformData.length - 1, Math.floor(ratio * waveformData.length));
+        const sample = analyser ? (waveformData[sampleIndex] - 128) / 128 : Math.sin(ratio * Math.PI * 8 + phase * 1.8) * .12;
+        const x = traceLeft + (traceRight - traceLeft) * ratio;
+        const y = traceCenter + sample * amplitude;
+        if (!point) context.moveTo(x, y); else context.lineTo(x, y);
       }
-      const alpha = .17 + energy * .4;
-      context.strokeStyle = latitude % 4 === 0 ? `rgba(217,34,50,${alpha})` : `rgba(135,207,231,${alpha})`;
-      context.shadowColor = latitude % 4 === 0 ? 'rgba(217,34,50,.35)' : 'rgba(91,194,228,.3)';
+      const main = depth === 0;
+      context.lineWidth = main ? Math.max(1.6, width / 800) : Math.max(.7, width / 1600);
+      context.strokeStyle = main ? 'rgba(229,247,252,.94)' : `rgba(112,196,225,${.08 + (1 - depthRatio) * .15})`;
+      context.shadowBlur = main ? Math.min(15, width / 70) : 0;
+      context.shadowColor = main ? 'rgba(119,216,244,.7)' : 'transparent';
       context.stroke();
     }
 
-    const longitudeCount = 15;
-    const latitudeSteps = 38;
-    for (let longitude = 0; longitude < longitudeCount; longitude++) {
-      const theta = longitude / longitudeCount * Math.PI * 2;
-      const energy = amplitude(longitude * 6 + 8);
-      context.beginPath();
-      for (let step = 0; step <= latitudeSteps; step++) {
-        const phi = step / latitudeSteps * Math.PI;
-        const ripple = (amplitude(longitude * 5 + step) - .18) * .14 + Math.sin(phi * 4 - phase * .8 + theta) * .022;
-        const radius = .86 + ripple;
-        const x = Math.sin(phi) * Math.cos(theta) * radius;
-        const y = Math.cos(phi) * radius;
-        const z = Math.sin(phi) * Math.sin(theta) * radius;
-        const point = projectPoint(x, y, z, width, height);
-        if (!step) context.moveTo(point[0], point[1]); else context.lineTo(point[0], point[1]);
-      }
-      context.strokeStyle = `rgba(137,205,229,${.12 + energy * .34})`;
-      context.shadowColor = 'rgba(84,190,226,.28)';
-      context.stroke();
-    }
+    const sweepX = left + span * ((phase * .1) % 1);
+    const sweep = context.createLinearGradient(sweepX - width * .035, 0, sweepX + width * .012, 0);
+    sweep.addColorStop(0, 'rgba(217,34,50,0)');
+    sweep.addColorStop(1, 'rgba(217,34,50,.32)');
+    context.fillStyle = sweep;
+    context.fillRect(sweepX - width * .035, height * .16, width * .047, height * .63);
     context.shadowBlur = 0;
     if (!reduced.matches && dialog.open) animationFrame = requestAnimationFrame(draw);
   }
@@ -302,10 +289,10 @@
       window.ASTRALE_AMBIENCE.duck(true);
       await window.ASTRALE_PLAYER_TRANSITION.fragmentMenu();
       shell.classList.add('music-preroll');
+      window.ASTRALE_PLAY_SOUND?.('videoLoad');
       dialog.showModal();
       resizeCanvas();
       startVisualization();
-      window.ASTRALE_PLAY_SOUND?.('videoLoad');
       reveal();
       await wait(reduced.matches ? 120 : 690);
       shell.classList.remove('music-preroll');

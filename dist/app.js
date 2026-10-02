@@ -1,7 +1,7 @@
 'use strict';
 const $ = s => document.querySelector(s);
 const projects = [
- {title:'ASTRALE',detail:'Original music · 8 tracks',kind:'music',player:'music'},
+ {title:'ASTRALE',detail:'Music',kind:'music',player:'music'},
  {title:'VALORANT',detail:'Sunset map · Music production',kind:'music',src:'video/work/valorant-sunset-map-music.mov'},
  {title:'Deadline Delivery',detail:'Sound design',kind:'sound',src:'video/work/deadline-delivery.mov'},
  {title:'Deadline Delivery',detail:'Explosion implementation',kind:'sound',src:'video/work/deadline-delivery-explosion.mov'},
