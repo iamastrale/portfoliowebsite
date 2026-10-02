@@ -61,3 +61,24 @@
 @keyframes signal-split{0%{opacity:0}20%{opacity:.6;transform:translateX(-6px)}42%{opacity:.2;transform:translateX(5px)}64%{opacity:.4;transform:translateX(-2px)}100%{opacity:0;transform:none}}
 @keyframes signal-shift{0%,100%{transform:none}23%{transform:translateX(-3px)}40%{transform:translateX(2px)}64%{transform:translateX(-1px)}}
 @media(prefers-reduced-motion:reduce){.cinema-glitch:before,.cinema-glitch:after,.cinema-glitch .cinema-screen{animation:none!important}.cinema-shell:before,.cinema-shell:after{display:none}}
+
+/* Showreel launch sequence: fracture the menu, resolve the signal, then begin playback. */
+#experience.reel-fragmenting{pointer-events:none}
+#experience.reel-fragmenting>.experience-title,#experience.reel-fragmenting>.game-nav,#experience.reel-fragmenting>.content-shell{animation:menu-core-fracture 720ms steps(7,end) both;will-change:transform,filter,opacity,clip-path}
+#experience.reel-fragmenting>.game-nav{animation-delay:45ms}
+#experience.reel-fragmenting>.content-shell{animation-delay:90ms}
+#experience.reel-menu-suspended{visibility:hidden;opacity:0}
+body.reel-transition-dark:after{content:"";position:fixed;inset:0;z-index:79;pointer-events:none;background:#081019;opacity:0;animation:menu-blackout 1080ms ease-in both}
+.menu-fragmentation{position:fixed;inset:0;z-index:80;overflow:hidden;pointer-events:none;contain:strict}
+.menu-fragmentation i{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);background:#e9f0f4;border-left:2px solid #d92232;box-shadow:0 0 11px #86cbe455;opacity:0;animation:menu-fragment-flight 680ms cubic-bezier(.2,.65,.25,1) var(--delay) both;will-change:transform,opacity}
+.menu-fragmentation i:nth-child(4n){background:#d92232;border:0}
+.menu-fragmentation i:nth-child(7n){background:#a6cfdf;border:0}
+@keyframes menu-core-fracture{0%{opacity:1;transform:none;filter:none;clip-path:inset(0)}18%{filter:contrast(1.7);transform:translateY(1px);clip-path:inset(0 0 7% 0)}31%{transform:translateY(-2px);clip-path:inset(12% 0 18% 0)}48%{opacity:.86;transform:scale(.995);filter:contrast(2) blur(.4px);clip-path:polygon(0 0,100% 0,100% 12%,62% 12%,62% 25%,100% 25%,100% 49%,23% 49%,23% 61%,100% 61%,100% 77%,46% 77%,46% 91%,100% 91%,100% 100%,0 100%)}100%{opacity:0;transform:scale(.965);filter:blur(5px) contrast(2);clip-path:polygon(0 6%,100% 6%,100% 9%,0 9%,0 38%,72% 38%,72% 42%,0 42%,0 72%,37% 72%,37% 75%,0 75%)}}
+@keyframes menu-fragment-flight{0%{opacity:0;transform:translate(0,0) scaleX(.25)}16%{opacity:.95;transform:translate(0,0) scaleX(1)}62%{opacity:.8}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--turn)) scale(.22)}}
+@keyframes menu-blackout{0%,52%{opacity:0}78%,100%{opacity:.72}}
+.cinema-shell.cinema-preroll{background:transparent;border-color:transparent;box-shadow:none}
+.cinema-shell.cinema-preroll>.cinema-header,.cinema-shell.cinema-preroll>.cinema-screen,.cinema-shell.cinema-preroll>.cinema-controls,.cinema-shell.cinema-preroll>#reelMessage{opacity:0;transform:scale(.985);filter:blur(4px)}
+.cinema-shell>.cinema-header,.cinema-shell>.cinema-screen,.cinema-shell>.cinema-controls,.cinema-shell>#reelMessage{transition:opacity 340ms ease,transform 440ms cubic-bezier(.16,1,.3,1),filter 340ms ease}
+.cinema-shell.cinema-ready>.cinema-header,.cinema-shell.cinema-ready>.cinema-screen,.cinema-shell.cinema-ready>.cinema-controls,.cinema-shell.cinema-ready>#reelMessage{opacity:1;transform:none;filter:none}
+.cinema-shell.cinema-preroll .cinema-mosaic{inset:8%;overflow:visible}
+@media(prefers-reduced-motion:reduce){#experience.reel-fragmenting>.experience-title,#experience.reel-fragmenting>.game-nav,#experience.reel-fragmenting>.content-shell{animation:none;opacity:0}.menu-fragmentation{display:none}body.reel-transition-dark:after{animation:none;opacity:.72}.cinema-shell>.cinema-header,.cinema-shell>.cinema-screen,.cinema-shell>.cinema-controls,.cinema-shell>#reelMessage{transition:opacity .1s linear}}

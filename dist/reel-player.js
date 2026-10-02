@@ -6,7 +6,8 @@
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const canvas=document.createElement('canvas');canvas.width=32;canvas.height=18;
  const ctx=canvas.getContext('2d',{willReadFrequently:true});
- let glow=!reduced.matches,timer=null,revealTimer,revealLayer,revealAnimation;
+ let glow=!reduced.matches,timer=null,revealTimer,revealLayer,revealAnimation,opening=false,menuFragments;
+ const wait=duration=>new Promise(resolve=>setTimeout(resolve,duration));
  function clearReveal(){
    clearTimeout(revealTimer);revealLayer?.remove();revealLayer=null;
    shell.classList.remove('cinema-glitch');
@@ -41,6 +42,36 @@
      {transform:'scale(1)',opacity:1}
    ],{duration:470,easing:'cubic-bezier(.16,1,.3,1)'});
    revealTimer=setTimeout(clearReveal,650);
+ }
+ function clearMenuTransition(){
+   menuFragments?.remove();menuFragments=null;
+   document.getElementById('experience')?.classList.remove('reel-fragmenting','reel-menu-suspended');
+   document.body.classList.remove('reel-transition-dark');
+ }
+ async function fragmentMenu(){
+   const experience=document.getElementById('experience');
+   if(!experience||reduced.matches)return;
+   menuFragments=document.createElement('div');
+   menuFragments.className='menu-fragmentation';menuFragments.setAttribute('aria-hidden','true');
+   const targets=experience.querySelectorAll('.experience-title,.game-nav,.content-shell');
+   const fragment=document.createDocumentFragment();
+   targets.forEach((target,targetIndex)=>{
+     const rect=target.getBoundingClientRect();
+     const amount=target.classList.contains('content-shell')?46:target.classList.contains('game-nav')?30:20;
+     for(let i=0;i<amount;i++){
+       const shard=document.createElement('i');
+       const x=rect.left+Math.random()*rect.width,y=rect.top+Math.random()*rect.height;
+       const width=6+Math.random()*(targetIndex===2?42:28),height=2+Math.random()*11;
+       const direction=x<innerWidth/2?-1:1;
+       shard.style.cssText=`--x:${x}px;--y:${y}px;--w:${width}px;--h:${height}px;--dx:${direction*(55+Math.random()*190)}px;--dy:${-85+Math.random()*170}px;--turn:${-35+Math.random()*70}deg;--delay:${Math.random()*145}ms;--tone:${Math.random()};`;
+       fragment.append(shard);
+     }
+   });
+   menuFragments.append(fragment);document.body.append(menuFragments);
+   experience.classList.add('reel-fragmenting');document.body.classList.add('reel-transition-dark');
+   await wait(820);
+   experience.classList.add('reel-menu-suspended');menuFragments.remove();menuFragments=null;
+   await wait(260);
  }
  const clock=s=>Math.floor((s||0)/60)+':'+String(Math.floor((s||0)%60)).padStart(2,'0');
  function status(text=''){message.textContent=text;message.hidden=!text}
@@ -110,13 +141,21 @@
  });
  dialog.addEventListener('close',()=>{
    video.pause();stopSampling();clearGlow();clearReveal();
+   shell.classList.remove('cinema-preroll','cinema-ready');clearMenuTransition();opening=false;
    if(document.fullscreenElement===shell)document.exitFullscreen().catch(()=>{});
    window.ASTRALE_AMBIENCE.duck(false);
  });
- window.ASTRALE_REEL={open(){
+ window.ASTRALE_REEL={async open(){
+ if(opening||dialog.open)return;
+   opening=true;window.ASTRALE_PLAY_SOUND?.('videoClick');status();video.pause();video.currentTime=0;window.ASTRALE_AMBIENCE.duck(true);sync();
+   await fragmentMenu();
    window.ASTRALE_PLAY_SOUND?.('videoLoad');
-   status();video.currentTime=0;window.ASTRALE_AMBIENCE.duck(true);dialog.showModal();sync();reveal();
+   shell.classList.add('cinema-preroll');dialog.showModal();sync();reveal();
+   await wait(reduced.matches?120:690);
+   shell.classList.remove('cinema-preroll');shell.classList.add('cinema-ready');
+   await wait(reduced.matches?80:360);
    video.play().catch(()=>status('Press play to start the showreel.'));
+   opening=false;
  }};
  sync();
 })();

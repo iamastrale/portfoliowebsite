@@ -25,7 +25,7 @@ $('#player').addEventListener('close',()=>{ $('#playerFrame').replaceChildren();
 document.querySelectorAll('#openSettings,#titleSettings').forEach(button=>button.onclick=()=>$('#settings').showModal());
 let enabled=false,volume=.6,ctx,lastHover=0;const sounds={...window.ASTRALE_SOUNDS},activeAudio=new Set();
 function stopSounds(){activeAudio.forEach(a=>{a.pause();a.currentTime=0});activeAudio.clear();if(ctx&&ctx.state==='running')ctx.suspend().catch(()=>{})}
-function syncSoundLabels(){for(const button of [$('#soundToggle')]){button.setAttribute('aria-pressed',enabled);button.textContent=enabled?'◉ Sound on':'◌ Sound off'}}
+function syncSoundLabels(){for(const button of [$('#soundToggle')]){button.setAttribute('aria-pressed',enabled);button.textContent=enabled?'Sound on':'Sound off'}}
 function setSound(value,cue=true){enabled=value;window.ASTRALE_AMBIENCE.enable(enabled);syncSoundLabels();if(enabled&&cue)playSound('open');else if(!enabled)stopSounds()}
 $('#soundToggle').onclick=()=>setSound(!enabled);
 
