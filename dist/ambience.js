@@ -149,13 +149,12 @@
     volume(value){level=Math.max(0,Math.min(.6,Number(value)));updateGain()}
   };
   document.getElementById('ambientVolume').addEventListener('input',e=>window.ASTRALE_AMBIENCE.volume(e.target.value));
-  window.addEventListener('pointermove',e=>{
-    if(e.pointerType==='touch')return;
-    targetCents=Math.max(0,Math.min(100,e.clientX/innerWidth*100));
-    if(source)source.detune.setTargetAtTime(targetCents,context.currentTime,.35);
-    for(const voice of voices)voice.node.detune.setTargetAtTime(targetCents,context.currentTime,.35);
+  window.addEventListener('astralevelocity',event=>{
+    targetCents=Math.max(0,Math.min(100,Number(event.detail?.cents)||0));
+    if(source)source.detune.setTargetAtTime(targetCents,context.currentTime,.12);
+    for(const voice of voices)voice.node.detune.setTargetAtTime(targetCents,context.currentTime,.12);
     document.getElementById('pitchValue').textContent=`+${Math.round(targetCents)} cents`;
-  },{passive:true});
+  });
   // Never suspend merely because the tab is hidden: ambience keeps looping.
   // A browser/OS interruption may still require a new user gesture to resume.
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)recover()});
