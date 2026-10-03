@@ -140,7 +140,7 @@ body{
 
 /* Boot and media surfaces carry the palette without becoming literal mood-board copies. */
 .boot-sequence{background:radial-gradient(ellipse at 58% 42%,#fff 0,#edf3f0 54%,#dce9e7 100%)}
-.boot-ring{stroke:#65bfc1}.boot-core{fill:var(--signal);filter:drop-shadow(0 0 5px #d34e5c55) drop-shadow(0 0 14px #d34e5c26)}
+.boot-ring{stroke:#48b8be}.boot-core{fill:#48b8be;filter:drop-shadow(0 0 7px #48b8be78)}.boot-orbit-dot{fill:var(--signal)}
 .boot-pulse{border-color:#48b8be66}.boot-start{border-color:#65bfc188;color:#247f84;background:#ffffffa3;box-shadow:0 0 30px #48b8be20}.boot-start:hover,.boot-start:focus-visible{box-shadow:0 0 34px #48b8be38;outline-color:#48b8be}
 .cinema-shell{border-color:#9bb0af;border-radius:12px;background:#eef4f1;color:#172224}
 .cinema-header{background:linear-gradient(120deg,#fff,#e3efec);border-bottom-color:#9db7b5}.cinema-header:before{background:#48b8be}

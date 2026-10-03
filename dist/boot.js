@@ -62,7 +62,7 @@
     overlay.setAttribute('aria-label','Starting Astrale');
     document.body.classList.add('boot-running');
     // Audio must never prevent the visual completion timer from being armed.
-    finishTimer=setTimeout(()=>finish(),2200);
+    finishTimer=setTimeout(()=>finish(),2600);
     try{
       window.ASTRALE_AMBIENCE?.duck(true);
       window.ASTRALE_AMBIENCE?.enable(true);
