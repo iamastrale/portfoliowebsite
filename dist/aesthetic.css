@@ -1,5 +1,8 @@
 /* Art direction: washed editorial imagery, pale cyan light, dark ink, and sparing coral. */
 :root{
+  --display:'Michroma',sans-serif;
+  --body:'Space Grotesk',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
   --bg:#f2f3ef;
   --text:#151b1c;
   --muted:#5e6c6e;
@@ -10,6 +13,7 @@
   --ink:#101719;
 }
 body{
+  font-family:var(--body);
   background:
     radial-gradient(ellipse at 88% 14%,#89d9d75c 0,transparent 35%),
     radial-gradient(ellipse at 8% 78%,#8baeb82d 0,transparent 40%),
@@ -24,10 +28,15 @@ body{
 
 /* Identity and navigation */
 .title-lockup>p,#experience>.experience-title>p{color:#667476;letter-spacing:.24em}
-.title-lockup h1,#experience>.experience-title h1{font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:-.075em}
+.title-lockup h1,#experience>.experience-title h1{font-family:var(--display);font-weight:400;letter-spacing:-.055em;line-height:1.02;text-transform:uppercase}
 .title-lockup h1 span,#experience>.experience-title h1 span{color:#269fa7;text-shadow:-1px 0 #60cbd060,1px 0 #d34e5c24,0 12px 35px #5bbfc138}
 #experience>.game-nav{gap:9px}
 #experience>.game-nav a,.game-nav .menu-settings{
+  font-family:var(--display);
+  font-size:clamp(14px,1.35vw,20px);
+  font-weight:400;
+  letter-spacing:-.04em;
+  text-transform:uppercase;
   border:1px solid #aebdbc78;
   border-left:1px solid #aebdbc78;
   border-radius:13px;
@@ -56,7 +65,7 @@ body{
 .content-shell:before{inset:0;border-radius:inherit;background:linear-gradient(118deg,#fff6,transparent 38%,#8ad4d312 68%,#fff5);opacity:1}
 .content-shell:after{top:0;left:34px;width:120px;height:2px;border-radius:0 0 2px 2px;background:linear-gradient(90deg,var(--accent),#9ce0dd);box-shadow:0 0 18px #48b8be70}
 #experience .content-shell>main{scrollbar-color:#8cb5b5 transparent}
-#experience .content-shell h2{font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:-.075em;color:#20292b}
+#experience .content-shell h2{font-family:var(--display);font-size:clamp(25px,3.2vw,42px);font-weight:400;line-height:1.05;letter-spacing:-.055em;text-transform:uppercase;color:#20292b}
 #experience .content-shell h2 span{color:var(--signal)}
 .edge-trail-red{stroke:var(--signal)}
 .edge-trail-blue{stroke:#48b8be}
@@ -121,7 +130,7 @@ body{
 #about .resume-button:hover,#about .resume-button:focus-visible{color:#143638;border-color:#48b8be;background:#e3f5f2;box-shadow:0 14px 36px #31888d1a}
 #credits .credit{margin:10px 0 0;padding:22px;border:1px solid #b5c2c07a;border-radius:13px;background:linear-gradient(110deg,#ffffffb8,#e8f2ef94)}
 #credits .credit:first-of-type{margin-top:26px}
-#credits .credit h3{font-family:'Space Grotesk',sans-serif;letter-spacing:-.035em}
+#credits .credit h3{font-family:var(--display);font-size:12px;font-weight:400;letter-spacing:-.03em;text-transform:uppercase}
 #credits .credit>span{color:#388f94}
 #settings .settings-toggle,#settings .volume{border:1px solid #aebcba82;border-left:1px solid #aebcba82;border-radius:12px;background:linear-gradient(110deg,#ffffffc9,#e8f2ef9e)}
 #settings .settings-toggle[aria-pressed=true]{color:#217d82;border-color:#6ababb;background:linear-gradient(90deg,#bfe9e53d,#fff 42%,#e5f2ef)}
@@ -164,7 +173,7 @@ body{
 #work .project:before{display:block;content:"";position:absolute;inset:0;background:linear-gradient(90deg,#48b8be18,transparent 54%);opacity:0;transition:opacity .2s;pointer-events:none}
 #work .project-play{position:relative;left:auto;bottom:auto;width:27px;height:27px;flex:0 0 27px;color:#3daeb4;filter:none}
 #work .project-info{position:relative;display:block;min-width:0;flex:1;padding:0}
-#work .project-info h3{margin:0 0 6px;font:700 clamp(12px,1.1vw,16px)/1.35 var(--display);letter-spacing:-.04em;text-transform:uppercase;color:var(--text);overflow-wrap:normal}
+#work .project-info h3{margin:0 0 6px;font:400 clamp(10px,.9vw,13px)/1.45 var(--display);letter-spacing:-.025em;text-transform:uppercase;color:var(--text);overflow-wrap:normal}
 #work .project-info p{margin:0;color:var(--muted);font:11px/1.45 var(--mono);letter-spacing:.02em;white-space:normal;overflow:visible}
 #work .project-arrow{position:relative;right:auto;bottom:auto;width:21px;height:21px;flex:0 0 21px;color:#3daeb4}
 #work .project:hover,#work .project:focus-visible{color:#18464a;border-color:#48b8be;background:#f8fffd;box-shadow:0 16px 36px #31888d18}
@@ -185,6 +194,31 @@ body{
 .music-control-row #musicPlay:hover{background:#278f96}
 #musicPlayer button:focus-visible,#musicPlayer input:focus-visible{outline-color:#3aaeb4}
 
+/* One continuous geometric display voice across navigation, projects, and media UI. */
+#about .resume-button strong,
+#settings .settings-toggle,
+#settings .volume,
+.reel-preview-label strong,
+.cinema-header h3,
+.music-header h3,
+.music-stage-copy strong,
+.music-tracks span,
+.boot-name,
+.boot-start{
+  font-family:var(--display);
+  font-weight:400;
+}
+#about .resume-button strong,.reel-preview-label strong{letter-spacing:-.04em;text-transform:uppercase}
+.cinema-header h3,.music-header h3{font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.music-stage-copy strong{font-size:clamp(22px,3vw,40px);line-height:1.05;letter-spacing:-.05em;text-transform:uppercase}
+.music-tracks span{font-size:9px;letter-spacing:-.015em;text-transform:uppercase}
+.boot-name{letter-spacing:-.045em;text-transform:uppercase}
+.boot-start{letter-spacing:.05em;text-transform:uppercase}
+
+@media(min-width:901px){
+  #experience>.experience-title h1{font-size:clamp(32px,3vw,52px)}
+}
+
 @media(max-width:900px){
   #experience>.game-nav a,.game-nav .menu-settings{border-radius:10px}
   .content-shell{border-radius:14px}
@@ -192,7 +226,8 @@ body{
 }
 @media(max-width:560px){
   #experience>.game-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
-  #experience>.game-nav a{min-height:44px;padding:10px 13px;font-size:12px}
+  #experience>.game-nav a{min-height:44px;padding:10px 13px;font-size:10px}
+  #experience>.experience-title h1{font-size:clamp(24px,6.5vw,34px)}
   #experience>.game-nav a:last-of-type{grid-column:1/-1}
   #work .projects{grid-template-columns:1fr}
   #about>div:last-child{padding:17px}
