@@ -108,13 +108,13 @@
       if (!point) context.moveTo(x, y); else context.lineTo(x, y);
     }
     const line = context.createLinearGradient(left, 0, left + span, 0);
-    line.addColorStop(0, 'rgba(69,86,92,.24)');
-    line.addColorStop(.45, 'rgba(42,57,62,.88)');
-    line.addColorStop(1, 'rgba(69,86,92,.24)');
+    line.addColorStop(0, 'rgba(72,184,190,.18)');
+    line.addColorStop(.45, 'rgba(34,129,136,.9)');
+    line.addColorStop(1, 'rgba(72,184,190,.18)');
     context.lineWidth = Math.max(1.4, width / 620);
     context.strokeStyle = line;
     context.shadowBlur = Math.min(12, width / 90);
-    context.shadowColor = 'rgba(85,126,140,.28)';
+    context.shadowColor = 'rgba(72,184,190,.34)';
     context.stroke();
     context.shadowBlur = 0;
     if (!reduced.matches && dialog.open) animationFrame = requestAnimationFrame(draw);

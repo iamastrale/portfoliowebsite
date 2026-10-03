@@ -12,7 +12,7 @@ function renderProjects(filter='all') {
  $('#projects').replaceChildren();
  projects.forEach((p,i)=>{if(filter!=='all'&&p.kind!==filter)return;
  const b=document.createElement('button');b.className='project';b.setAttribute('aria-label','Play '+p.title+' — '+p.detail);
- b.innerHTML=`<svg class="project-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span class="project-info"><span><h3>${p.title}</h3><p>${p.detail}</p></span></span><svg class="project-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
+ b.innerHTML=`<svg class="project-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span class="project-info"><h3>${p.title}</h3><p>${p.detail}</p></span><svg class="project-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
  b.onclick=()=>p.player==='music'?window.ASTRALE_MUSIC.open():window.ASTRALE_REEL.open({src:p.src,title:p.title+' / '+p.detail});$('#projects').append(b);});
 }
 renderProjects();
