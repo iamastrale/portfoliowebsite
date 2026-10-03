@@ -43,8 +43,11 @@
   let opening = false;
   let audioContext;
   let analyser;
+  let lowPass;
+  let silentMonitor;
   let source;
-  let waveformData = new Uint8Array(256);
+  let waveformData = new Uint8Array(1024);
+  const smoothedWave = new Float32Array(240);
   let animationFrame = 0;
   let lastFrame = 0;
   let openingRevision = 0;
@@ -59,11 +62,20 @@
       audioContext ??= new (window.AudioContext || window.webkitAudioContext)();
       if (!source) {
         analyser = audioContext.createAnalyser();
-        analyser.fftSize = 512;
-        analyser.smoothingTimeConstant = .88;
+        analyser.fftSize = 1024;
+        analyser.smoothingTimeConstant = .93;
+        lowPass = audioContext.createBiquadFilter();
+        lowPass.type = 'lowpass';
+        lowPass.frequency.value = 210;
+        lowPass.Q.value = .65;
+        silentMonitor = audioContext.createGain();
+        silentMonitor.gain.value = 0;
         source = audioContext.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
+        source.connect(audioContext.destination);
+        source.connect(lowPass);
+        lowPass.connect(analyser);
+        analyser.connect(silentMonitor);
+        silentMonitor.connect(audioContext.destination);
         waveformData = new Uint8Array(analyser.fftSize);
       }
       audioContext.resume().catch(() => {});
@@ -90,6 +102,7 @@
       animationFrame = requestAnimationFrame(draw);
       return;
     }
+    lastFrame = now;
     resizeCanvas();
     if (analyser) analyser.getByteTimeDomainData(waveformData);
     const width = canvas.width;
@@ -102,16 +115,27 @@
     for (let point = 0; point < 240; point++) {
       const ratio = point / 239;
       const sampleIndex = Math.min(waveformData.length - 1, Math.floor(ratio * waveformData.length));
-      const sample = analyser && !audio.paused && !reduced.matches ? (waveformData[sampleIndex] - 128) / 128 : 0;
+      let target = 0;
+      if (analyser && !audio.paused && !reduced.matches) {
+        let total = 0;
+        let count = 0;
+        for (let offset = -5; offset <= 5; offset++) {
+          const index = Math.max(0, Math.min(waveformData.length - 1, sampleIndex + offset));
+          total += waveformData[index];
+          count++;
+        }
+        target = Math.max(-1, Math.min(1, ((total / count) - 128) / 128 * 1.65));
+      }
+      smoothedWave[point] += (target - smoothedWave[point]) * .18;
       const x = left + span * ratio;
-      const y = centerY + sample * height * .22;
+      const y = centerY + smoothedWave[point] * height * .24;
       if (!point) context.moveTo(x, y); else context.lineTo(x, y);
     }
     const line = context.createLinearGradient(left, 0, left + span, 0);
     line.addColorStop(0, 'rgba(72,184,190,.18)');
     line.addColorStop(.45, 'rgba(34,129,136,.9)');
     line.addColorStop(1, 'rgba(72,184,190,.18)');
-    context.lineWidth = Math.max(1.4, width / 620);
+    context.lineWidth = Math.max(2.6, width / 420);
     context.strokeStyle = line;
     context.shadowBlur = Math.min(12, width / 90);
     context.shadowColor = 'rgba(72,184,190,.34)';
