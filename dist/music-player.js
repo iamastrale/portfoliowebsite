@@ -47,9 +47,7 @@
   let waveformData = new Uint8Array(256);
   let animationFrame = 0;
   let lastFrame = 0;
-  let phase = 0;
-  let revealLayer;
-  let revealTimer;
+  let openingRevision = 0;
 
   function status(text = '') {
     message.textContent = text;
@@ -92,51 +90,32 @@
       animationFrame = requestAnimationFrame(draw);
       return;
     }
-    const delta = Math.min((now - lastFrame) / 1000, .06);
-    lastFrame = now;
-    if (!reduced.matches) phase += delta * (audio.paused ? .35 : .75);
     resizeCanvas();
     if (analyser) analyser.getByteTimeDomainData(waveformData);
     const width = canvas.width;
     const height = canvas.height;
     context.clearRect(0, 0, width, height);
-    const wash = context.createRadialGradient(width * .5, height * .5, 0, width * .5, height * .5, Math.max(width, height) * .52);
-    wash.addColorStop(0, 'rgba(255,255,255,.14)');
-    wash.addColorStop(.58, 'rgba(118,132,139,.035)');
-    wash.addColorStop(1, 'rgba(86,99,106,0)');
-    context.fillStyle = wash;
-    context.fillRect(0, 0, width, height);
     const left = width * .075;
-    const right = width * .925;
-    const centerY = height * .48;
-    const span = right - left;
-
-    const traces = reduced.matches ? 1 : 3;
-    for (let depth = traces - 1; depth >= 0; depth--) {
-      const depthRatio = depth / Math.max(1, traces - 1);
-      const inset = span * depthRatio * .045;
-      const traceLeft = left + inset;
-      const traceRight = right - inset;
-      const traceCenter = centerY - depth * height * .022;
-      const amplitude = height * .18 * (1 - depthRatio * .28);
-      context.beginPath();
-      const points = 180;
-      for (let point = 0; point < points; point++) {
-        const ratio = point / (points - 1);
-        const sampleIndex = Math.min(waveformData.length - 1, Math.floor(ratio * waveformData.length));
-        const sample = analyser ? (waveformData[sampleIndex] - 128) / 128 : Math.sin(ratio * Math.PI * 8 + phase * 1.8) * .12;
-        const x = traceLeft + (traceRight - traceLeft) * ratio;
-        const y = traceCenter + sample * amplitude;
-        if (!point) context.moveTo(x, y); else context.lineTo(x, y);
-      }
-      const main = depth === 0;
-      context.lineWidth = main ? Math.max(1.6, width / 800) : Math.max(.7, width / 1600);
-      context.strokeStyle = main ? 'rgba(47,59,65,.94)' : `rgba(91,107,114,${.07 + (1 - depthRatio) * .13})`;
-      context.shadowBlur = main ? Math.min(7, width / 120) : 0;
-      context.shadowColor = main ? 'rgba(47,59,65,.24)' : 'transparent';
-      context.stroke();
+    const span = width * .85;
+    const centerY = height * .38;
+    context.beginPath();
+    for (let point = 0; point < 240; point++) {
+      const ratio = point / 239;
+      const sampleIndex = Math.min(waveformData.length - 1, Math.floor(ratio * waveformData.length));
+      const sample = analyser && !audio.paused && !reduced.matches ? (waveformData[sampleIndex] - 128) / 128 : 0;
+      const x = left + span * ratio;
+      const y = centerY + sample * height * .22;
+      if (!point) context.moveTo(x, y); else context.lineTo(x, y);
     }
-
+    const line = context.createLinearGradient(left, 0, left + span, 0);
+    line.addColorStop(0, 'rgba(69,86,92,.24)');
+    line.addColorStop(.45, 'rgba(42,57,62,.88)');
+    line.addColorStop(1, 'rgba(69,86,92,.24)');
+    context.lineWidth = Math.max(1.4, width / 620);
+    context.strokeStyle = line;
+    context.shadowBlur = Math.min(12, width / 90);
+    context.shadowColor = 'rgba(85,126,140,.28)';
+    context.stroke();
     context.shadowBlur = 0;
     if (!reduced.matches && dialog.open) animationFrame = requestAnimationFrame(draw);
   }
@@ -184,43 +163,12 @@
     tracks.forEach(([name], index) => {
       const button = document.createElement('button');
       button.type = 'button';
-      button.innerHTML = `<small>${String(index + 1).padStart(2, '0')}</small><span>${name}</span><i aria-hidden="true">↗</i>`;
+      button.innerHTML = `<small>${String(index + 1).padStart(2, '0')}</small><span>${name}</span><i aria-hidden="true">●</i>`;
       button.setAttribute('aria-label', 'Play ' + name);
       button.onclick = () => setTrack(index);
       fragment.append(button);
     });
     trackList.append(fragment);
-  }
-
-  function reveal() {
-    revealLayer?.remove();
-    clearTimeout(revealTimer);
-    if (reduced.matches) return;
-    revealLayer = document.createElement('div');
-    revealLayer.className = 'mosaic-reveal cinema-mosaic music-mosaic';
-    revealLayer.setAttribute('aria-hidden', 'true');
-    const fragment = document.createDocumentFragment();
-    for (let index = 0; index < 82; index++) {
-      const tile = document.createElement('span');
-      tile.style.setProperty('--x', (Math.random() * 98).toFixed(2) + '%');
-      tile.style.setProperty('--y', (Math.random() * 96).toFixed(2) + '%');
-      tile.style.setProperty('--tile-width', (.5 + Math.random() * 2).toFixed(2) + '%');
-      tile.style.setProperty('--tile-height', (.8 + Math.random() * 4).toFixed(2) + '%');
-      tile.style.setProperty('--delay', Math.floor(Math.random() * 200) + 'ms');
-      tile.style.setProperty('--tile-duration', (190 + Math.floor(Math.random() * 190)) + 'ms');
-      tile.style.setProperty('--tile-scale', (.35 + Math.random() * .55).toFixed(2));
-      tile.style.setProperty('--tile-y', (.3 + Math.random() * .7).toFixed(2));
-      tile.style.setProperty('--tile-color', Math.random() > .9 ? '#d92232' : '#dceaf1');
-      fragment.append(tile);
-    }
-    revealLayer.append(fragment);
-    shell.append(revealLayer);
-    shell.animate([
-      { transform: 'scale(.76)', opacity: .2 },
-      { transform: 'scale(1.025)', opacity: 1, offset: .66 },
-      { transform: 'scale(1)', opacity: 1 }
-    ], { duration: 560, easing: 'cubic-bezier(.16,1,.3,1)' });
-    revealTimer = setTimeout(() => { revealLayer?.remove(); revealLayer = null; }, 680);
   }
 
   async function toggle() {
@@ -252,8 +200,7 @@
     audio.currentTime = 0;
     cancelAnimationFrame(animationFrame);
     animationFrame = 0;
-    shell.classList.remove('music-preroll', 'music-ready');
-    revealLayer?.remove();
+    openingRevision++;
     window.ASTRALE_PLAYER_TRANSITION?.clearMenuTransition();
     window.ASTRALE_AMBIENCE.duck(false);
     opening = false;
@@ -263,21 +210,23 @@
     async open() {
       if (opening || dialog.open) return;
       opening = true;
+      const revision = ++openingRevision;
       ensureAudioGraph();
       setTrack(current, false);
       window.ASTRALE_PLAY_SOUND?.('videoClick');
       window.ASTRALE_AMBIENCE.duck(true);
       await window.ASTRALE_PLAYER_TRANSITION.fragmentMenu();
-      shell.classList.add('music-preroll');
+      if (revision !== openingRevision) return;
       window.ASTRALE_PLAY_SOUND?.('videoLoad');
       dialog.showModal();
       resizeCanvas();
       startVisualization();
-      reveal();
-      await wait(reduced.matches ? 120 : 690);
-      shell.classList.remove('music-preroll');
-      shell.classList.add('music-ready');
-      await wait(reduced.matches ? 80 : 360);
+      if (!reduced.matches) shell.animate([
+        { opacity: 0, transform: 'translateY(8px)' },
+        { opacity: 1, transform: 'translateY(0)' }
+      ], { duration: 180, easing: 'ease-out' });
+      await wait(reduced.matches ? 0 : 180);
+      if (!dialog.open || revision !== openingRevision) return;
       audio.play().catch(() => status('Press play to start the track.'));
       opening = false;
     }
