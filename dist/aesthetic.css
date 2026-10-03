@@ -28,7 +28,7 @@ body{
 
 /* Identity and navigation */
 .title-lockup>p,#experience>.experience-title>p{color:#667476;letter-spacing:.24em}
-.title-lockup h1,#experience>.experience-title h1{font-family:var(--display);font-weight:400;letter-spacing:-.055em;line-height:1.02;text-transform:uppercase}
+.title-lockup h1,#experience>.experience-title h1{font-family:var(--display);font-weight:700;letter-spacing:-.06em;line-height:1.02;text-transform:uppercase}
 .title-lockup h1 span,#experience>.experience-title h1 span{color:#269fa7;text-shadow:-1px 0 #60cbd060,1px 0 #d34e5c24,0 12px 35px #5bbfc138}
 #experience>.game-nav{gap:9px}
 #experience>.game-nav a,.game-nav .menu-settings{
@@ -65,8 +65,8 @@ body{
 .content-shell:before{inset:0;border-radius:inherit;background:linear-gradient(118deg,#fff6,transparent 38%,#8ad4d312 68%,#fff5);opacity:1}
 .content-shell:after{top:0;left:34px;width:120px;height:2px;border-radius:0 0 2px 2px;background:linear-gradient(90deg,var(--accent),#9ce0dd);box-shadow:0 0 18px #48b8be70}
 #experience .content-shell>main{scrollbar-color:#8cb5b5 transparent}
-#experience .content-shell h2{font-family:var(--display);font-size:clamp(25px,3.2vw,42px);font-weight:400;line-height:1.05;letter-spacing:-.055em;text-transform:uppercase;color:#20292b}
-#experience .content-shell h2 span{color:var(--signal)}
+#experience .content-shell h2{font-family:var(--display);font-size:clamp(25px,3.2vw,42px);font-weight:700;line-height:1.05;letter-spacing:-.06em;text-transform:uppercase;color:#20292b}
+#experience .content-shell h2 span,.music-header h3 span{display:none}
 .edge-trail-red{stroke:var(--signal)}
 .edge-trail-blue{stroke:#48b8be}
 .edge-trail-sparks{stroke:#7fd8d5}
@@ -130,7 +130,7 @@ body{
 #about .resume-button:hover,#about .resume-button:focus-visible{color:#143638;border-color:#48b8be;background:#e3f5f2;box-shadow:0 14px 36px #31888d1a}
 #credits .credit{margin:10px 0 0;padding:22px;border:1px solid #b5c2c07a;border-radius:13px;background:linear-gradient(110deg,#ffffffb8,#e8f2ef94)}
 #credits .credit:first-of-type{margin-top:26px}
-#credits .credit h3{font-family:var(--display);font-size:12px;font-weight:400;letter-spacing:-.03em;text-transform:uppercase}
+#credits .credit h3{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:-.035em;text-transform:uppercase}
 #credits .credit>span{color:#388f94}
 #settings .settings-toggle,#settings .volume{border:1px solid #aebcba82;border-left:1px solid #aebcba82;border-radius:12px;background:linear-gradient(110deg,#ffffffc9,#e8f2ef9e)}
 #settings .settings-toggle[aria-pressed=true]{color:#217d82;border-color:#6ababb;background:linear-gradient(90deg,#bfe9e53d,#fff 42%,#e5f2ef)}
@@ -173,7 +173,7 @@ body{
 #work .project:before{display:block;content:"";position:absolute;inset:0;background:linear-gradient(90deg,#48b8be18,transparent 54%);opacity:0;transition:opacity .2s;pointer-events:none}
 #work .project-play{position:relative;left:auto;bottom:auto;width:27px;height:27px;flex:0 0 27px;color:#3daeb4;filter:none}
 #work .project-info{position:relative;display:block;min-width:0;flex:1;padding:0}
-#work .project-info h3{margin:0 0 6px;font:400 clamp(10px,.9vw,13px)/1.45 var(--display);letter-spacing:-.025em;text-transform:uppercase;color:var(--text);overflow-wrap:normal}
+#work .project-info h3{margin:0 0 6px;font:700 clamp(10px,.9vw,13px)/1.45 var(--display);letter-spacing:-.035em;text-transform:uppercase;color:var(--text);overflow-wrap:normal}
 #work .project-info p{margin:0;color:var(--muted);font:11px/1.45 var(--mono);letter-spacing:.02em;white-space:normal;overflow:visible}
 #work .project-arrow{position:relative;right:auto;bottom:auto;width:21px;height:21px;flex:0 0 21px;color:#3daeb4}
 #work .project:hover,#work .project:focus-visible{color:#18464a;border-color:#48b8be;background:#f8fffd;box-shadow:0 16px 36px #31888d18}
@@ -214,6 +214,7 @@ body{
 .music-tracks span{font-size:9px;letter-spacing:-.015em;text-transform:uppercase}
 .boot-name{letter-spacing:-.045em;text-transform:uppercase}
 .boot-start{letter-spacing:.05em;text-transform:uppercase}
+.reel-preview-label strong,.cinema-header h3,.music-header h3,.music-stage-copy strong,.boot-name{font-weight:700}
 
 @media(min-width:901px){
   #experience>.experience-title h1{font-size:clamp(32px,3vw,52px)}
