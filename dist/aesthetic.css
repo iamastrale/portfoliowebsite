@@ -27,6 +27,19 @@ button,input{font-family:var(--body)}
 .atmosphere:after{width:22vw;height:32vw;left:-8vw;bottom:-9vw;background:#91aeb932}
 #hologram{opacity:.67;mix-blend-mode:multiply}
 
+/* Native cursor with a motion- and click-responsive shockwave. */
+#hologram{display:none}
+.astrale-shockwave,.astrale-click-wave{position:fixed;left:0;top:0;z-index:299;pointer-events:none;translate:-50% -50%;border-radius:50%}
+.astrale-shockwave{width:32px;height:32px;opacity:0;will-change:transform,opacity}
+.astrale-shockwave.is-visible{opacity:calc(.18 + var(--wave-energy,0) * .82)}
+.astrale-shockwave i{position:absolute;border:1px solid #2da8ad;border-radius:50%;box-shadow:0 0 12px #48b8be52;transform-origin:center}
+.astrale-shockwave i:nth-child(1){inset:7px;transform:scale(calc(.8 + var(--wave-energy,0) * .55));background:#48b8be12}
+.astrale-shockwave i:nth-child(2){inset:2px;border-color:#48b8bea6;transform:scale(calc(.88 + var(--wave-energy,0) * .78));opacity:.74}
+.astrale-shockwave i:nth-child(3){inset:-5px;border-color:#48b8be66;transform:scale(calc(.8 + var(--wave-energy,0) * 1.15));opacity:.48}
+.astrale-click-wave{width:30px;height:30px;margin:-15px 0 0 -15px;translate:none;border:1px solid #2da8ad;box-shadow:0 0 18px #48b8be70,inset 0 0 10px #48b8be32;animation:astrale-click-wave .72s cubic-bezier(.16,.72,.28,1) both}
+@keyframes astrale-click-wave{0%{opacity:.95;scale:.55}55%{opacity:.45}100%{opacity:0;scale:4.8}}
+@media(pointer:coarse),(prefers-reduced-motion:reduce){.astrale-shockwave,.astrale-click-wave{display:none!important}}
+
 /* Identity and navigation */
 .title-lockup>p,#experience>.experience-title>p{color:#667476;letter-spacing:.24em}
 .title-lockup h1{font-family:var(--display);font-weight:700;letter-spacing:-.045em;line-height:1.02;text-transform:uppercase}
