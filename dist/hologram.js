@@ -21,9 +21,10 @@
   let frame = 0;
   let lastFrame = performance.now();
   let lastVelocitySignal = -1;
+  let initialized = !document.body.classList.contains('booting') && !document.getElementById('bootSequence');
 
   function enabled() {
-    return finePointer.matches && !reduced.matches;
+    return initialized && finePointer.matches && !reduced.matches;
   }
 
   function reset() {
@@ -103,6 +104,10 @@
     pointer.targetSpeed = 0;
   });
   document.addEventListener('visibilitychange', () => { if (document.hidden) reset(); });
+  window.addEventListener('bootcomplete', () => {
+    initialized = true;
+    reset();
+  }, { once: true });
   reduced.addEventListener('change', () => { if (!enabled()) reset(); });
   finePointer.addEventListener('change', () => { if (!enabled()) reset(); });
   frame = requestAnimationFrame(animate);

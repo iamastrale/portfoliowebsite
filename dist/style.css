@@ -396,8 +396,8 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text}
 @media(prefers-reduced-motion:reduce){.mosaic-reveal{display:none}}
 
 /* Orbiting perimeter traces, accelerated briefly when a section opens. */
-.edge-trails{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none;z-index:4;border-radius:inherit}
-.edge-trail{x:2px;y:2px;width:calc(100% - 4px);height:calc(100% - 4px);rx:3px;fill:none;stroke-width:1.4;vector-effect:non-scaling-stroke;stroke-linecap:round;animation:edge-orbit 12s linear infinite}
+.edge-trails{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:4;border-radius:inherit}
+.edge-trail{fill:none;stroke-width:1.4;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round;animation:edge-orbit 12s linear infinite}
 .edge-trail-red{stroke:#d92232;stroke-dasharray:10 90;opacity:.65}
 .edge-trail-blue{stroke:#65a5c3;stroke-dasharray:7 93;stroke-dashoffset:50;animation-direction:reverse;animation-duration:17s;opacity:.65}
 .edge-trail-sparks{stroke:#d92232;stroke-dasharray:1 11 3 22 1 62;opacity:0;animation-duration:23s;transition:opacity .3s}

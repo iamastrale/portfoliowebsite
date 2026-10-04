@@ -51,6 +51,8 @@
   let animationFrame = 0;
   let lastFrame = 0;
   let openingRevision = 0;
+  let wantsPlaying = false;
+  let playPromise = null;
 
   function status(text = '') {
     message.textContent = text;
@@ -153,8 +155,8 @@
 
   function sync() {
     const ready = Number.isFinite(audio.duration) && audio.duration > 0;
-    play.innerHTML = audio.paused ? icons.play : icons.pause;
-    play.setAttribute('aria-label', audio.paused ? 'Play' : 'Pause');
+    play.innerHTML = wantsPlaying ? icons.pause : icons.play;
+    play.setAttribute('aria-label', wantsPlaying ? 'Pause' : 'Play');
     mute.innerHTML = audio.muted || audio.volume === 0 ? icons.muted : icons.sound;
     mute.setAttribute('aria-label', audio.muted || audio.volume === 0 ? 'Unmute music' : 'Mute music');
     seek.disabled = !ready;
@@ -165,9 +167,34 @@
     time.textContent = clock(audio.currentTime) + ' / ' + clock(audio.duration);
   }
 
+  function requestPlayback(shouldPlay) {
+    wantsPlaying = shouldPlay;
+    status();
+    sync();
+    if (!shouldPlay) {
+      audio.pause();
+      return;
+    }
+    ensureAudioGraph();
+    if (playPromise) return;
+    playPromise = audio.play()
+      .catch(error => {
+        if (error?.name !== 'AbortError' && wantsPlaying) {
+          wantsPlaying = false;
+          status('Press play to start the track.');
+        }
+      })
+      .finally(() => {
+        playPromise = null;
+        if (wantsPlaying && audio.paused) requestPlayback(true);
+        else sync();
+      });
+  }
+
   function setTrack(index, autoplay = true) {
     current = (index + tracks.length) % tracks.length;
     const [name, path] = tracks[current];
+    wantsPlaying = false;
     audio.pause();
     audio.src = path;
     audio.load();
@@ -179,7 +206,7 @@
     });
     status();
     sync();
-    if (autoplay) audio.play().catch(() => status('Press play to start the track.'));
+    if (autoplay) requestPlayback(true);
   }
 
   function buildTrackList() {
@@ -195,12 +222,7 @@
     trackList.append(fragment);
   }
 
-  async function toggle() {
-    ensureAudioGraph();
-    status();
-    if (audio.paused) await audio.play().catch(() => status('Press play to start the track.'));
-    else audio.pause();
-  }
+  function toggle() { requestPlayback(!wantsPlaying); }
 
   play.onclick = toggle;
   previous.onclick = () => setTrack(current - 1);
@@ -220,7 +242,7 @@
     }
   });
   dialog.addEventListener('close', () => {
-    audio.pause();
+    requestPlayback(false);
     audio.currentTime = 0;
     cancelAnimationFrame(animationFrame);
     animationFrame = 0;
@@ -251,7 +273,7 @@
       ], { duration: 180, easing: 'ease-out' });
       await wait(reduced.matches ? 0 : 180);
       if (!dialog.open || revision !== openingRevision) return;
-      audio.play().catch(() => status('Press play to start the track.'));
+      requestPlayback(true);
       opening = false;
     }
   };
