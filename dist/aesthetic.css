@@ -29,7 +29,8 @@ button,input{font-family:var(--body)}
 
 /* Identity and navigation */
 .title-lockup>p,#experience>.experience-title>p{color:#667476;letter-spacing:.24em}
-.title-lockup h1,#experience>.experience-title h1{font-family:var(--display);font-weight:700;letter-spacing:-.045em;line-height:1.02;text-transform:uppercase}
+.title-lockup h1{font-family:var(--display);font-weight:700;letter-spacing:-.045em;line-height:1.02;text-transform:uppercase}
+#experience>.experience-title h1{font-family:'ASVHEN',sans-serif;font-style:italic;font-weight:400;letter-spacing:.005em;line-height:1.02;text-transform:uppercase}
 .title-lockup h1 span,#experience>.experience-title h1 span{color:#269fa7;text-shadow:-1px 0 #60cbd060,1px 0 #d34e5c24,0 12px 35px #5bbfc138}
 #experience>.game-nav{gap:9px}
 #experience>.game-nav a,.game-nav .menu-settings{
