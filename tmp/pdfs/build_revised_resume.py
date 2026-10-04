@@ -95,7 +95,7 @@ c.setFont("Helvetica-Bold", 31)
 c.drawString(36, PAGE_H - 55, "TREVOR HIGUERA")
 c.setFillColor(HexColor("#BCE9E7"))
 c.setFont("Helvetica-Bold", 10)
-c.drawString(37, PAGE_H - 77, "LEAD SOUND DESIGNER")
+c.drawString(37, PAGE_H - 77, "SOUND DESIGNER")
 
 contact_label_y = PAGE_H - 101
 contact_y = PAGE_H - 117
