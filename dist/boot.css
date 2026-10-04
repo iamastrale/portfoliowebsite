@@ -1,44 +1,65 @@
-.boot-sequence{position:fixed;inset:0;z-index:200;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at 50% 44%,#fff 0%,#eef3f6 56%,#dce5eb 100%);transition:opacity .7s ease,transform .9s cubic-bezier(.2,.7,.2,1),filter .7s ease}
-.boot-lockup{display:flex;align-items:center;flex-direction:column;position:relative}
-.boot-mark{width:clamp(140px,16vw,205px);height:auto;overflow:visible;filter:drop-shadow(0 12px 28px #48888d20)}
-.boot-mark path,.boot-mark circle{transform-box:view-box;transform-origin:center}
-.boot-halo,.boot-ring,.boot-inner,.boot-echo{fill:none;opacity:0}
-.boot-halo{stroke:#8fb9b9;stroke-width:.7}
-.boot-ring{stroke:#319fa5;stroke-width:1.7;stroke-linecap:round;stroke-dasharray:64 36;stroke-dashoffset:100}
-.boot-inner{stroke:#263538;stroke-width:1.1;stroke-dasharray:2 4}
-.boot-axis{fill:none;stroke:#263538;stroke-width:1.4;stroke-linecap:round;opacity:0}
-.boot-core{fill:#48b8be;opacity:0;filter:drop-shadow(0 0 7px #48b8be8c)}
-.boot-orbit-dot{fill:#d34e5c;opacity:0;filter:drop-shadow(0 0 5px #d34e5c66)}
-.boot-echo{stroke:#65cdd0;stroke-width:3;stroke-linecap:round;stroke-dasharray:16 84;filter:blur(4px)}
-.boot-name{font:400 clamp(15px,1.8vw,21px) var(--display);letter-spacing:.34em;padding-left:.34em;margin:28px 0 0;color:#202a32;opacity:0}
-.boot-pulse{position:absolute;top:0;left:50%;width:clamp(140px,16vw,205px);aspect-ratio:1;translate:-50% 0;border-radius:50%;border:1px solid #48b8be52;opacity:0;pointer-events:none}
-.boot-running .boot-halo{animation:boot-halo 1.35s cubic-bezier(.16,1,.3,1) both}
-.boot-running .boot-ring{animation:boot-ring 1.75s cubic-bezier(.2,.8,.2,1) .08s both}
-.boot-running .boot-inner{animation:boot-inner 1.15s ease-out .42s both}
-.boot-running .boot-axis{animation:boot-axis .85s cubic-bezier(.16,1,.3,1) .62s both}
-.boot-running .boot-core{animation:boot-core .75s cubic-bezier(.16,1,.3,1) .72s both}
-.boot-running .boot-orbit-dot{animation:boot-dot 1.55s cubic-bezier(.2,.75,.2,1) .1s both}
-.boot-running .boot-echo-a{animation:boot-echo-a .95s ease-out .08s both}
-.boot-running .boot-echo-b{animation:boot-echo-b .8s ease-out .18s both}
-.boot-running .boot-name{animation:boot-name .9s cubic-bezier(.16,1,.3,1) .92s both}
-.boot-running .boot-pulse{animation:boot-pulse 1.25s ease-out .78s both}
-@keyframes boot-halo{0%{opacity:0;transform:scale(.62);filter:blur(7px)}45%{opacity:.6;filter:blur(0)}100%{opacity:.38;transform:scale(1)}}
-@keyframes boot-ring{0%{opacity:0;stroke-dashoffset:100;transform:rotate(-210deg) scale(.76);filter:blur(6px)}38%{opacity:1;filter:blur(.4px)}100%{opacity:1;stroke-dashoffset:0;transform:rotate(0) scale(1);filter:blur(0)}}
-@keyframes boot-inner{0%{opacity:0;transform:rotate(80deg) scale(.6);filter:blur(3px)}100%{opacity:.72;transform:rotate(0) scale(1);filter:blur(0)}}
-@keyframes boot-axis{0%{opacity:0;transform:scale(.35) rotate(-45deg);filter:blur(4px)}100%{opacity:.9;transform:scale(1) rotate(0);filter:blur(0)}}
-@keyframes boot-core{0%{opacity:0;transform:scale(.1);filter:blur(7px)}65%{opacity:1;transform:scale(1.35);filter:blur(1px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
-@keyframes boot-dot{0%{opacity:0;transform:rotate(-240deg);filter:blur(8px)}35%{opacity:1;filter:blur(2px)}100%{opacity:1;transform:rotate(0);filter:blur(0)}}
-@keyframes boot-echo-a{0%{opacity:0;transform:rotate(-230deg) scale(.76)}35%{opacity:.62}100%{opacity:0;transform:rotate(30deg) scale(1.08)}}
-@keyframes boot-echo-b{0%{opacity:0;transform:rotate(-180deg) scale(.7)}35%{opacity:.4}100%{opacity:0;transform:rotate(70deg) scale(1.16)}}
-@keyframes boot-name{from{opacity:0;transform:translateY(12px);filter:blur(6px);letter-spacing:.65em}to{opacity:1;transform:translateY(0);filter:blur(0);letter-spacing:.35em}}
-@keyframes boot-pulse{0%{opacity:0;transform:scale(.65)}20%{opacity:.45}100%{opacity:0;transform:scale(2.5)}}
+@font-face{font-family:'Sprykski';src:url('fonts/Sprykski.otf') format('opentype');font-display:block}
+@font-face{font-family:'ASVHEN';src:url('fonts/ASVHEN-Italic.otf') format('opentype');font-style:italic;font-display:block}
+
+.boot-sequence{
+  position:fixed;inset:0;z-index:200;display:grid;place-items:center;overflow:hidden;
+  background:radial-gradient(ellipse at 58% 42%,#fff 0,#edf3f0 54%,#dce9e7 100%);
+  transition:opacity .55s ease,filter .55s ease;
+}
+.boot-sequence .boot-lockup{
+  position:relative;display:grid;place-items:center;width:min(760px,92vw);height:min(300px,42vw);
+  min-height:180px;animation:none;
+}
+.boot-glyphs,.boot-wordmark{position:absolute;display:flex;align-items:center;justify-content:center}
+.boot-glyphs{
+  gap:.6em;color:var(--accent,#48b8be);font:400 clamp(25px,3.3vw,48px)/1 'Sprykski',sans-serif;
+  transform:translateY(1px);
+}
+.boot-glyphs span{display:block;opacity:0;filter:blur(3px);transform:scale(.72)}
+.boot-wordmark{
+  min-width:max-content;color:var(--accent,#48b8be);font:italic 400 clamp(42px,4.2vw,84px)/1 'ASVHEN',sans-serif;
+  letter-spacing:.005em;transform:translateY(-.02em);
+}
+.boot-name-fill{
+  position:absolute;white-space:nowrap;text-transform:lowercase;opacity:0;color:#48b8be00;
+  -webkit-text-stroke:1.15px #48b8be00;text-shadow:none;will-change:opacity,color;
+}
+
+/* Match the supplied two-beat logo sequence: glyph signal, outline, then solid wordmark. */
+.boot-running .boot-glyphs span:nth-child(1){animation:boot-glyph .44s cubic-bezier(.16,1,.3,1) 0s both}
+.boot-running .boot-glyphs span:nth-child(2){animation:boot-glyph .39s cubic-bezier(.16,1,.3,1) .08s both}
+.boot-running .boot-glyphs span:nth-child(3){animation:boot-glyph .34s cubic-bezier(.16,1,.3,1) .16s both}
+.boot-running .boot-name-fill{animation:boot-word-reveal 1.42s linear .53s both}
+@keyframes boot-glyph{
+  0%{opacity:0;filter:blur(4px);transform:scale(.65)}
+  28%,72%{opacity:1;filter:blur(0);transform:scale(1)}
+  100%{opacity:0;filter:blur(3px);transform:scale(.9)}
+}
+@keyframes boot-word-reveal{
+  0%{opacity:0;color:#48b8be00;-webkit-text-stroke-color:#48b8be00}
+  26%{opacity:1;color:#48b8be00;-webkit-text-stroke-color:#48b8be}
+  100%{opacity:1;color:#48b8be;-webkit-text-stroke-color:#48b8be}
+}
 .booting #titleScreen{opacity:0;transform:scale(1.035);pointer-events:none}
 #titleScreen{transition:opacity .85s ease,transform 1.1s cubic-bezier(.16,1,.3,1)}
 .booting .title-lockup h1{animation:none}
-.boot-sequence.boot-exit{opacity:0;transform:scale(1.055);filter:blur(6px);pointer-events:none}
-@media(prefers-reduced-motion:reduce){.boot-running .boot-mark path,.boot-running .boot-mark circle,.boot-running .boot-name{animation:none;opacity:1}.boot-running .boot-echo,.boot-running .boot-pulse{display:none}.boot-sequence,#titleScreen{transition:none}.boot-sequence.boot-exit{transform:none;filter:none}}
-
-.boot-start{position:absolute;border:1px solid #d9223277;border-radius:4px;padding:20px 30px;background:#ffffff80;color:#d92232;font:700 clamp(12px,1.4vw,16px) var(--display);letter-spacing:.13em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 28px #d9223214;transition:background .2s,box-shadow .2s}
-.boot-start:hover,.boot-start:focus-visible{background:#fff;box-shadow:0 0 32px #d9223230;outline:2px solid #d92232;outline-offset:5px}
+.boot-sequence.boot-exit{opacity:0;filter:blur(4px);pointer-events:none}
+.boot-start{
+  position:absolute;border:1px solid #65bfc188;border-radius:4px;padding:20px 30px;
+  background:#ffffffa3;color:#247f84;font:700 clamp(12px,1.4vw,16px) var(--display);
+  letter-spacing:.05em;text-transform:uppercase;cursor:pointer;
+  box-shadow:0 0 30px #48b8be20;transition:background .2s,box-shadow .2s;
+}
+.boot-start:hover,.boot-start:focus-visible{background:#fff;box-shadow:0 0 34px #48b8be38;outline:2px solid #48b8be;outline-offset:5px}
 .boot-start[hidden]{display:none}
 body:not(.boot-running) .boot-lockup{visibility:hidden}
+@media(max-width:560px){
+  .boot-glyphs{font-size:clamp(23px,8vw,38px)}
+  .boot-wordmark{font-size:clamp(40px,11vw,58px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .boot-running .boot-glyphs{display:none}
+  .boot-running .boot-name-fill{animation:none;opacity:1;color:#48b8be;-webkit-text-stroke-color:#48b8be}
+  .boot-sequence,#titleScreen{transition:none}
+  .boot-sequence.boot-exit{filter:none}
+}

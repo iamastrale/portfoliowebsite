@@ -121,7 +121,7 @@ button,input{font-family:var(--body)}
 .reel-preview-label{min-height:90px;border-top:1px solid #8ed9d77a;background:linear-gradient(90deg,#0c1719e8,#183234b8 66%,#3a74746e)}
 .reel-preview-label small{color:#a7ccca}.reel-preview-play{color:#76d7d4}
 .reel-preview-button:hover .reel-preview-media video,.reel-preview-button:focus-visible .reel-preview-media video{filter:grayscale(0) saturate(.82) contrast(1.04) brightness(.94) hue-rotate(4deg)}
-#about{gap:clamp(30px,5vw,70px)}
+#about{position:relative;gap:clamp(30px,5vw,70px)}
 #about>div:last-child{padding:24px;border:1px solid #b8c5c37a;border-radius:15px;background:linear-gradient(135deg,#ffffffb5,#e4f2ef9c);box-shadow:0 16px 45px #254d5210}
 #about .large-copy{font-size:clamp(22px,2.5vw,34px);line-height:1.35;letter-spacing:-.035em;color:#172224}
 #about .tools{padding-top:15px;border-top:1px solid #aebdbb82;color:#536668}
@@ -131,6 +131,11 @@ button,input{font-family:var(--body)}
 #about .resume-document,#about .resume-arrow{color:#3faab0}
 #about .resume-button strong{font-weight:700;letter-spacing:-.025em;text-transform:uppercase}
 #about .resume-button:hover,#about .resume-button:focus-visible{color:#143638;border-color:#48b8be;background:#e3f5f2;box-shadow:0 14px 36px #31888d1a}
+#about .profile-heading{display:flex;flex-direction:column;align-items:flex-start}
+#about .profile-socials{position:absolute;z-index:4;top:24px;right:0;display:flex;align-items:center}
+#about .profile-socials a{display:grid;place-items:center;width:42px;height:42px;border:1px solid #8ebfc0;border-radius:3px;background:#ffffffb8;color:var(--accent);box-shadow:0 7px 20px #31888d12;transition:color .2s,border-color .2s,background .2s,transform .2s,box-shadow .2s}
+#about .profile-socials svg{width:19px;height:19px}
+#about .profile-socials a:hover,#about .profile-socials a:focus-visible{color:#fff;border-color:var(--accent);background:var(--accent);transform:translateY(-2px);box-shadow:0 10px 24px #31888d26}
 #credits .credit{margin:10px 0 0;padding:22px;border:1px solid #b5c2c07a;border-radius:13px;background:linear-gradient(110deg,#ffffffb8,#e8f2ef94)}
 #credits .credit:first-of-type{margin-top:26px}
 #credits .credit h3{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:-.02em;text-transform:uppercase}
@@ -142,9 +147,6 @@ button,input{font-family:var(--body)}
 #settings .volume:hover{border-left-color:#48b8be;background:#fff}
 
 /* Boot and media surfaces carry the palette without becoming literal mood-board copies. */
-.boot-sequence{background:radial-gradient(ellipse at 58% 42%,#fff 0,#edf3f0 54%,#dce9e7 100%)}
-.boot-ring{stroke:#48b8be}.boot-core{fill:#48b8be;filter:drop-shadow(0 0 7px #48b8be78)}.boot-orbit-dot{fill:var(--signal)}
-.boot-pulse{border-color:#48b8be66}.boot-start{border-color:#65bfc188;color:#247f84;background:#ffffffa3;box-shadow:0 0 30px #48b8be20}.boot-start:hover,.boot-start:focus-visible{box-shadow:0 0 34px #48b8be38;outline-color:#48b8be}
 .cinema-shell{border-color:#9bb0af;border-radius:12px;background:#eef4f1;color:#172224}
 .cinema-header{background:linear-gradient(120deg,#fff,#e3efec);border-bottom-color:#9db7b5}.cinema-header:before{background:#48b8be}
 .cinema-controls{border-top-color:#48b8be;background:linear-gradient(110deg,#fbfcfa,#e5efed)}
@@ -216,7 +218,6 @@ button,input{font-family:var(--body)}
 .music-stage-copy strong{font-size:clamp(22px,3vw,40px);line-height:1.05;letter-spacing:-.05em;text-transform:uppercase}
 .music-stage-copy small{display:none}
 .music-tracks span{font-size:9px;letter-spacing:-.015em;text-transform:uppercase}
-.boot-name{letter-spacing:-.045em;text-transform:uppercase}
 .boot-start{letter-spacing:.05em;text-transform:uppercase}
 .reel-preview-label strong,.cinema-header h3,.music-header h3,.music-stage-copy strong,.boot-name{font-weight:700}
 
