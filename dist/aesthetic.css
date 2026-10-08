@@ -172,7 +172,7 @@ button,input{font-family:var(--body)}
 .music-control-row #musicPlay{border-color:#c0475478;background:var(--signal)}
 .music-control-row #musicPlay:hover{background:#b43d49}
 
-/* Return the work index to the original text-only launch controls. */
+/* Compact work launches echo the cinematic showreel control. */
 #work .projects{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 #work .project{
   position:relative;
@@ -182,21 +182,23 @@ button,input{font-family:var(--body)}
   width:100%;
   min-height:92px;
   padding:18px 20px;
-  border:1px solid #74bfc080;
-  border-left:4px solid var(--accent);
-  border-radius:10px;
-  background:linear-gradient(110deg,#ffffffc9,#e5f3f0a3);
-  color:var(--text);
-  box-shadow:0 10px 28px #2d666b0b,inset 0 1px #fff;
+  border:1px solid #83a7aa80;
+  border-left:4px solid #3daeb4;
+  border-radius:12px;
+  background:#101719;
+  color:#fff;
+  box-shadow:0 14px 34px #213e4318;
 }
-#work .project:before{display:block;content:"";position:absolute;inset:0;background:linear-gradient(90deg,#48b8be18,transparent 54%);opacity:0;transition:opacity .2s;pointer-events:none}
-#work .project-play{position:relative;left:auto;bottom:auto;width:27px;height:27px;flex:0 0 27px;color:#3daeb4;filter:none}
-#work .project-info{position:relative;display:block;min-width:0;flex:1;padding:0}
-#work .project-info h3{margin:0 0 6px;font:700 clamp(10px,.9vw,13px)/1.45 var(--display);letter-spacing:-.02em;text-transform:uppercase;color:var(--text);overflow-wrap:normal}
-#work .project-info p{margin:0;color:var(--muted);font:11px/1.45 var(--mono);letter-spacing:.02em;white-space:normal;overflow:visible}
-#work .project-arrow{position:relative;right:auto;bottom:auto;width:21px;height:21px;flex:0 0 21px;color:#3daeb4}
-#work .project:hover,#work .project:focus-visible{color:#18464a;border-color:#48b8be;background:#f8fffd;box-shadow:0 16px 36px #31888d18}
-#work .project:hover:before,#work .project:focus-visible:before{opacity:1}
+#work .project-thumbnail{opacity:.78;filter:grayscale(.15) saturate(.62) contrast(1.08) brightness(.72) hue-rotate(7deg)}
+#work .project:before{display:block;content:"";position:absolute;z-index:1;inset:0;background:linear-gradient(90deg,#071113e8 0%,#0d1721bd 56%,#07111373 100%),linear-gradient(0deg,#0711138f,transparent 72%);opacity:1;transition:opacity .25s;pointer-events:none}
+#work .project-play{position:relative;z-index:2;left:auto;bottom:auto;width:27px;height:27px;flex:0 0 27px;color:#76d7d4;filter:drop-shadow(0 2px 8px #071113)}
+#work .project-info{position:relative;z-index:2;display:block;min-width:0;flex:1;padding:0}
+#work .project-info h3{margin:0 0 6px;font:700 clamp(10px,.9vw,13px)/1.45 var(--display);letter-spacing:-.02em;text-transform:uppercase;color:#fff;overflow-wrap:normal;text-shadow:0 2px 10px #000}
+#work .project-info p{margin:0;color:#b7c8d3;font:600 11px/1.45 var(--mono);letter-spacing:.04em;text-transform:uppercase;white-space:normal;overflow:visible;text-shadow:0 2px 8px #000}
+#work .project-arrow{position:relative;z-index:2;right:auto;bottom:auto;width:21px;height:21px;flex:0 0 21px;color:#fff;filter:drop-shadow(0 2px 8px #071113)}
+#work .project:hover,#work .project:focus-visible{color:#fff;border-color:#8ed9d7a8;background:#101719;box-shadow:0 0 34px #48b8be24}
+#work .project:hover .project-thumbnail,#work .project:focus-visible .project-thumbnail{opacity:.9;filter:grayscale(0) saturate(.84) contrast(1.06) brightness(.86) hue-rotate(4deg)}
+#work .project:hover:before,#work .project:focus-visible:before{opacity:.78}
 
 /* Cyan is the shared interaction color across both media players. */
 .cinema-header .close:hover{background:#48b8be;color:#fff}

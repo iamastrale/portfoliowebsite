@@ -194,14 +194,16 @@
 #work .section-heading{align-items:end;margin:0 0 22px}
 #work .projects{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 #work .project{position:relative;display:flex;align-items:center;gap:18px;width:100%;min-height:92px;padding:18px 20px;border:1px solid #d9223257;border-left:4px solid var(--accent);background:linear-gradient(110deg,#ffffffbb,#e6eef566);color:var(--text);text-align:left;overflow:hidden;transition:background .2s,color .2s,box-shadow .2s,border-color .2s}
-#work .project:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#d922320c,transparent 46%);opacity:0;transition:opacity .2s;pointer-events:none}
+#work .project-thumbnail{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:.3;filter:saturate(.62) brightness(.58);pointer-events:none;transition:opacity .25s,filter .25s,transform .35s}
+#work .project:before{content:"";position:absolute;z-index:1;inset:0;background:linear-gradient(110deg,#f5f7f9e8,#e6eef5d9);pointer-events:none}
 #work .project:hover,#work .project:focus-visible{color:var(--accent);border-color:#d9223285;background:#ffffffdf;box-shadow:0 0 28px #d9223214}
-#work .project:hover:before,#work .project:focus-visible:before{opacity:1}
-#work .project-play{position:relative;width:27px;height:27px;flex:0 0 27px;color:var(--accent)}
-#work .project-info{position:relative;display:block;min-width:0;flex:1;padding:0;background:transparent}
-#work .project-info h3{margin:0 0 6px;font:700 clamp(12px,1.1vw,16px)/1.35 var(--display);letter-spacing:-.04em;text-transform:uppercase;overflow-wrap:normal}
-#work .project-info p{margin:0;color:var(--muted);font:11px/1.45 var(--mono);letter-spacing:.02em}
-#work .project-arrow{position:relative;width:21px;height:21px;flex:0 0 21px;color:var(--accent);transition:transform .2s}
+#work .project:hover .project-thumbnail,#work .project:focus-visible .project-thumbnail{opacity:.39;filter:saturate(.78) brightness(.64);transform:scale(1.025)}
+#work .project-play{position:relative;z-index:2;width:27px;height:27px;flex:0 0 27px;color:var(--accent)}
+#work .project-info{position:relative;z-index:2;display:block;min-width:0;flex:1;padding:0;background:transparent}
+#work .project-info h3{margin:0 0 6px;color:#101820;font:700 clamp(12px,1.1vw,16px)/1.35 var(--display);letter-spacing:-.04em;text-transform:uppercase;overflow-wrap:normal;text-shadow:0 1px 0 #fff}
+#work .project-info p{margin:0;color:#2f3d47;font:600 11px/1.45 var(--mono);letter-spacing:.02em;text-shadow:0 1px 0 #ffffffd9}
+#work .project:hover .project-info h3,#work .project:focus-visible .project-info h3{color:#b71424}
+#work .project-arrow{position:relative;z-index:2;width:21px;height:21px;flex:0 0 21px;color:var(--accent);transition:transform .2s}
 #work .project:hover .project-arrow,#work .project:focus-visible .project-arrow{transform:translateX(4px)}
 #player{padding:0;border:1px solid #9dafbd;background:#eef3f6;box-shadow:0 24px 100px #111d2b66}
 #player .dialog-head{height:52px;margin:0;padding:0 16px 0 22px;border-bottom:2px solid var(--accent);background:linear-gradient(120deg,#fff,#e5edf2)}
@@ -211,7 +213,7 @@
 #playerFrame{background:#05090d}
 #playerFrame iframe{display:block;width:100%;aspect-ratio:16/9;border:0}
 @media(max-width:700px){#work .projects{grid-template-columns:1fr}#work .project{min-height:78px;padding:14px 16px;gap:14px}#work .project-info h3{font-size:12px}}
-@media(prefers-reduced-motion:reduce){#work .project,#work .project:before,#work .project-arrow{transition:none}}
+@media(prefers-reduced-motion:reduce){#work .project,#work .project-thumbnail,#work .project:before,#work .project-arrow{transition:none}}
 
 /* Settings is a regular portfolio view, with the same panel language as the other tabs. */
 #experience #settings{width:100%;max-width:none;padding:4px 0 18px}

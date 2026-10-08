@@ -1,7 +1,7 @@
 'use strict';
 const $ = s => document.querySelector(s);
 const projects = [
- {title:'ASTRALE',detail:'Music',kind:'music',player:'music'},
+ {title:'ASTRALE',detail:'Music',kind:'music',player:'music',thumb:'social-preview.png'},
  {title:'VALORANT',detail:'Sunset map · Music production',kind:'music',src:'video/work/valorant-sunset-map-music.mov'},
  {title:'CODE RED',detail:'Slot Machine sound design',kind:'sound',src:'video/work/code-red-slot-machine.mov'},
  {title:'Deadline Delivery',detail:'Sound design',kind:'sound',src:'video/work/deadline-delivery.mov'},
@@ -13,7 +13,8 @@ function renderProjects(filter='all') {
  $('#projects').replaceChildren();
  projects.forEach((p,i)=>{if(filter!=='all'&&p.kind!==filter)return;
  const b=document.createElement('button');b.className='project';b.setAttribute('aria-label','Play '+p.title+' — '+p.detail);
- b.innerHTML=`<svg class="project-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span class="project-info"><h3>${p.title}</h3><p>${p.detail}</p></span><svg class="project-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
+ const thumbnail=p.src?`<video class="project-thumbnail" muted playsinline preload="metadata" aria-hidden="true" tabindex="-1"><source src="${p.src}#t=0.1"></video>`:p.thumb?`<img class="project-thumbnail" src="${p.thumb}" alt="" aria-hidden="true">`:'';
+ b.innerHTML=`${thumbnail}<svg class="project-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span class="project-info"><h3>${p.title}</h3><p>${p.detail}</p></span><svg class="project-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
  b.onclick=()=>p.player==='music'?window.ASTRALE_MUSIC.open():window.ASTRALE_REEL.open({src:p.src,title:p.title+' / '+p.detail});$('#projects').append(b);});
 }
 renderProjects();
