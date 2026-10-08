@@ -3,6 +3,7 @@ const $ = s => document.querySelector(s);
 const projects = [
  {title:'ASTRALE',detail:'Music',kind:'music',player:'music'},
  {title:'VALORANT',detail:'Sunset map · Music production',kind:'music',src:'video/work/valorant-sunset-map-music.mov'},
+ {title:'CODE RED',detail:'Slot Machine sound design',kind:'sound',src:'video/work/code-red-slot-machine.mov'},
  {title:'Deadline Delivery',detail:'Sound design',kind:'sound',src:'video/work/deadline-delivery.mov'},
  {title:'Deadline Delivery',detail:'Explosion implementation',kind:'sound',src:'video/work/deadline-delivery-explosion.mov'},
  {title:'Apex Legends',detail:'Sound redesign',kind:'sound',src:'video/work/apex-redesign.mp4'},
