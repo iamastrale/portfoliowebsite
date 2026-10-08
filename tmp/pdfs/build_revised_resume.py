@@ -10,7 +10,7 @@ from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph
 
 
-OUT = Path("output/pdf/TrevorHiguera-SoundDesigner-Revised.pdf")
+OUT = Path("output/pdf/TrevorHiguera-SoundDesigner-Keywords.pdf")
 OUT.parent.mkdir(parents=True, exist_ok=True)
 
 PAGE_W, PAGE_H = letter
@@ -37,12 +37,12 @@ def style(name, size, leading, color=INK, font="Helvetica", **kwargs):
     )
 
 
-BODY = style("body", 10.1, 14.2, MUTED)
-BULLET = style("bullet", 10.0, 14.0, MUTED)
+BODY = style("body", 9.5, 12.8, MUTED)
+BULLET = style("bullet", 9.35, 12.6, MUTED)
 ROLE = style("role", 12.3, 15.0, INK, "Helvetica-Bold")
 DATE = style("date", 8.5, 10.5, CYAN, "Helvetica-Bold")
-SIDEBAR = style("sidebar", 9.25, 13.2, MUTED)
-SIDEBAR_BOLD = style("sidebar-bold", 9.7, 12.3, INK, "Helvetica-Bold")
+SIDEBAR = style("sidebar", 8.85, 12.2, MUTED)
+SIDEBAR_BOLD = style("sidebar-bold", 9.5, 12.0, INK, "Helvetica-Bold")
 
 
 def paragraph(c, text, x, y_top, width, pstyle, max_height=200):
@@ -84,6 +84,7 @@ c = canvas.Canvas(str(OUT), pagesize=letter, pageCompression=1)
 c.setTitle("Trevor Higuera - Lead Sound Designer")
 c.setAuthor("Trevor Higuera")
 c.setSubject("Sound design, technical audio, and interactive music resume")
+c.setKeywords("lead sound designer, music producer, game audio, UI UX audio, audio engineering, music composer, interactive music, adaptive music, Wwise, FMOD, Unreal Engine 5, Unity, Blueprints, MetaSounds, RTPCs, States, Switches, spatial audio, sound effects, SFX, field recording, synthesis, mixing, mastering, implementation, profiling, optimization")
 
 # Header
 c.setFillColor(NAVY)
@@ -95,7 +96,7 @@ c.setFont("Helvetica-Bold", 31)
 c.drawString(36, PAGE_H - 55, "TREVOR HIGUERA")
 c.setFillColor(HexColor("#BCE9E7"))
 c.setFont("Helvetica-Bold", 10)
-c.drawString(37, PAGE_H - 77, "SOUND DESIGNER")
+c.drawString(37, PAGE_H - 77, "LEAD SOUND DESIGNER  |  MUSIC PRODUCER  |  COMPOSER  |  AUDIO ENGINEER")
 
 contact_label_y = PAGE_H - 101
 contact_y = PAGE_H - 117
@@ -131,13 +132,13 @@ y = role_block(
     c,
     "GOOD1 Studios",
     "https://www.good1studios.com/",
-    "Sound Designer (Full-time)",
+    "Lead Sound Designer / Composer (Full-time)",
     "Sep 2021 - Present",
     [
-        "Lead audio production within a six-person remote team, owning direction, asset creation, implementation, and delivery for <i>Deadline Delivery</i>.",
-        "Designed and implemented <b>1,000+ sound assets</b> and built an adaptive Wwise vehicle system driven by RTPCs, Switch Containers, RPM, and gear-state logic.",
-        "Implemented and debugged Unreal Engine Blueprint systems while supporting gameplay and level-design iteration.",
-        "Composed, mixed, and mastered original soundtrack material that defines the game's sonic identity.",
+        "Lead end-to-end audio for <i>Deadline Delivery</i> and <i>CODE RED</i> within a six-person remote studio, owning audio direction, sound design, UI/UX audio, music composition, implementation, mix, QA, and delivery.",
+        "Designed, edited, processed, and implemented <b>1,000+ SFX</b> across vehicles, gameplay feedback, UI, Foley, ambience, and environments using field recording, synthesis, layering, and asset optimization.",
+        "Built and debugged interactive Wwise and Unreal Engine 5 systems using Events, RTPCs, States, Switches, containers, and Blueprints; profiled runtime behavior and resolved implementation issues.",
+        "Composed, arranged, produced, mixed, and mastered original scores and adaptive music stems, collaborating with design and engineering to support pacing, player feedback, and the overall user experience.",
     ],
     main_x,
     y,
@@ -166,7 +167,7 @@ y = role_block(
     "Music Producer (Contract)",
     "Jun 2023 - Sep 2023",
     [
-        "Produced interactive music stems for <i>VALORANT</i> in-game environments and delivered musical elements aligned with the team's creative and technical direction.",
+        "Produced, edited, and delivered interactive music stems for <i>VALORANT</i> in-game environments, aligning musical transitions, arrangement, and final assets with creative and technical direction.",
     ],
     main_x,
     y,
@@ -198,10 +199,10 @@ label(c, "Core Skills", side_x, sy, side_w)
 sy -= 18
 
 skill_groups = [
-    ("GAME AUDIO", "Wwise, FMOD, RTPCs, States and Switches, adaptive systems, interactive music, profiling and optimization"),
-    ("ENGINES + CODE", "Unreal Engine 5, Blueprints, MetaSounds, Unity, C#"),
-    ("AUDIO PRODUCTION", "Pro Tools, Ableton Live, FL Studio, Reaper, Cubase, field recording, synthesis, mixing and mastering"),
-    ("WORKFLOW", "Git, Perforce, remote collaboration, cross-discipline implementation and debugging"),
+    ("SOUND DESIGN", "Gameplay SFX, UI/UX audio, Foley, ambience, field recording, synthesis, layering, editing, asset preparation"),
+    ("TECHNICAL AUDIO", "Wwise, FMOD, Unreal Engine 5, Unity, Blueprints, MetaSounds, C#, Events, RTPCs, States, Switches, spatial audio, profiling and optimization"),
+    ("MUSIC + ENGINEERING", "Composition, arrangement, adaptive music, stems, music editing, recording, signal processing, mixing and mastering"),
+    ("TOOLS + WORKFLOW", "Pro Tools, Ableton Live, FL Studio, Reaper, Cubase, Git, Perforce, audio QA, debugging, cross-discipline collaboration"),
 ]
 for heading, text in skill_groups:
     sy = paragraph(c, heading, side_x, sy, side_w, SIDEBAR_BOLD)
@@ -211,9 +212,9 @@ for heading, text in skill_groups:
 
 label(c, "Education", side_x, sy, side_w)
 sy -= 18
-sy = paragraph(c, "Sierra College", side_x, sy, side_w, SIDEBAR_BOLD)
+sy = paragraph(c, "National University", side_x, sy, side_w, SIDEBAR_BOLD)
 sy -= 5
-sy = paragraph(c, "Associate's Degree<br/><font size='7'>2020 - 2023</font>", side_x, sy, side_w, SIDEBAR)
+sy = paragraph(c, "Bachelor of Arts in Digital Media Design<br/><font size='7'>Expected March 2027</font>", side_x, sy, side_w, SIDEBAR)
 
 c.showPage()
 c.save()
