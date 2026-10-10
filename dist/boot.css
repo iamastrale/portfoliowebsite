@@ -4,7 +4,7 @@
 .boot-sequence{
   position:fixed;inset:0;z-index:200;display:grid;place-items:center;overflow:hidden;
   background:radial-gradient(ellipse at 58% 42%,#fff 0,#edf3f0 54%,#dce9e7 100%);
-  transition:opacity .55s ease,filter .55s ease;
+  transition:opacity .35s ease,filter .35s ease;
 }
 .boot-sequence .boot-lockup{
   position:relative;display:grid;place-items:center;width:min(760px,92vw);height:min(300px,42vw);
@@ -26,10 +26,10 @@
 }
 
 /* Match the supplied two-beat logo sequence: glyph signal, outline, then solid wordmark. */
-.boot-running .boot-glyphs span:nth-child(1){animation:boot-glyph .44s cubic-bezier(.16,1,.3,1) 0s both}
-.boot-running .boot-glyphs span:nth-child(2){animation:boot-glyph .39s cubic-bezier(.16,1,.3,1) .08s both}
-.boot-running .boot-glyphs span:nth-child(3){animation:boot-glyph .34s cubic-bezier(.16,1,.3,1) .16s both}
-.boot-running .boot-name-fill{animation:boot-word-reveal 1.42s linear .53s both}
+.boot-running .boot-glyphs span:nth-child(1){animation:boot-glyph .32s cubic-bezier(.16,1,.3,1) 0s both}
+.boot-running .boot-glyphs span:nth-child(2){animation:boot-glyph .29s cubic-bezier(.16,1,.3,1) .055s both}
+.boot-running .boot-glyphs span:nth-child(3){animation:boot-glyph .26s cubic-bezier(.16,1,.3,1) .11s both}
+.boot-running .boot-name-fill{animation:boot-word-reveal .9s linear .36s both}
 @keyframes boot-glyph{
   0%{opacity:0;filter:blur(4px);transform:scale(.65)}
   28%,72%{opacity:1;filter:blur(0);transform:scale(1)}
@@ -41,7 +41,7 @@
   100%{opacity:1;color:#48b8be;-webkit-text-stroke-color:#48b8be}
 }
 .booting #titleScreen{opacity:0;transform:scale(1.035);pointer-events:none}
-#titleScreen{transition:opacity .85s ease,transform 1.1s cubic-bezier(.16,1,.3,1)}
+#titleScreen{transition:opacity .45s ease,transform .65s cubic-bezier(.16,1,.3,1)}
 .booting .title-lockup h1{animation:none}
 .boot-sequence.boot-exit{opacity:0;filter:blur(4px);pointer-events:none}
 .boot-start{

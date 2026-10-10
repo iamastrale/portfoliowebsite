@@ -4,7 +4,9 @@
   const menu=document.getElementById('experience');
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   const startup=new Audio(window.ASTRALE_SOUNDS?.startup||'sounds/startup.mp3');
-  startup.preload='auto';startup.volume=.2;
+  const startupRate=2**(5/12);
+  startup.preload='auto';startup.volume=.2;startup.playbackRate=startupRate;startup.defaultPlaybackRate=startupRate;
+  for(const property of ['preservesPitch','mozPreservesPitch','webkitPreservesPitch'])if(property in startup)startup[property]=false;
   let startedAt;
   let started=false,finished=false,cleaned=false,finishTimer,cleanupTimer,fadeFrame,playing=false,pending=false;
   function stopStartup(){
@@ -17,7 +19,7 @@
     pending=true;
     try{
       // A gesture during the intro joins the cue at the matching timestamp.
-      startup.currentTime=(performance.now()-startedAt)/1000;
+      startup.currentTime=(performance.now()-startedAt)/1000*startupRate;
       await startup.play();
       if(cleaned)startup.pause();else playing=true;
     }catch{/* Autoplay denial must never delay the visual intro. */}
@@ -26,7 +28,7 @@
   function fadeStartup(){
     const from=startup.volume,start=performance.now();
     function frame(now){
-      const progress=Math.min(1,(now-start)/700);
+      const progress=Math.min(1,(now-start)/450);
       startup.volume=from*(1-progress);
       if(progress<1)fadeFrame=requestAnimationFrame(frame);else stopStartup();
     }
@@ -45,9 +47,9 @@
     reduced.removeEventListener('change',preferenceChanged);
     document.body.classList.remove('booting');menu.inert=false;
     // Schedule the visual exit before any optional audio operation.
-    if(immediate)cleanup();else{overlay.classList.add('boot-exit');cleanupTimer=setTimeout(cleanup,560)}
+    if(immediate)cleanup();else{overlay.classList.add('boot-exit');cleanupTimer=setTimeout(cleanup,380)}
     try{
-      window.ASTRALE_AMBIENCE?.duck(false,2.4);
+      window.ASTRALE_AMBIENCE?.duck(false,1.4);
       if(!immediate)fadeStartup();
     }catch(error){console.warn('Startup audio handoff failed',error)}
   }
@@ -62,8 +64,8 @@
     overlay.setAttribute('aria-label','Starting Astrale');
     document.body.classList.add('boot-running');
     // Audio must never prevent the visual completion timer from being armed.
-    // Match the supplied two-second logo sequence, with a short final hold.
-    finishTimer=setTimeout(()=>finish(reduced.matches),reduced.matches?600:2150);
+    // Keep the logo sequence brisk, with a short final hold.
+    finishTimer=setTimeout(()=>finish(reduced.matches),reduced.matches?400:1450);
     try{
       window.ASTRALE_AMBIENCE?.duck(true);
       window.ASTRALE_AMBIENCE?.enable(true);
