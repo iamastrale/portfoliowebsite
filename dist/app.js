@@ -54,6 +54,14 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)stopReelPre
 
 document.querySelectorAll('dialog').forEach(d=>{d.querySelector('.close').onclick=()=>d.close();d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}})});
 const technicalCase=$('#technicalCaseStudy');
+const blueprintLightbox=$('#blueprintLightbox');
+const expandBlueprint=$('#expandBlueprint');
+expandBlueprint.onclick=()=>{
+ if(blueprintLightbox.open)return;
+ blueprintLightbox.showModal();
+ blueprintLightbox.querySelector('.close').focus({preventScroll:true});
+};
+blueprintLightbox.addEventListener('close',()=>expandBlueprint.focus({preventScroll:true}));
 const technicalIcons={
  play:'<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>',
  pause:'<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>',
