@@ -45,13 +45,19 @@
 .booting .title-lockup h1{animation:none}
 .boot-sequence.boot-exit{opacity:0;filter:blur(4px);pointer-events:none}
 .boot-start{
-  position:absolute;border:1px solid #65bfc188;border-radius:4px;padding:20px 30px;
+  border:1px solid #65bfc188;border-radius:4px;padding:20px 30px;
   background:#ffffffa3;color:#247f84;font:700 clamp(12px,1.4vw,16px) var(--display);
   letter-spacing:.05em;text-transform:uppercase;cursor:pointer;
   box-shadow:0 0 30px #48b8be20;transition:background .2s,box-shadow .2s;
 }
 .boot-start:hover,.boot-start:focus-visible{background:#fff;box-shadow:0 0 34px #48b8be38;outline:2px solid #48b8be;outline-offset:5px}
 .boot-start[hidden]{display:none}
+.boot-actions{position:absolute;z-index:2;display:grid;justify-items:center;gap:14px}
+.boot-skip{padding:6px 10px;color:#52747a;font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.boot-skip span{display:inline-block;margin-left:6px;color:#48b8be;transition:transform .2s}
+.boot-skip:hover,.boot-skip:focus-visible{color:#247f84;outline:none;text-decoration:underline;text-underline-offset:4px}
+.boot-skip:hover span,.boot-skip:focus-visible span{transform:translateX(4px)}
+body.boot-running .boot-actions{display:none}
 body:not(.boot-running) .boot-lockup{visibility:hidden}
 @media(max-width:560px){
   .boot-glyphs{font-size:clamp(23px,8vw,38px)}

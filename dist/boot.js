@@ -72,4 +72,9 @@
     }catch(error){console.warn('Startup atmosphere unavailable',error)}
     tryStartup();
   });
+  document.getElementById('skipBoot').addEventListener('click',()=>{
+    if(started)return;
+    started=true;startedAt=performance.now();
+    finish(true);
+  });
 })();
