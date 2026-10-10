@@ -89,7 +89,13 @@ button,input{font-family:var(--body)}
 /* Filters become quiet utility pills. */
 #work .section-heading{align-items:center}
 #work .filters{gap:7px;border:0;background:transparent}
-#work .filters button{min-width:auto;padding:9px 15px;border:1px solid #aab9b883;border-radius:999px;background:#ffffff80;color:#647274;box-shadow:none}
+#work .filters button{display:flex;align-items:center;gap:7px;min-width:auto;height:36px;padding:0 13px;border:1px solid #aab9b883;background:#ffffff80;color:#647274;box-shadow:none}
+#work .filters button svg{width:17px;height:17px;flex:0 0 17px;fill:currentColor}
+#work .filters button span{white-space:nowrap}
+#work .filters .filter-all{border-radius:8px}
+#work .filters .filter-sound{border-radius:999px}
+#work .filters .filter-technical{padding-inline:16px;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
+#work .filters .filter-music{border-radius:13px 4px 13px 4px}
 #work .filters button:before{display:none}
 #work .filters button:after{display:none}
 #work .filters button:hover{color:#142527;border-color:#7abfc0;background:#fff}
@@ -199,17 +205,50 @@ button,input{font-family:var(--body)}
 #work .project-sound:before{background:linear-gradient(90deg,#071113e8 0%,#123336c4 58%,#143e4075 100%),linear-gradient(0deg,#0711138f,transparent 72%)}
 #work .project-technical:before{background:linear-gradient(90deg,#100b0de8 0%,#3d1d24c7 58%,#5d263175 100%),linear-gradient(0deg,#10090c91,transparent 72%)}
 #work .project-music:before{background:linear-gradient(90deg,#0d0a12e8 0%,#2a203bc7 58%,#4d376c75 100%),linear-gradient(0deg,#0d091391,transparent 72%)}
-#work .project-play{position:relative;z-index:2;left:auto;bottom:auto;width:27px;height:27px;flex:0 0 27px;color:var(--project-accent);filter:drop-shadow(0 2px 8px #071113)}
+#work .project-play{position:relative;z-index:2;left:auto;bottom:auto;width:29px;height:25px;flex:0 0 29px;color:var(--project-accent);filter:drop-shadow(0 2px 8px #071113)}
 #work .project-info{position:relative;z-index:2;display:block;min-width:0;flex:1;padding:0}
 #work .project-info h3{margin:0 0 6px;font:700 clamp(10px,.9vw,13px)/1.45 var(--display);letter-spacing:-.02em;text-transform:uppercase;color:#fff;overflow-wrap:normal;text-shadow:0 2px 10px #000}
 #work .project-info p{margin:0;color:#b7c8d3;font:600 11px/1.45 var(--mono);letter-spacing:.04em;text-transform:uppercase;white-space:normal;overflow:visible;text-shadow:0 2px 8px #000}
-#work .project-arrow{position:relative;z-index:2;right:auto;bottom:auto;width:21px;height:21px;flex:0 0 21px;color:var(--project-accent);filter:drop-shadow(0 2px 8px #071113)}
 #work .project:hover,#work .project:focus-visible{color:#fff;border-color:var(--project-accent);background:#101719;box-shadow:0 0 34px var(--project-glow)}
 #work .project:hover .project-thumbnail,#work .project:focus-visible .project-thumbnail{opacity:.9;filter:grayscale(0) saturate(.84) contrast(1.06) brightness(.86) hue-rotate(4deg)}
 #work .project:hover:before,#work .project:focus-visible:before{opacity:.78}
 #work .filters [data-filter="sound"].active{color:#1c6e73;border-color:#48b8be;background:#d9f2ef}
 #work .filters [data-filter="technical"].active{color:#85313a;border-color:#e06470;background:#f7dfe1}
 #work .filters [data-filter="music"].active{color:#59417d;border-color:#9a78d0;background:#ebe3f6}
+#work .filters .filter-all.active{color:#234b4e;border-color:#83b5b6;background:#e6f0ee}
+
+/* The All view reads as three disciplines instead of one undifferentiated button grid. */
+#work .projects.projects-grouped{grid-template-columns:1.12fr .9fr 1fr;gap:12px;min-height:362px}
+#work .project-group{display:grid;grid-template-rows:auto minmax(0,1fr);gap:9px;min-width:0;padding:11px;border:1px solid #b5c4c183;border-radius:13px;background:#f5f8f5a3;overflow:hidden}
+#work .project-group-sound{border-top:3px solid #48b8be;background:linear-gradient(180deg,#dff3f138,#f7f9f6b8 26%)}
+#work .project-group-technical{border-top:3px solid #e06470;background:linear-gradient(180deg,#f4dfe13d,#f7f9f6b8 26%)}
+#work .project-group-music{border-top:3px solid #9a78d0;background:linear-gradient(180deg,#ebe3f63d,#f7f9f6b8 26%)}
+#work .project-group-heading{display:flex;align-items:center;gap:8px;width:100%;margin:0;padding:1px 2px 5px;color:#344749;font:700 9px/1 var(--mono);letter-spacing:.11em;text-align:left;text-transform:uppercase}
+#work .project-group-heading small{margin-left:auto;color:currentColor;font:700 8px/1 var(--mono);opacity:.62}
+#work .project-group-heading:hover,#work .project-group-heading:focus-visible{color:#17292b}
+#work .project-group-heading:hover .project-group-icon,#work .project-group-heading:focus-visible .project-group-icon{transform:scale(1.12)}
+#work .project-group-sound .project-group-heading{color:#277f84}
+#work .project-group-technical .project-group-heading{color:#9a3943}
+#work .project-group-music .project-group-heading{color:#64498d}
+#work .project-group-icon{width:18px;height:18px;flex:0 0 18px;transition:transform .18s}
+#work .project-group-grid{display:grid;gap:7px;min-height:0}
+#work .project-group-sound .project-group-grid{grid-template-rows:repeat(4,minmax(0,1fr))}
+#work .project-group-technical .project-group-grid{grid-template-rows:minmax(0,1fr)}
+#work .project-group-music .project-group-grid{grid-template-rows:repeat(2,minmax(0,1fr))}
+#work .project-group .project{height:100%;min-height:0;padding:11px 12px;gap:11px;border-radius:9px}
+#work .project-group .project-info h3{font-size:10px;margin-bottom:3px}
+#work .project-group .project-info p{font-size:8px;line-height:1.35}
+#work .project-group .project-play{width:23px;height:21px;flex-basis:23px}
+#work .project-group-technical .project{flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:20px 17px;gap:13px}
+#work .project-group-technical .project-play{width:38px;height:34px;flex:0 0 34px}
+#work .project-group-technical .project-info h3{font-size:15px;margin-bottom:7px}
+#work .project-group-technical .project-info p{font-size:10px;line-height:1.45}
+#work .projects-filtered{grid-template-columns:repeat(3,minmax(0,1fr))}
+#work .project-filter-state{grid-column:1/-1;display:flex;align-items:center;justify-content:flex-end;padding:2px 2px 8px;border-bottom:1px solid #bac8c6}
+#work .projects-back{display:flex;align-items:center;gap:8px;padding:8px 12px;color:#40585a;background:rgba(255,255,255,.58);border:1px solid rgba(70,126,128,.48);border-radius:3px;box-shadow:0 3px 10px rgba(35,76,78,.08),inset 0 0 0 1px rgba(255,255,255,.5);font:800 10px/1 var(--mono);letter-spacing:.11em;text-transform:uppercase;transition:color .18s ease,background .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease}
+#work .projects-back::before{content:'\2190';font:700 16px/1 var(--body);letter-spacing:0;transition:transform .18s ease}
+#work .projects-back:hover::before,#work .projects-back:focus-visible::before{transform:translateX(-3px)}
+#work .projects-back:hover,#work .projects-back:focus-visible{color:#116f75;background:rgba(230,252,250,.86);border-color:#43aeb0;box-shadow:0 5px 14px rgba(28,114,118,.16),inset 0 0 0 1px rgba(255,255,255,.72);transform:translateY(-1px)}
 
 /* Cyan is the shared interaction color across both media players. */
 .cinema-header .close:hover{background:#48b8be;color:#fff}
@@ -256,6 +295,11 @@ button,input{font-family:var(--body)}
   #experience>.game-nav a,.game-nav .menu-settings{border-radius:10px}
   .content-shell{border-radius:14px}
   #work .projects{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #work .projects.projects-grouped{grid-template-columns:1fr 1fr;min-height:0}
+  #work .project-group-music{grid-column:1/-1}
+  #work .project-group-music .project-group-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:1fr}
+  #work .filters button{padding-inline:10px}
+  #work .filters button span{font-size:8px}
 }
 @media(max-width:560px){
   #experience>.game-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
@@ -263,6 +307,14 @@ button,input{font-family:var(--body)}
   #experience>.experience-title h1{font-size:clamp(24px,6.5vw,34px)}
   #experience>.game-nav a:last-of-type{grid-column:1/-1}
   #work .projects{grid-template-columns:1fr}
+  #work .projects.projects-grouped{grid-template-columns:1fr}
+  #work .project-group-music{grid-column:auto}
+  #work .project-group-sound .project-group-grid,#work .project-group-music .project-group-grid{grid-template-columns:1fr;grid-template-rows:none}
+  #work .project-group .project{min-height:74px}
+  #work .project-group-technical .project{min-height:170px}
+  #work .section-heading{align-items:flex-start}
+  #work .filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+  #work .filters button{justify-content:flex-start;width:100%;padding-inline:12px}
   #about>div:last-child{padding:17px}
 }
 @media(prefers-reduced-motion:reduce){#work .project-art video{transition:none}}
