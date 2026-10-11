@@ -283,6 +283,10 @@
   previous.innerHTML = icons.previous;
   next.innerHTML = icons.next;
   mute.innerHTML = icons.sound;
-  setTrack(0, false);
+  title.textContent = tracks[0][0];
+  number.textContent = '01 / ' + String(tracks.length).padStart(2, '0');
+  trackList.firstElementChild?.classList.add('active');
+  trackList.firstElementChild?.setAttribute('aria-current', 'true');
+  sync();
   new ResizeObserver(resizeCanvas).observe(canvas);
 })();

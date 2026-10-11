@@ -2,12 +2,12 @@
 const $ = s => document.querySelector(s);
 const projects = [
  {title:'ASTRALE',detail:'Producer · Composer',meta:'Original music project',kind:'music',player:'music',thumb:'social-preview.png'},
- {title:'VALORANT',detail:'Music Producer · Sunset map',meta:'Interactive in-game music stems · Riot Games',kind:'music',src:'video/work/valorant-sunset-map-music.mov'},
- {title:'CODE RED',detail:'Lead Sound Designer · Composer',meta:'GOOD1 Studios · Unreal Engine 5 · Wwise',kind:'sound',src:'video/work/code-red-slot-machine.mov'},
- {title:'Deadline Delivery',detail:'Lead Sound Designer · Composer',meta:'End-to-end game audio · GOOD1 Studios',kind:'sound',src:'video/work/deadline-delivery.mov'},
- {title:'Deadline Delivery',detail:'Velocity-driven Doppler system',meta:'Wwise RTPC · Relative velocity · UE5 Blueprints',kind:'technical',player:'technical',src:'video/work/deadline-doppler-pass-01.mp4'},
- {title:'Apex Legends',detail:'Sound redesign study',meta:'Independent gameplay audio redesign',kind:'sound',src:'video/work/apex-redesign.mp4'},
- {title:'Marathon',detail:'Sound redesign study',meta:'Independent gameplay audio redesign',kind:'sound',src:'video/work/marathon-sound-redesign.mp4'}
+ {title:'VALORANT',detail:'Music Producer · Sunset map',meta:'Interactive in-game music stems · Riot Games',kind:'music',src:'video/work/valorant-sunset-map-music.mp4',thumb:'images/work/thumbnails/valorant.jpg'},
+ {title:'CODE RED',detail:'Lead Sound Designer · Composer',meta:'GOOD1 Studios · Unreal Engine 5 · Wwise',kind:'sound',src:'video/work/code-red-slot-machine.mp4',thumb:'images/work/thumbnails/code-red.jpg'},
+ {title:'Deadline Delivery',detail:'Lead Sound Designer · Composer',meta:'End-to-end game audio · GOOD1 Studios',kind:'sound',src:'video/work/deadline-delivery.mp4',thumb:'images/work/thumbnails/deadline-delivery.jpg'},
+ {title:'Deadline Delivery',detail:'Velocity-driven Doppler system',meta:'Wwise RTPC · Relative velocity · UE5 Blueprints',kind:'technical',player:'technical',src:'video/work/deadline-doppler-pass-01.mp4',thumb:'images/work/thumbnails/deadline-doppler.jpg'},
+ {title:'Apex Legends',detail:'Sound redesign study',meta:'Independent gameplay audio redesign',kind:'sound',src:'video/work/apex-redesign.mp4',thumb:'images/work/thumbnails/apex.jpg'},
+ {title:'Marathon',detail:'Sound redesign study',meta:'Independent gameplay audio redesign',kind:'sound',src:'video/work/marathon-sound-redesign.mp4',thumb:'images/work/thumbnails/marathon.jpg'}
 ];
 const projectGlyphs={
  sound:'<svg class="project-play" viewBox="0 0 28 24" aria-hidden="true"><circle cx="14" cy="12" r="2" fill="currentColor"/><path d="M10.2 8.2a5.4 5.4 0 0 0 0 7.6m7.6-7.6a5.4 5.4 0 0 1 0 7.6M6.8 4.8a10.2 10.2 0 0 0 0 14.4m14.4-14.4a10.2 10.2 0 0 1 0 14.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
@@ -17,7 +17,7 @@ const projectGlyphs={
 const projectGroupNames={sound:'Sound Design',technical:'Technical Audio',music:'Music'};
 function makeProject(p){
  const b=document.createElement('button');b.className='project project-'+p.kind;b.dataset.kind=p.kind;b.setAttribute('aria-label','Play '+p.title+' — '+p.detail);
- const thumbnail=p.src?`<video class="project-thumbnail" muted playsinline preload="metadata" aria-hidden="true" tabindex="-1"><source src="${p.src}#t=0.1"></video>`:p.thumb?`<img class="project-thumbnail" src="${p.thumb}" alt="" aria-hidden="true">`:'';
+ const thumbnail=p.thumb?`<img class="project-thumbnail" src="${p.thumb}" alt="" loading="lazy" decoding="async" aria-hidden="true">`:'';
  b.innerHTML=`${thumbnail}${projectGlyphs[p.kind]}<span class="project-info"><h3>${p.title}</h3><p>${p.detail}</p><small>${p.meta}</small></span>`;
  b.onclick=()=>p.player==='music'?window.ASTRALE_MUSIC.open():p.player==='technical'?openTechnicalCase():window.ASTRALE_REEL.open({src:p.src,title:p.title+' / '+p.detail});
  return b;

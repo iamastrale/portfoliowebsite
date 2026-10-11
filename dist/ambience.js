@@ -118,7 +118,6 @@
         else if(context.state==='interrupted'&&wanted)recover();
       });
     }
-    for(let index=0;index<8;index++)loadNote(index).catch(()=>{});
     // Autoplay can be denied until a gesture. Still decode and prepare the loop.
     context.resume().catch(()=>{});
     if(!bufferPromise){
