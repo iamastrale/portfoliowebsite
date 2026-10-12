@@ -24,7 +24,9 @@ function makeProject(p){
 }
 function renderProjects(filter='all') {
  const container=$('#projects');container.replaceChildren();
- const heading=$('#work h2');heading.innerHTML=(filter==='all'?'Work':projectGroupNames[filter])+'<span>.</span>';
+ const headingWrap=$('#work .section-heading'),heading=$('#work h2');
+ headingWrap.hidden=filter==='all';
+ if(filter!=='all')heading.innerHTML=projectGroupNames[filter]+'<span>.</span>';
  container.className='projects '+(filter==='all'?'projects-grouped':'projects-filtered projects-filtered-'+filter);
  if(filter==='all'){
   for(const kind of ['sound','technical','music']){
