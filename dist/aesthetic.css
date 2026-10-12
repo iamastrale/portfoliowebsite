@@ -260,6 +260,11 @@ button,input{font-family:var(--body)}
 #work .projects-back:hover::before,#work .projects-back:focus-visible::before{transform:translateX(-3px)}
 #work .projects-back:hover,#work .projects-back:focus-visible{color:#116f75;background:rgba(230,252,250,.86);border-color:#43aeb0;box-shadow:0 5px 14px rgba(28,114,118,.16),inset 0 0 0 1px rgba(255,255,255,.72);transform:translateY(-1px)}
 
+@media(min-width:901px){
+  #work.work-overview{display:flex;height:100%;padding-bottom:0}
+  #work.work-overview .projects-grouped{flex:1;min-height:0}
+}
+
 /* Cyan is the shared interaction color across both media players. */
 .cinema-header .close:hover{background:#48b8be;color:#fff}
 .cinema-center,#reelPlay{background:#3aaeb4}

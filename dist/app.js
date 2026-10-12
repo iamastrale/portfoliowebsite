@@ -24,6 +24,7 @@ function makeProject(p){
 }
 function renderProjects(filter='all') {
  const container=$('#projects');container.replaceChildren();
+ $('#work').classList.toggle('work-overview',filter==='all');
  const headingWrap=$('#work .section-heading'),heading=$('#work h2');
  headingWrap.hidden=filter==='all';
  if(filter!=='all')heading.innerHTML=projectGroupNames[filter]+'<span>.</span>';
