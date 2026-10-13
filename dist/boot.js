@@ -3,6 +3,13 @@
   const overlay=document.getElementById('bootSequence');
   const menu=document.getElementById('experience');
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  const directView=['reel','work','about','credits','settings'].includes(location.hash.slice(1));
+  if(directView){
+    document.body.classList.remove('booting');
+    menu.inert=false;
+    overlay.remove();
+    return;
+  }
   const startup=new Audio(window.ASTRALE_SOUNDS?.startup||'sounds/startup.mp3');
   const startupRate=2**(5/12);
   startup.preload='auto';startup.volume=.2;startup.playbackRate=startupRate;startup.defaultPlaybackRate=startupRate;
