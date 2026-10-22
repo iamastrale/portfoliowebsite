@@ -227,7 +227,6 @@
 #settings .volume span,#settings .volume input{position:relative}
 #settings .volume input{width:100%;height:30px;accent-color:var(--accent);cursor:pointer}
 #settings .volume:hover{border-left-color:var(--accent);background:#ffffffd9}
-#settings #soundStatus{min-height:22px;margin:0;padding:0 4px}
 @media(max-width:600px){#experience #settings>h2{margin-bottom:18px}.settings-panel{gap:10px}#settings .settings-toggle{height:58px;padding-left:44px;font-size:12px}#settings .volume{grid-template-columns:1fr;gap:8px;min-height:82px;padding:14px 16px}}
 
 /* Prominent profile document action. */
@@ -312,7 +311,6 @@
 #settings .settings-toggle[aria-pressed=true]:before{border-color:var(--accent);background:var(--accent);box-shadow:0 0 12px #d9223277}
 #settings .settings-toggle[aria-pressed=true]:after{content:"ONLINE";color:var(--accent)}
 #settings .settings-toggle:hover{border-color:var(--accent);background:#fff}
-#settings #soundStatus{min-height:22px;margin:14px 0 0;font:11px/22px var(--mono);letter-spacing:.25px}
 @media(max-width:520px){#settings .settings-toggle{height:54px;padding-right:98px;font-size:12px}#settings .settings-toggle:after{right:14px}}
 
 /* Keep the presentation screen-like rather than selectable document text. */
