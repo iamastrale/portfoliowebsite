@@ -1,4 +1,4 @@
-// Pointer velocity drives both the ambient pitch and a lightweight shockwave graphic.
+// Pointer velocity drives the lightweight shockwave graphic.
 (() => {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = matchMedia('(pointer: fine)');
@@ -21,7 +21,7 @@
   let frame = 0;
   let lastFrame = performance.now();
   let lastVelocitySignal = -1;
-  let initialized = !document.body.classList.contains('booting') && !document.getElementById('bootSequence');
+  let initialized = true;
 
   function enabled() {
     return initialized && finePointer.matches && !reduced.matches;
@@ -104,10 +104,6 @@
     pointer.targetSpeed = 0;
   });
   document.addEventListener('visibilitychange', () => { if (document.hidden) reset(); });
-  window.addEventListener('bootcomplete', () => {
-    initialized = true;
-    reset();
-  }, { once: true });
   reduced.addEventListener('change', () => { if (!enabled()) reset(); });
   finePointer.addEventListener('change', () => { if (!enabled()) reset(); });
   frame = requestAnimationFrame(animate);

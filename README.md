@@ -20,11 +20,9 @@ dist/
   index.html
   style.css
   app.js
-  ambience.js
   hologram.js
   sound-config.js
   sounds/
-    atmosphere.mp3
     hover.mp3
     click.mp3
 ```
@@ -50,7 +48,7 @@ Serve `dist` with any static web server. For example, if Python is installed:
 python -m http.server 8000 --directory dist
 ```
 
-Then open http://localhost:8000. Use a web server rather than double-clicking `index.html`; background audio uses fetch and decoding that require an HTTP origin.
+Then open http://localhost:8000.
 
 ## Customize
 
@@ -58,9 +56,8 @@ Then open http://localhost:8000. Use a web server rather than double-clicking `i
 - `dist/app.js`: project titles, categories, and YouTube IDs.
 - `dist/style.css`: colors, typography, layout, and menu motion.
 - `dist/hologram.js`: interactive wireframe animation.
-- `dist/ambience.js`: ambient loop and mouse pitch behavior.
 - `dist/sound-config.js`: default hover/click sound paths.
 
-All three provided audio files are included. Google Fonts, YouTube embeds, and YouTube thumbnails require an internet connection. Sound defaults to on; browsers that block autoplay wait for the first interaction before starting audio. Sound settings previews are local to the current tab; to change the website's defaults, edit the files and commit them.
+The interface sound files are included. Google Fonts, YouTube embeds, and YouTube thumbnails require an internet connection. Interface sound defaults to on and begins only after interaction. Sound settings are local to the current tab; to change the website's defaults, edit the files and commit them.
 
 See [CUSTOMIZATION.md](CUSTOMIZATION.md) for implementation and audio details.

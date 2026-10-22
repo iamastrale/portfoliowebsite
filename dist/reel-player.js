@@ -151,7 +151,7 @@
  video.addEventListener('pause',()=>{sync();stopSampling()});
  video.addEventListener('seeked',sample);
  video.addEventListener('playing',()=>status());
- video.addEventListener('error',()=>{status('Video could not load. Please close the player and try again.');stopSampling();window.ASTRALE_AMBIENCE.duck(false)});
+ video.addEventListener('error',()=>{status('Video could not load. Please close the player and try again.');stopSampling()});
  document.addEventListener('visibilitychange',sampling);
  reduced.addEventListener('change',()=>{if(reduced.matches){clearReveal();glow=false;stopSampling();clearGlow();sync()}});
  dialog.addEventListener('keydown',event=>{
@@ -164,7 +164,6 @@
    video.pause();stopSampling();clearGlow();clearReveal();
    shell.classList.remove('cinema-preroll','cinema-ready');clearMenuTransition();opening=false;
    if(document.fullscreenElement===shell)document.exitFullscreen().catch(()=>{});
-   window.ASTRALE_AMBIENCE.duck(false);
    prepareReveal();
  });
  window.ASTRALE_PLAYER_TRANSITION={fragmentMenu,clearMenuTransition};
@@ -172,7 +171,7 @@
  if(opening||dialog.open)return;
    const revision=++openRevision;
    const source=options.src||defaultSource,title=options.title||'Showreel',poster=options.poster===undefined?(source===defaultSource?defaultPoster:''):options.poster;
-   opening=true;window.ASTRALE_PLAY_SOUND?.('videoClick');status();video.pause();video.src=source;video.poster=poster;video.load();video.currentTime=0;playerTitle.textContent=title;video.setAttribute('aria-label',title);window.ASTRALE_AMBIENCE.duck(true);sync();
+   opening=true;window.ASTRALE_PLAY_SOUND?.('videoClick');status();video.pause();video.src=source;video.poster=poster;video.load();video.currentTime=0;playerTitle.textContent=title;video.setAttribute('aria-label',title);sync();
    await fragmentMenu();
    if(revision!==openRevision)return;
    window.ASTRALE_PLAY_SOUND?.('videoLoad');

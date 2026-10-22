@@ -100,21 +100,17 @@ technicalCase.querySelectorAll('.technical-player').forEach(player=>{
 function openTechnicalCase(){
  if(technicalCase.open)return;
  window.ASTRALE_PLAY_SOUND?.('videoClick');
- window.ASTRALE_AMBIENCE?.duck(true);
  technicalCase.showModal();
  technicalCase.querySelector('video')?.focus({preventScroll:true});
 }
 technicalCase.addEventListener('close',()=>{
  technicalCase.querySelectorAll('video').forEach(video=>video.pause());
- window.ASTRALE_AMBIENCE?.duck(false);
 });
 let enabled=false,volume=.6,ctx,lastHover=0;const sounds={...window.ASTRALE_SOUNDS},activeAudio=new Set();
 function stopSounds(){activeAudio.forEach(a=>{a.pause();a.currentTime=0});activeAudio.clear();if(ctx&&ctx.state==='running')ctx.suspend().catch(()=>{})}
-function syncSoundLabels(){for(const button of [$('#soundToggle')]){button.setAttribute('aria-pressed',enabled);button.textContent=enabled?'Sound on':'Sound off'}}
-function setSound(value,cue=true){enabled=value;window.ASTRALE_AMBIENCE.enable(enabled);syncSoundLabels();if(enabled&&cue)playSound('open');else if(!enabled)stopSounds()}
+function syncSoundLabels(){for(const button of [$('#soundToggle')]){button.setAttribute('aria-pressed',enabled);button.textContent=enabled?'Interface sound on':'Interface sound off'}}
+function setSound(value,cue=true){enabled=value;syncSoundLabels();if(enabled&&cue)playSound('open');else if(!enabled)stopSounds()}
 $('#soundToggle').onclick=()=>setSound(!enabled);
-
-window.addEventListener('atmospherestate',syncSoundLabels);
 $('#volume').oninput=e=>{volume=Number(e.target.value);activeAudio.forEach(a=>a.volume=volume)};
 function playSound(type,force=false){if((!enabled&&!force)||document.hidden||document.querySelector('dialog[open]'))return;
  if(sounds[type]){const audio=new Audio(sounds[type]);audio.volume=volume;activeAudio.add(audio);audio.onended=()=>activeAudio.delete(audio);audio.play().catch(()=>{activeAudio.delete(audio);$('#soundStatus').textContent='That sound could not play. Please try again.'});return}
@@ -185,11 +181,11 @@ async function showView(id,focus=true){
  }
 }
 function navigate(id,focus=true){history.pushState(null,'','#'+id);showView(id,focus)}
-function enter(id='reel'){
- if(entered||document.body.classList.contains('booting'))return;
- entered=true;window.ASTRALE_AMBIENCE.enable(enabled);
+function enter(id='reel',cue=true){
+ if(entered)return;
+ entered=true;
  document.querySelector('#experience').inert=false;
- navigate(id);playSound('open');
+ navigate(id);if(cue)playSound('open');
 }
 document.querySelectorAll('[data-view]').forEach(a=>a.addEventListener('click',e=>{
  e.preventDefault();
@@ -220,7 +216,4 @@ document.addEventListener('keydown',event=>{
 
 window.addEventListener('hashchange',()=>{if(entered)showView(location.hash.slice(1))});
 document.querySelector('.brand')?.addEventListener('click',e=>{e.preventDefault();navigate('reel')});
-if(document.body.classList.contains('booting'))window.addEventListener('bootcomplete',()=>{
- setSound(true,false);enter(location.hash.slice(1)||'reel');
-},{once:true});
-else{setSound(true,false);enter(location.hash.slice(1)||'reel')}
+setSound(true,false);enter(location.hash.slice(1)||'reel',false);

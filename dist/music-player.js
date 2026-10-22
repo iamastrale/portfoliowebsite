@@ -248,7 +248,6 @@
     animationFrame = 0;
     openingRevision++;
     window.ASTRALE_PLAYER_TRANSITION?.clearMenuTransition();
-    window.ASTRALE_AMBIENCE.duck(false);
     opening = false;
   });
 
@@ -260,7 +259,6 @@
       ensureAudioGraph();
       setTrack(current, false);
       window.ASTRALE_PLAY_SOUND?.('videoClick');
-      window.ASTRALE_AMBIENCE.duck(true);
       await window.ASTRALE_PLAYER_TRANSITION.fragmentMenu();
       if (revision !== openingRevision) return;
       window.ASTRALE_PLAY_SOUND?.('videoLoad');

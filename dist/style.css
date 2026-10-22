@@ -482,8 +482,9 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text}
 }
 
 /* One continuous portfolio screen: identity and vertical tabs left, content right. */
-.booting #experience{opacity:0;pointer-events:none}
-#experience{--panel-height:min(660px,calc(100dvh - 176px));grid-template-columns:clamp(300px,29vw,450px) minmax(0,1fr);grid-template-rows:88px auto minmax(0,1fr) 52px;grid-template-areas:"header header" "title content" "nav content" "footer footer";column-gap:clamp(32px,4vw,68px);transition:opacity .75s ease}
+#experience{--panel-height:min(660px,calc(100dvh - 176px));grid-template-columns:clamp(300px,29vw,450px) minmax(0,1fr);grid-template-rows:88px auto minmax(0,1fr) 52px;grid-template-areas:"header header" "title content" "nav content" "footer footer";column-gap:clamp(32px,4vw,68px);animation:site-entry .65s cubic-bezier(.16,1,.3,1) both}
+@keyframes site-entry{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){#experience{animation:none}}
 #experience>.experience-title{grid-area:title;width:100%;align-self:end;padding-top:8px}
 #experience>.experience-title>p{margin:0 0 14px;font-size:10px;letter-spacing:2px}
 #experience>.experience-title h1{font-size:clamp(31px,3.2vw,52px);line-height:1.04;letter-spacing:-.07em;animation:none}
