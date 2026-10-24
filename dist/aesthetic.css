@@ -27,18 +27,16 @@ button,input{font-family:var(--body)}
 .atmosphere:after{width:22vw;height:32vw;left:-8vw;bottom:-9vw;background:#91aeb932}
 #hologram{opacity:.67;mix-blend-mode:multiply}
 
-/* Native cursor with a motion- and click-responsive shockwave. */
+/* Native cursor with a motion-responsive shockwave. */
 #hologram{display:none}
-.astrale-shockwave,.astrale-click-wave{position:fixed;left:0;top:0;z-index:299;pointer-events:none;translate:-50% -50%;border-radius:50%}
+.astrale-shockwave{position:fixed;left:0;top:0;z-index:299;pointer-events:none;translate:-50% -50%;border-radius:50%}
 .astrale-shockwave{width:32px;height:32px;opacity:0;will-change:transform,opacity}
 .astrale-shockwave.is-visible{opacity:calc(.18 + var(--wave-energy,0) * .82)}
 .astrale-shockwave i{position:absolute;border:1px solid #2da8ad;border-radius:50%;box-shadow:0 0 12px #48b8be52;transform-origin:center}
 .astrale-shockwave i:nth-child(1){inset:7px;transform:scale(calc(.8 + var(--wave-energy,0) * .55));background:#48b8be12}
 .astrale-shockwave i:nth-child(2){inset:2px;border-color:#48b8bea6;transform:scale(calc(.88 + var(--wave-energy,0) * .78));opacity:.74}
 .astrale-shockwave i:nth-child(3){inset:-5px;border-color:#48b8be66;transform:scale(calc(.8 + var(--wave-energy,0) * 1.15));opacity:.48}
-.astrale-click-wave{width:30px;height:30px;margin:-15px 0 0 -15px;translate:none;border:1px solid #2da8ad;box-shadow:0 0 18px #48b8be70,inset 0 0 10px #48b8be32;animation:astrale-click-wave .72s cubic-bezier(.16,.72,.28,1) both}
-@keyframes astrale-click-wave{0%{opacity:.95;scale:.55}55%{opacity:.45}100%{opacity:0;scale:4.8}}
-@media(pointer:coarse),(prefers-reduced-motion:reduce){.astrale-shockwave,.astrale-click-wave{display:none!important}}
+@media(pointer:coarse),(prefers-reduced-motion:reduce){.astrale-shockwave{display:none!important}}
 
 /* Identity and navigation */
 .title-lockup>p,#experience>.experience-title>p{color:#667476;letter-spacing:.24em}
@@ -161,7 +159,7 @@ button,input{font-family:var(--body)}
 #about .about-copy{display:flex;flex-direction:column;gap:9px}
 #about .about-intro{display:grid;grid-template-columns:116px minmax(0,1fr);gap:21px;align-items:center;margin-bottom:2px}
 #about .about-portrait{display:block;width:116px;aspect-ratio:1;border:2px solid #70bec0;border-radius:50%;overflow:hidden;background:#152123;box-shadow:0 10px 28px #1f646b24}
-#about .about-portrait img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 42%;filter:saturate(1.22) contrast(1.08) brightness(1.12)}
+#about .about-portrait img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 42%;filter:none}
 #about .about-intro .large-copy{margin:0;font-size:clamp(18px,1.85vw,26px);line-height:1.32}
 #about .about-copy>p{margin:0!important;max-width:850px!important;font-size:clamp(11px,.86vw,13px)!important;line-height:1.58!important}
 #about .about-highlight{color:#208d93;font-weight:700}
@@ -211,6 +209,7 @@ button,input{font-family:var(--body)}
 #work .project-technical{--project-accent:#e06470;--project-glow:#e0647032}
 #work .project-music{--project-accent:#9a78d0;--project-glow:#9a78d034}
 #work .project-thumbnail{opacity:.78;filter:grayscale(.15) saturate(.62) contrast(1.08) brightness(.72) hue-rotate(7deg)}
+#work .project-preview-video{display:block}
 #work .project:before{display:block;content:"";position:absolute;z-index:1;inset:0;background:linear-gradient(90deg,#071113e8 0%,#0d1721bd 56%,#07111373 100%),linear-gradient(0deg,#0711138f,transparent 72%);opacity:1;transition:opacity .25s;pointer-events:none}
 #work .project-sound:before{background:linear-gradient(90deg,#071113e8 0%,#123336c4 58%,#143e4075 100%),linear-gradient(0deg,#0711138f,transparent 72%)}
 #work .project-technical:before{background:linear-gradient(90deg,#100b0de8 0%,#3d1d24c7 58%,#5d263175 100%),linear-gradient(0deg,#10090c91,transparent 72%)}
@@ -338,6 +337,53 @@ button,input{font-family:var(--body)}
   #about .profile-actions{width:100%;max-width:none;flex-basis:100%}
   #about .profile-socials{margin-left:0}
 }
+
+/* Scalable Work browser: discipline navigation stays fixed while project lists grow. */
+#work.work-browser-view{display:flex;flex-direction:column;height:100%;min-height:0;padding-bottom:0;overflow:hidden}
+#work .work-browser{display:grid;grid-template-columns:minmax(172px,.27fr) minmax(0,1fr);gap:13px;flex:1;min-height:0;width:100%;overflow:hidden}
+#work .work-category-nav{display:grid;align-content:start;gap:8px;min-width:0;padding:10px;border:1px solid #b5c4c183;border-radius:13px;background:linear-gradient(180deg,#f8faf8c7,#eaf1ef8f);overflow:auto}
+#work .work-category{--category-accent:#48b8be;position:relative;display:flex;align-items:center;gap:11px;width:100%;min-height:75px;padding:13px 12px;border:1px solid #aebfbe78;border-left:3px solid transparent;border-radius:9px;background:#ffffff8f;color:#53666b;text-align:left;overflow:hidden;transition:transform .18s ease,color .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease}
+#work .work-category-technical{--category-accent:#e06470}
+#work .work-category-music{--category-accent:#9a78d0}
+#work .work-category:before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,color-mix(in srgb,var(--category-accent) 13%,transparent),transparent 62%);opacity:0;transition:opacity .18s ease;pointer-events:none}
+#work .work-category:hover,#work .work-category:focus-visible{color:#243438;border-color:color-mix(in srgb,var(--category-accent) 64%,#aebfbe);transform:translateX(2px)}
+#work .work-category.active{color:#17282b;border-color:color-mix(in srgb,var(--category-accent) 74%,#9eb1b0);border-left-color:var(--category-accent);background:#ffffffd1;box-shadow:0 8px 22px color-mix(in srgb,var(--category-accent) 17%,transparent)}
+#work .work-category.active:before,#work .work-category:hover:before,#work .work-category:focus-visible:before{opacity:1}
+#work .work-category-icon{position:relative;z-index:1;width:28px;height:25px;flex:0 0 28px;color:var(--category-accent)}
+#work .work-category>span{position:relative;z-index:1;display:grid;gap:5px;min-width:0}
+#work .work-category strong{font:700 10px/1.2 var(--display);letter-spacing:-.02em;text-transform:uppercase}
+#work .work-category small{color:#6d7d81;font:700 7px/1 var(--mono);letter-spacing:.11em;text-transform:uppercase}
+#work .work-project-panel{--panel-accent:#48b8be;display:flex;flex-direction:column;min-width:0;min-height:0;padding:12px;border:1px solid #b5c4c183;border-top:3px solid var(--panel-accent);border-radius:13px;background:linear-gradient(180deg,color-mix(in srgb,var(--panel-accent) 7%,#f7f9f6),#f7f9f6d9 30%);overflow:hidden}
+#work .work-project-panel-technical{--panel-accent:#e06470}
+#work .work-project-panel-music{--panel-accent:#9a78d0}
+#work .work-project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(235px,100%),1fr));grid-auto-rows:minmax(120px,auto);align-content:start;gap:10px;min-height:0;padding-right:5px;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--panel-accent) transparent}
+#work .work-project-grid .project{height:100%;min-height:120px;padding:16px;border-radius:10px}
+#work .work-project-grid .project-info h3{font-size:13px;margin-bottom:5px}
+#work .work-project-grid .project-info p{font-size:9px;line-height:1.35}
+#work .work-project-grid .project-info small{display:block;margin-top:7px;color:#8fa4ae;font:600 7px/1.35 var(--mono);letter-spacing:.06em;text-transform:uppercase;text-shadow:0 2px 8px #000}
+
+@media(max-width:900px){
+ #work.work-browser-view{height:auto;min-height:100%}
+ #work .work-browser{grid-template-columns:1fr;grid-template-rows:auto minmax(320px,1fr);overflow:visible}
+ #work .work-category-nav{grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible}
+ #work .work-category{min-height:66px;padding:10px}
+ #work .work-category-icon{width:23px;height:21px;flex-basis:23px}
+ #work .work-project-panel{min-height:360px}
+ #work .work-project-grid{grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible}
+}
+@media(max-width:560px){
+ #work .work-browser{grid-template-rows:auto auto}
+ #work .work-category-nav{gap:6px;padding:7px}
+ #work .work-category{justify-content:center;min-height:58px;padding:9px 7px;border-left-width:1px;border-bottom:3px solid transparent}
+ #work .work-category.active{border-left-color:color-mix(in srgb,var(--category-accent) 74%,#9eb1b0);border-bottom-color:var(--category-accent)}
+ #work .work-category-icon{width:20px;height:18px;flex-basis:20px}
+ #work .work-category strong{font-size:8px}
+ #work .work-category small{display:none}
+ #work .work-project-panel{min-height:0;padding:9px}
+ #work .work-project-grid{grid-template-columns:1fr}
+ #work .work-project-grid .project{min-height:104px}
+}
+@media(prefers-reduced-motion:reduce){#work .work-category,#work .work-category:before{transition:none}}
 @media(prefers-reduced-motion:reduce){#work .project-art video{transition:none}}
 
 /* Technical audio case study */

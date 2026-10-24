@@ -1,13 +1,14 @@
 'use strict';
 const $ = s => document.querySelector(s);
 const projects = [
- {title:'ASTRALE',detail:'Producer · Composer',meta:'Original music project',kind:'music',player:'music',thumb:'social-preview.png'},
- {title:'VALORANT',detail:'Music Producer · Sunset map',meta:'Interactive in-game music stems · Riot Games',kind:'music',src:'video/work/valorant-sunset-map-music.mp4',thumb:'images/work/thumbnails/valorant.jpg'},
- {title:'CODE RED',detail:'Lead Sound Designer · Composer',meta:'GOOD1 Studios · Unreal Engine 5 · Wwise',kind:'sound',src:'video/work/code-red-slot-machine.mp4',thumb:'images/work/thumbnails/code-red.jpg'},
- {title:'Deadline Delivery',detail:'Lead Sound Designer · Composer',meta:'End-to-end game audio · GOOD1 Studios',kind:'sound',src:'video/work/deadline-delivery.mp4',thumb:'images/work/thumbnails/deadline-delivery.jpg'},
- {title:'Deadline Delivery',detail:'Velocity-driven Doppler system',meta:'Wwise RTPC · Relative velocity · UE5 Blueprints',kind:'technical',player:'technical',src:'video/work/deadline-doppler-pass-01.mp4',thumb:'images/work/thumbnails/deadline-doppler.jpg'},
- {title:'Apex Legends',detail:'Sound redesign study',meta:'Independent gameplay audio redesign',kind:'sound',src:'video/work/apex-redesign.mp4',thumb:'images/work/thumbnails/apex.jpg'},
- {title:'Marathon',detail:'Sound redesign study',meta:'Independent gameplay audio redesign',kind:'sound',src:'video/work/marathon-sound-redesign.mp4',thumb:'images/work/thumbnails/marathon.jpg'}
+ {title:'ASTRALE',detail:'Artist',meta:'',kind:'music',player:'music',thumb:'social-preview.png'},
+ {title:'VALORANT',detail:'Music Producer · Sunset Map',meta:'',kind:'music',src:'video/work/valorant-sunset-map-music.mp4',thumb:'images/work/thumbnails/valorant.jpg'},
+ {title:'CODE RED',detail:'Gameplay',meta:'Lead Sound Designer · Composer',kind:'sound',src:'video/work/code-red-gameplay.mov?v=gameplay-2026-10-20',preview:'video/work/code-red-gameplay.mov?v=gameplay-2026-10-20'},
+ {title:'CODE RED',detail:'Slot Machine Audio Implementation',meta:'Lead Sound Designer · Composer',kind:'sound',src:'video/work/code-red-slot-machine.mp4',preview:'video/work/code-red-slot-machine.mp4'},
+ {title:'Deadline Delivery',detail:'Gameplay',meta:'Lead Sound Designer · Composer',kind:'sound',src:'video/work/deadline-delivery.mp4',thumb:'images/work/thumbnails/deadline-delivery.jpg'},
+ {title:'Deadline Delivery',detail:'Velocity-Driven Doppler System',meta:'',kind:'technical',player:'technical',src:'video/work/deadline-doppler-pass-01.mp4',thumb:'images/work/thumbnails/deadline-doppler.jpg'},
+ {title:'Apex Legends',detail:'Sound Redesign',meta:'',kind:'sound',src:'video/work/apex-redesign.mp4',thumb:'images/work/thumbnails/apex.jpg'},
+ {title:'Marathon',detail:'Sound Redesign',meta:'',kind:'sound',src:'video/work/marathon-sound-redesign.mp4',thumb:'images/work/thumbnails/marathon.jpg'}
 ];
 const projectGlyphs={
  sound:'<svg class="project-play" viewBox="0 0 28 24" aria-hidden="true"><circle cx="14" cy="12" r="2" fill="currentColor"/><path d="M10.2 8.2a5.4 5.4 0 0 0 0 7.6m7.6-7.6a5.4 5.4 0 0 1 0 7.6M6.8 4.8a10.2 10.2 0 0 0 0 14.4m14.4-14.4a10.2 10.2 0 0 1 0 14.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
@@ -15,34 +16,37 @@ const projectGlyphs={
  music:'<svg class="project-play" viewBox="0 0 28 24" aria-hidden="true"><rect x="3" y="9" width="3" height="6" rx="1" fill="currentColor"/><rect x="8" y="5" width="3" height="14" rx="1" fill="currentColor"/><rect x="13" y="8" width="3" height="8" rx="1" fill="currentColor"/><rect x="18" y="3" width="3" height="18" rx="1" fill="currentColor"/><rect x="23" y="10" width="2" height="4" rx="1" fill="currentColor"/></svg>'
 };
 const projectGroupNames={sound:'Sound Design',technical:'Technical Audio',music:'Music'};
+const workKinds=['sound','technical','music'];
+let currentWorkFilter='sound';
 function makeProject(p){
  const b=document.createElement('button');b.className='project project-'+p.kind;b.dataset.kind=p.kind;b.setAttribute('aria-label','Play '+p.title+' — '+p.detail);
- const thumbnail=p.thumb?`<img class="project-thumbnail" src="${p.thumb}" alt="" loading="lazy" decoding="async" aria-hidden="true">`:'';
- b.innerHTML=`${thumbnail}${projectGlyphs[p.kind]}<span class="project-info"><h3>${p.title}</h3><p>${p.detail}</p><small>${p.meta}</small></span>`;
+ const thumbnail=p.preview?`<video class="project-thumbnail project-preview-video" muted loop playsinline autoplay preload="metadata" aria-hidden="true" tabindex="-1"><source src="${p.preview}"></video>`:p.thumb?`<img class="project-thumbnail" src="${p.thumb}" alt="" loading="lazy" decoding="async" aria-hidden="true">`:'';
+ const meta=p.meta?`<small>${p.meta}</small>`:'';
+ b.innerHTML=`${thumbnail}${projectGlyphs[p.kind]}<span class="project-info"><h3>${p.title}</h3><p>${p.detail}</p>${meta}</span>`;
  b.onclick=()=>p.player==='music'?window.ASTRALE_MUSIC.open():p.player==='technical'?openTechnicalCase():window.ASTRALE_REEL.open({src:p.src,title:p.title+' / '+p.detail});
  return b;
 }
-function renderProjects(filter='all') {
+function renderProjects(filter=currentWorkFilter) {
+ if(!workKinds.includes(filter))filter='sound';
+ currentWorkFilter=filter;
  const container=$('#projects');container.replaceChildren();
- $('#work').classList.toggle('work-overview',filter==='all');
- const headingWrap=$('#work .section-heading'),heading=$('#work h2');
- headingWrap.hidden=filter==='all';
- if(filter!=='all')heading.innerHTML=projectGroupNames[filter]+'<span>.</span>';
- container.className='projects '+(filter==='all'?'projects-grouped':'projects-filtered projects-filtered-'+filter);
- if(filter==='all'){
-  for(const kind of ['sound','technical','music']){
-   const group=document.createElement('section');group.className='project-group project-group-'+kind;group.setAttribute('aria-labelledby','project-group-'+kind);
-   const heading=document.createElement('button');heading.type='button';heading.id='project-group-'+kind;heading.className='project-group-heading';heading.setAttribute('aria-label','Show only '+projectGroupNames[kind]+' projects');heading.innerHTML=projectGlyphs[kind].replace('project-play','project-group-icon')+'<span>'+projectGroupNames[kind]+'</span><small>'+String(projects.filter(project=>project.kind===kind).length).padStart(2,'0')+'</small>';heading.onclick=()=>renderProjects(kind);
-   const grid=document.createElement('div');grid.className='project-group-grid';
-   projects.filter(project=>project.kind===kind).forEach(project=>grid.append(makeProject(project)));
-   group.append(heading,grid);container.append(group);
-  }
-  return;
+ const headingWrap=$('#work .section-heading');
+ headingWrap.hidden=true;
+ $('#work').classList.add('work-browser-view');
+ container.className='projects work-browser projects-filtered-'+filter;
+
+ const nav=document.createElement('nav');nav.className='work-category-nav';nav.setAttribute('aria-label','Work categories');nav.setAttribute('role','tablist');
+ for(const kind of workKinds){
+  const button=document.createElement('button');button.type='button';button.className='work-category work-category-'+kind+(kind===filter?' active':'');button.dataset.workKind=kind;button.setAttribute('role','tab');button.setAttribute('aria-selected',String(kind===filter));button.setAttribute('aria-controls','work-project-panel');
+  button.innerHTML=projectGlyphs[kind].replace('project-play','work-category-icon')+'<span><strong>'+projectGroupNames[kind]+'</strong></span>';
+  button.onclick=()=>{renderProjects(kind);document.querySelector('[data-work-kind="'+kind+'"]')?.focus({preventScroll:true})};
+  nav.append(button);
  }
- const state=document.createElement('div');state.className='project-filter-state';
- const back=document.createElement('button');back.type='button';back.className='projects-back';back.textContent='Back';back.setAttribute('aria-label','Back to all work');back.onclick=()=>renderProjects('all');
- state.append(back);container.append(state);
- projects.filter(project=>project.kind===filter).forEach(project=>container.append(makeProject(project)));
+
+ const panel=document.createElement('section');panel.id='work-project-panel';panel.className='work-project-panel work-project-panel-'+filter;panel.setAttribute('role','tabpanel');panel.setAttribute('aria-label',projectGroupNames[filter]);
+ const grid=document.createElement('div');grid.className='work-project-grid';
+ projects.filter(project=>project.kind===filter).forEach(project=>grid.append(makeProject(project)));
+ panel.append(grid);container.append(nav,panel);
 }
 renderProjects();
 const reelPreview=$('#reelHoverPreview');
@@ -145,7 +149,7 @@ function revealMosaic(){
 }
 async function showView(id,focus=true){
  if(!screenIds.includes(id))id='reel';
- if(id==='work')renderProjects('all');
+ if(id==='work')renderProjects();
  const revision=++transitionId;
  clearMosaic();
  screenAnimation?.cancel();

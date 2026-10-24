@@ -62,16 +62,6 @@
     shockwave.style.transform = `translate3d(${x}px,${y}px,0)`;
   }
 
-  function spawnClickWave(x, y) {
-    const ripple = document.createElement('div');
-    ripple.className = 'astrale-click-wave';
-    ripple.style.left = `${x}px`;
-    ripple.style.top = `${y}px`;
-    ripple.setAttribute('aria-hidden', 'true');
-    document.body.append(ripple);
-    ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
-  }
-
   window.addEventListener('pointermove', event => {
     if (!enabled() || event.pointerType === 'touch') return;
     const now = event.timeStamp || performance.now();
@@ -86,16 +76,6 @@
     pointer.lastTime = now;
     pointer.active = true;
     positionAt(event.clientX, event.clientY);
-  }, { passive: true });
-
-  document.addEventListener('pointerdown', event => {
-    if (!enabled() || event.button !== 0 || event.pointerType === 'touch') return;
-    if (event.target.closest?.('button,a,input,label,select,textarea,summary,[role="button"],[contenteditable],video,iframe,dialog')) return;
-    pointer.active = true;
-    pointer.clickEnergy = Math.min(1, pointer.clickEnergy + .9);
-    pointer.targetSpeed = Math.max(pointer.targetSpeed, .35);
-    positionAt(event.clientX, event.clientY);
-    spawnClickWave(event.clientX, event.clientY);
   }, { passive: true });
 
   document.documentElement.addEventListener('pointerleave', () => {
