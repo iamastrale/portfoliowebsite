@@ -341,7 +341,7 @@ button,input{font-family:var(--body)}
 /* Scalable Work browser: discipline navigation stays fixed while project lists grow. */
 #work.work-browser-view{display:flex;flex-direction:column;height:100%;min-height:0;padding-bottom:0;overflow:hidden}
 #work .work-browser{display:grid;grid-template-columns:minmax(172px,.27fr) minmax(0,1fr);gap:13px;flex:1;min-height:0;width:100%;overflow:hidden}
-#work .work-category-nav{display:grid;align-content:start;gap:8px;min-width:0;padding:10px;border:1px solid #b5c4c183;border-radius:13px;background:linear-gradient(180deg,#f8faf8c7,#eaf1ef8f);overflow:auto}
+#work .work-category-nav{display:grid;align-content:start;align-self:stretch;gap:8px;width:100%;height:100%;min-width:0;margin:0;padding:10px;border:1px solid #b5c4c183;border-radius:13px;background:linear-gradient(180deg,#f8faf8c7,#eaf1ef8f);overflow:auto}
 #work .work-category{--category-accent:#48b8be;position:relative;display:flex;align-items:center;gap:11px;width:100%;min-height:75px;padding:13px 12px;border:1px solid #aebfbe78;border-left:3px solid transparent;border-radius:9px;background:#ffffff8f;color:#53666b;text-align:left;overflow:hidden;transition:transform .18s ease,color .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease}
 #work .work-category-technical{--category-accent:#e06470}
 #work .work-category-music{--category-accent:#9a78d0}
