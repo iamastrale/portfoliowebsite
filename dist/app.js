@@ -2,13 +2,13 @@
 const $ = s => document.querySelector(s);
 const projects = [
  {title:'ASTRALE',detail:'Artist',meta:'',kind:'music',player:'music',thumb:'social-preview.png'},
- {title:'VALORANT',detail:'Music Producer · Sunset Map',meta:'',kind:'music',src:'video/work/valorant-sunset-map-music.mp4',thumb:'images/work/thumbnails/valorant.jpg'},
- {title:'CODE RED',detail:'Gameplay',meta:'Lead Sound Designer · Composer',kind:'sound',src:'video/work/code-red-gameplay.mov?v=gameplay-2026-10-20',preview:'video/work/code-red-gameplay.mov?v=gameplay-2026-10-20'},
- {title:'CODE RED',detail:'Slot Machine Audio Implementation',meta:'Lead Sound Designer · Composer',kind:'sound',src:'video/work/code-red-slot-machine.mp4',preview:'video/work/code-red-slot-machine.mp4'},
- {title:'Deadline Delivery',detail:'Gameplay',meta:'Lead Sound Designer · Composer',kind:'sound',src:'video/work/deadline-delivery.mp4',thumb:'images/work/thumbnails/deadline-delivery.jpg'},
- {title:'Deadline Delivery',detail:'Velocity-Driven Doppler System',meta:'',kind:'technical',player:'technical',src:'video/work/deadline-doppler-pass-01.mp4',thumb:'images/work/thumbnails/deadline-doppler.jpg'},
- {title:'Apex Legends',detail:'Sound Redesign',meta:'',kind:'sound',src:'video/work/apex-redesign.mp4',thumb:'images/work/thumbnails/apex.jpg'},
- {title:'Marathon',detail:'Sound Redesign',meta:'',kind:'sound',src:'video/work/marathon-sound-redesign.mp4',thumb:'images/work/thumbnails/marathon.jpg'}
+ {title:'VALORANT',detail:'Music Producer · Sunset Map',meta:'',kind:'music',src:'video/work/valorant-sunset-map-music.mp4',preview:'video/work/valorant-sunset-map-music.mp4',thumb:'images/work/thumbnails/valorant.jpg'},
+ {title:'CODE RED',detail:'Gameplay',meta:'Lead Sound Designer · Composer',kind:'sound',src:'video/work/code-red-gameplay.mov?v=gameplay-2026-10-20',preview:'video/work/code-red-gameplay.mov?v=gameplay-2026-10-20',thumb:'images/work/thumbnails/code-red.jpg'},
+ {title:'CODE RED',detail:'Slot Machine Audio Implementation',meta:'Lead Sound Designer · Composer',kind:'sound',src:'video/work/code-red-slot-machine.mp4',preview:'video/work/code-red-slot-machine.mp4',thumb:'images/work/thumbnails/code-red.jpg'},
+ {title:'Deadline Delivery',detail:'Gameplay',meta:'Lead Sound Designer · Composer',kind:'sound',src:'video/work/deadline-delivery.mp4',preview:'video/work/deadline-delivery.mp4',thumb:'images/work/thumbnails/deadline-delivery.jpg'},
+ {title:'Deadline Delivery',detail:'Velocity-Driven Doppler System',meta:'',kind:'technical',player:'technical',src:'video/work/deadline-doppler-pass-01.mp4',preview:'video/work/deadline-doppler-pass-01.mp4',thumb:'images/work/thumbnails/deadline-doppler.jpg'},
+ {title:'Apex Legends',detail:'Sound Redesign',meta:'',kind:'sound',src:'video/work/apex-redesign.mp4',preview:'video/work/apex-redesign.mp4',thumb:'images/work/thumbnails/apex.jpg'},
+ {title:'Marathon',detail:'Sound Redesign',meta:'',kind:'sound',src:'video/work/marathon-sound-redesign.mp4',preview:'video/work/marathon-sound-redesign.mp4',thumb:'images/work/thumbnails/marathon.jpg'}
 ];
 const projectGlyphs={
  sound:'<svg class="project-play" viewBox="0 0 28 24" aria-hidden="true"><circle cx="14" cy="12" r="2" fill="currentColor"/><path d="M10.2 8.2a5.4 5.4 0 0 0 0 7.6m7.6-7.6a5.4 5.4 0 0 1 0 7.6M6.8 4.8a10.2 10.2 0 0 0 0 14.4m14.4-14.4a10.2 10.2 0 0 1 0 14.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
@@ -18,9 +18,23 @@ const projectGlyphs={
 const projectGroupNames={sound:'Sound Design',technical:'Technical Audio',music:'Music'};
 const workKinds=['sound','technical','music'];
 let currentWorkFilter='sound';
+let workPreviewObserver;
+function observeProjectPreviews(container){
+ workPreviewObserver?.disconnect();
+ const videos=[...container.querySelectorAll('.project-preview-video')];
+ if(!videos.length||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ workPreviewObserver=new IntersectionObserver(entries=>entries.forEach(({target,isIntersecting})=>{if(!isIntersecting)target.pause()}),{root:container.querySelector('.work-project-grid'),threshold:.15});
+ videos.forEach(video=>{
+  const card=video.closest('.project');
+  const play=()=>video.play().catch(()=>{}),pause=()=>video.pause();
+  card.addEventListener('pointerenter',play);card.addEventListener('pointerleave',pause);
+  card.addEventListener('focus',play);card.addEventListener('blur',pause);
+  workPreviewObserver.observe(video);
+ });
+}
 function makeProject(p){
  const b=document.createElement('button');b.className='project project-'+p.kind;b.dataset.kind=p.kind;b.setAttribute('aria-label','Play '+p.title+' — '+p.detail);
- const thumbnail=p.preview?`<video class="project-thumbnail project-preview-video" muted loop playsinline autoplay preload="metadata" aria-hidden="true" tabindex="-1"><source src="${p.preview}"></video>`:p.thumb?`<img class="project-thumbnail" src="${p.thumb}" alt="" loading="lazy" decoding="async" aria-hidden="true">`:'';
+ const thumbnail=p.preview?`<video class="project-thumbnail project-preview-video" muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1"${p.thumb?` poster="${p.thumb}"`:''}><source src="${p.preview}"></video>`:p.thumb?`<img class="project-thumbnail" src="${p.thumb}" alt="" loading="lazy" decoding="async" aria-hidden="true">`:'';
  const meta=p.meta?`<small>${p.meta}</small>`:'';
  b.innerHTML=`${thumbnail}${projectGlyphs[p.kind]}<span class="project-info"><h3>${p.title}</h3><p>${p.detail}</p>${meta}</span>`;
  b.onclick=()=>p.player==='music'?window.ASTRALE_MUSIC.open():p.player==='technical'?openTechnicalCase():window.ASTRALE_REEL.open({src:p.src,title:p.title+' / '+p.detail});
@@ -46,7 +60,7 @@ function renderProjects(filter=currentWorkFilter) {
  const panel=document.createElement('section');panel.id='work-project-panel';panel.className='work-project-panel work-project-panel-'+filter;panel.setAttribute('role','tabpanel');panel.setAttribute('aria-label',projectGroupNames[filter]);
  const grid=document.createElement('div');grid.className='work-project-grid';
  projects.filter(project=>project.kind===filter).forEach(project=>grid.append(makeProject(project)));
- panel.append(grid);container.append(nav,panel);
+ panel.append(grid);container.append(nav,panel);observeProjectPreviews(container);
 }
 renderProjects();
 const reelPreview=$('#reelHoverPreview');
