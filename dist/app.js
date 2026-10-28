@@ -238,7 +238,6 @@ document.addEventListener('keydown',event=>{
 // navigation and content dissolve, reconfigure, and return as a dark archive.
 const modeToggle=$('#modeToggle');
 const portfolioRole=$('#portfolioRole');
-const modeReadout=$('#modeReadout');
 const themeColor=document.querySelector('meta[name="theme-color"]');
 const modeSurfaces=[document.querySelector('.experience-title'),document.querySelector('.game-nav'),document.querySelector('.content-shell')];
 let portfolioMode='sound',modeSwitching=false;
@@ -269,9 +268,9 @@ function applyPortfolioMode(mode){
   link.querySelector(':scope > span:not(.edge-trails)').textContent=item.label;
  });
  portfolioRole.textContent=isMedia?'MULTIMEDIA DESIGNER · GRAPHIC DESIGN · SOUND · VIDEO':'LEAD SOUND DESIGNER · TECHNICAL AUDIO · COMPOSER';
- modeReadout.textContent=isMedia?'MULTIMEDIA':'SOUND';
  modeToggle.setAttribute('aria-pressed',String(isMedia));
- modeToggle.querySelector(':scope > span').textContent=isMedia?'Sound portfolio':'Multimedia';
+ modeToggle.setAttribute('aria-label',isMedia?'Switch to sound mode':'Switch to multimedia mode');
+ modeToggle.querySelector('.mode-toggle-label').textContent=isMedia?'Multimedia':'Sound';
  themeColor?.setAttribute('content',isMedia?'#080a0e':'#48b8be');
 }
 async function switchPortfolioMode(mode,animate=true){
