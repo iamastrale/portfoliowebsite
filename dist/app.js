@@ -137,7 +137,7 @@ function playSound(type,force=false){if((!enabled&&!force)||document.hidden||doc
 }
 window.ASTRALE_PLAY_SOUND=playSound;
 document.addEventListener('pointerover',e=>{if(e.pointerType==='touch')return;const control=e.target.closest('button,a');if(!control||control.contains(e.relatedTarget))return;const now=performance.now();if(now-lastHover>100){lastHover=now;playSound('hover')}});
-document.addEventListener('click',e=>{if(e.target.closest('button,a')&&!e.target.closest('#soundToggle,#playShowreel,.project,[data-view]'))playSound('click')});
+document.addEventListener('click',e=>{if(e.target.closest('button,a')&&!e.target.closest('#soundToggle,#modeToggle,#playShowreel,.project,[data-view]'))playSound('click')});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSounds()});
 
 // Persistent navigation with cancellable, lightweight screen transitions.
@@ -295,7 +295,10 @@ async function switchPortfolioMode(mode,animate=true){
  document.body.classList.remove('mode-transitioning');modeSwitching=false;
  navigationItems.find(item=>!item.hidden&&item.dataset.view===target)?.focus({preventScroll:true});
 }
-modeToggle.onclick=()=>switchPortfolioMode(portfolioMode==='sound'?'multimedia':'sound');
+modeToggle.onclick=()=>{
+ playSound('switch');
+ switchPortfolioMode(portfolioMode==='sound'?'multimedia':'sound');
+};
 
 // Multimedia archive interactions reuse the site's custom cinema player.
 document.querySelectorAll('[data-media-discipline]').forEach(button=>button.addEventListener('click',()=>{
