@@ -293,7 +293,6 @@ async function switchPortfolioMode(mode,animate=true){
  if(animate&&!reduce){requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.remove('mode-switch-out')));await delay(390)}
  else document.body.classList.remove('mode-switch-out');
  document.body.classList.remove('mode-transitioning');modeSwitching=false;
- playSound('open');
  navigationItems.find(item=>!item.hidden&&item.dataset.view===target)?.focus({preventScroll:true});
 }
 modeToggle.onclick=()=>switchPortfolioMode(portfolioMode==='sound'?'multimedia':'sound');
