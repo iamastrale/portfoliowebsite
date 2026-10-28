@@ -306,7 +306,6 @@ document.querySelectorAll('[data-media-discipline]').forEach(button=>button.addE
  const discipline=button.dataset.mediaDiscipline;
  document.querySelectorAll('[data-media-discipline]').forEach(control=>control.setAttribute('aria-selected',String(control===button)));
  document.querySelectorAll('[data-media-panel]').forEach(panel=>panel.hidden=panel.dataset.mediaPanel!==discipline);
- playSound('click');
 }));
 const mediaLightbox=$('#mediaLightbox');
 const mediaLightboxImage=mediaLightbox.querySelector('img');
