@@ -127,7 +127,7 @@ technicalCase.addEventListener('close',()=>{
 });
 let enabled=false,volume=.6,ctx,lastHover=0;const sounds={...window.ASTRALE_SOUNDS},activeAudio=new Set();
 function stopSounds(){activeAudio.forEach(a=>{a.pause();a.currentTime=0});activeAudio.clear();if(ctx&&ctx.state==='running')ctx.suspend().catch(()=>{})}
-function syncSoundLabels(){for(const button of [$('#soundToggle')]){button.setAttribute('aria-pressed',enabled);button.textContent=enabled?'Interface sound on':'Interface sound off'}}
+function syncSoundLabels(){for(const button of [$('#soundToggle')]){button.setAttribute('aria-pressed',enabled);button.textContent='Interface sound'}}
 function setSound(value,cue=true){enabled=value;syncSoundLabels();if(enabled&&cue)playSound('open');else if(!enabled)stopSounds()}
 $('#soundToggle').onclick=()=>setSound(!enabled);
 $('#volume').oninput=e=>{volume=Number(e.target.value);activeAudio.forEach(a=>a.volume=volume)};
