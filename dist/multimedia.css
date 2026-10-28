@@ -5,8 +5,21 @@
 .mode-lever{position:relative;flex:0 0 auto;width:37px;height:20px;border:1px solid #8ba0a2;border-radius:999px;background:#dfe8e7;box-shadow:inset 0 1px 3px #344f5526;transition:background .3s,border-color .3s}
 .mode-lever i{position:absolute;top:3px;left:3px;width:12px;height:12px;border-radius:50%;background:#268f95;box-shadow:0 1px 5px #193e4440;transition:transform .35s cubic-bezier(.16,1,.3,1),background .3s,box-shadow .3s}
 .mode-toggle[aria-pressed=true] .mode-lever i{transform:translateX(17px)}
-.mode-transitioning .experience-title,.mode-transitioning .game-nav,.mode-transitioning .content-shell{pointer-events:none;transition:opacity .34s ease,filter .34s ease,transform .34s cubic-bezier(.16,1,.3,1)!important}
-.mode-switch-out .experience-title,.mode-switch-out .game-nav,.mode-switch-out .content-shell{opacity:0!important;filter:blur(8px)!important;transform:translateY(7px)!important}
+body{transition:background-color .62s ease,color .42s ease}
+.atmosphere{transition:opacity .42s ease,filter .62s ease}
+.mode-transitioning .experience-title,.mode-transitioning .game-nav,.mode-transitioning .content-shell{pointer-events:none}
+.mode-transitioning #portfolioRole,.mode-transitioning .experience-title h1,.mode-transitioning .mode-toggle,.mode-transitioning .game-nav a,.mode-transitioning .content-shell{transition:opacity .32s ease,filter .38s ease,transform .48s cubic-bezier(.16,1,.3,1),color .52s ease,background-color .52s ease,border-color .52s ease!important}
+.mode-transitioning .game-nav a:nth-child(1){transition-delay:0ms!important}
+.mode-transitioning .game-nav a:nth-child(2){transition-delay:24ms!important}
+.mode-transitioning .game-nav a:nth-child(3){transition-delay:48ms!important}
+.mode-transitioning .game-nav a:nth-child(4){transition-delay:72ms!important}
+.mode-transitioning .game-nav a:nth-child(5){transition-delay:96ms!important}
+.mode-switch-out .atmosphere{opacity:.48;filter:blur(4px)}
+.mode-switch-out #portfolioRole{opacity:0;filter:blur(3px);transform:translateY(-4px)}
+.mode-switch-out .experience-title h1{opacity:.68;filter:blur(1.5px);transform:translateY(-2px)}
+.mode-switch-out .mode-toggle{opacity:.72;transform:scale(.97)}
+.mode-switch-out .game-nav a{opacity:.06;filter:blur(4px);transform:translateX(-14px)}
+.mode-switch-out .content-shell{opacity:.22;filter:blur(5px);transform:translateX(10px) scale(.992)!important}
 
 body.mode-multimedia{--bg:#080a0e;--text:#edf1f4;--muted:#89919d;--line:#292e38;--accent:#8db9ff;color:#edf1f4;background:#080a0e}
 body.mode-multimedia .atmosphere{background:radial-gradient(circle at 77% 18%,#2f5f9b2e,transparent 35%),radial-gradient(circle at 26% 80%,#7858a61f,transparent 34%),linear-gradient(145deg,#0b0e14,#050609 76%)}
@@ -94,4 +107,4 @@ body.mode-multimedia #settings .settings-toggle[aria-pressed=true]{color:#b9d4ff
 @media(min-width:901px){.mode-multimedia #experience>.game-nav a{flex:1.08}}
 @media(max-width:900px){.mode-toggle{width:160px;margin:10px 0 0}.media-projects-visual{grid-template-columns:repeat(2,minmax(0,1fr))}.media-art,.media-art-wide{grid-column:auto}.media-art-tall{grid-row:span 2}.media-projects-sound{grid-template-columns:1fr}.media-credit-list>div{grid-template-columns:28px minmax(0,1fr) auto}}
 @media(max-width:560px){.media-discipline-switch button{min-width:0;flex:1}.media-projects-visual{display:block}.media-art,.media-art-tall,.media-art-wide{display:block;width:100%;height:230px;min-height:0;margin-bottom:9px}.media-sound-card{grid-template-columns:1fr;min-height:260px}.media-sound-card img{height:170px}.media-profile{padding:16px 4px}.media-facts>div{grid-template-columns:88px 1fr}.media-profile-links{grid-template-columns:1fr}.media-credit-list>div{grid-template-columns:24px 1fr}.media-credit-list>div>small{grid-column:2;text-align:left}.media-lightbox{padding:12px}.media-lightbox img{max-width:96vw;max-height:84vh}}
-@media(prefers-reduced-motion:reduce){.mode-toggle,.media-art img,.media-sound-card img{transition:none}.mode-transitioning .experience-title,.mode-transitioning .game-nav,.mode-transitioning .content-shell{transition:none!important}.mode-switch-out .experience-title,.mode-switch-out .game-nav,.mode-switch-out .content-shell{filter:none!important}}
+@media(prefers-reduced-motion:reduce){body,.atmosphere,.mode-toggle,.media-art img,.media-sound-card img{transition:none}.mode-transitioning #portfolioRole,.mode-transitioning .experience-title h1,.mode-transitioning .mode-toggle,.mode-transitioning .game-nav a,.mode-transitioning .content-shell{transition:none!important}.mode-switch-out .atmosphere,.mode-switch-out #portfolioRole,.mode-switch-out .experience-title h1,.mode-switch-out .mode-toggle,.mode-switch-out .game-nav a,.mode-switch-out .content-shell{filter:none!important}}

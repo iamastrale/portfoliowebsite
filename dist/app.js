@@ -278,7 +278,7 @@ async function switchPortfolioMode(mode,animate=true){
  modeSwitching=true;document.body.classList.add('mode-transitioning');
  const reduce=transitionMotion.matches;
  const delay=milliseconds=>new Promise(resolve=>setTimeout(resolve,milliseconds));
- if(animate&&!reduce){document.body.classList.add('mode-switch-out');await delay(260)}
+ if(animate&&!reduce){document.body.classList.add('mode-switch-out');await delay(225)}
  applyPortfolioMode(mode);
  const target=mode==='multimedia'?'media-work':'reel';
  history.pushState(null,'','#'+target);
@@ -290,7 +290,7 @@ async function switchPortfolioMode(mode,animate=true){
  document.querySelectorAll('.view').forEach(view=>{view.hidden=view!==next;view.inert=view!==next});
  contentPane.hidden=false;contentPane.scrollTop=0;
  window.dispatchEvent(new CustomEvent('astraleviewopen',{detail:{id:target}}));
- if(animate&&!reduce){requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.remove('mode-switch-out')));await delay(430)}
+ if(animate&&!reduce){requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.remove('mode-switch-out')));await delay(560)}
  else document.body.classList.remove('mode-switch-out');
  document.body.classList.remove('mode-transitioning');modeSwitching=false;
  playSound('open');
