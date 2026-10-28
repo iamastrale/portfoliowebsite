@@ -316,6 +316,9 @@ document.querySelectorAll('[data-media-image]').forEach(button=>button.addEventL
 document.querySelectorAll('[data-media-video]').forEach(button=>button.addEventListener('click',()=>{
  window.ASTRALE_REEL.open({src:button.dataset.mediaVideo,title:button.dataset.mediaTitle});
 }));
+document.querySelectorAll('[data-media-music]').forEach(button=>button.addEventListener('click',()=>{
+ window.ASTRALE_MUSIC.open();
+}));
 
 window.addEventListener('hashchange',()=>{
  if(!entered)return;
