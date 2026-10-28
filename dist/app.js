@@ -296,6 +296,7 @@ async function switchPortfolioMode(mode,animate=true){
  navigationItems.find(item=>!item.hidden&&item.dataset.view===target)?.focus({preventScroll:true});
 }
 modeToggle.onclick=()=>{
+ playSound('click');
  playSound('switch');
  switchPortfolioMode(portfolioMode==='sound'?'multimedia':'sound');
 };
