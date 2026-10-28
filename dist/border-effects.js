@@ -2,7 +2,8 @@
 (() => {
  const panel=document.querySelector('.content-shell');
  const links=[...document.querySelectorAll('[data-view]')];
- const frames=[panel,...links].filter(Boolean);
+ const modeToggle=document.getElementById('modeToggle');
+ const frames=[panel,...links,modeToggle].filter(Boolean);
  const markup='<svg class="edge-trails" aria-hidden="true" focusable="false" preserveAspectRatio="none"><rect class="edge-trail edge-trail-red" pathLength="100"/><rect class="edge-trail edge-trail-blue" pathLength="100"/><rect class="edge-trail edge-trail-sparks" pathLength="100"/></svg>';
  for(const frame of frames)frame.insertAdjacentHTML('beforeend',markup);
 

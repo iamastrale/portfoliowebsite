@@ -141,7 +141,7 @@ document.addEventListener('click',e=>{if(e.target.closest('button,a')&&!e.target
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSounds()});
 
 // Persistent navigation with cancellable, lightweight screen transitions.
-const screenIds=['reel','work','about','credits','settings'];let entered=false,transitionId=0;
+const screenIds=['reel','work','about','credits','settings','media-work','media-about','media-credits'];let entered=false,transitionId=0;
 const contentPane=document.querySelector('main');
 const transitionMotion=matchMedia('(prefers-reduced-motion: reduce)');
 let screenAnimation,mosaicTimer;
@@ -225,14 +225,108 @@ document.addEventListener('keydown',event=>{
  const edge=key==='Home'?0:key==='End'?navigationItems.length-1:-1;
  if(!direction&&edge<0)return;
  event.preventDefault();
+ const visibleNavigationItems=navigationItems.filter(item=>!item.hidden);
  const active=document.querySelector('.game-nav [data-view][aria-current="page"]');
- let index=Math.max(0,navigationItems.indexOf(active));
- index=edge>=0?edge:(index+direction+navigationItems.length)%navigationItems.length;
- const item=navigationItems[index];
+ let index=Math.max(0,visibleNavigationItems.indexOf(active));
+ index=edge>=0?Math.min(edge,visibleNavigationItems.length-1):(index+direction+visibleNavigationItems.length)%visibleNavigationItems.length;
+ const item=visibleNavigationItems[index];
  if(!entered)enter(item.dataset.view);else{navigate(item.dataset.view,false);playSound('open')}
  item.focus({preventScroll:true});
 });
 
-window.addEventListener('hashchange',()=>{if(entered)showView(location.hash.slice(1))});
+// A reversible second portfolio mode. The shared shell stays mounted while its
+// navigation and content dissolve, reconfigure, and return as a dark archive.
+const modeToggle=$('#modeToggle');
+const portfolioRole=$('#portfolioRole');
+const modeReadout=$('#modeReadout');
+const themeColor=document.querySelector('meta[name="theme-color"]');
+const modeSurfaces=[document.querySelector('.experience-title'),document.querySelector('.game-nav'),document.querySelector('.content-shell')];
+let portfolioMode='sound',modeSwitching=false;
+const soundMenu=[
+ {view:'reel',label:'Showreel',number:'01'},
+ {view:'work',label:'Work',number:'02'},
+ {view:'about',label:'About',number:'03'},
+ {view:'credits',label:'Credits',number:'04'},
+ {view:'settings',label:'Settings',number:'05'}
+];
+const multimediaMenu=[
+ null,
+ {view:'media-work',label:'Work',number:'01'},
+ {view:'media-about',label:'About',number:'02'},
+ {view:'media-credits',label:'Credits',number:'03'},
+ {view:'settings',label:'Settings',number:'04'}
+];
+function applyPortfolioMode(mode){
+ portfolioMode=mode==='multimedia'?'multimedia':'sound';
+ const isMedia=portfolioMode==='multimedia';
+ document.body.classList.toggle('mode-multimedia',isMedia);
+ const menu=isMedia?multimediaMenu:soundMenu;
+ navigationItems.forEach((link,index)=>{
+  const item=menu[index];link.hidden=!item;
+  if(!item)return;
+  link.dataset.view=item.view;link.href='#'+item.view;
+  link.querySelector('small').textContent=item.number;
+  link.querySelector(':scope > span:not(.edge-trails)').textContent=item.label;
+ });
+ portfolioRole.textContent=isMedia?'MULTIMEDIA DESIGNER · GRAPHIC DESIGN · SOUND · VIDEO':'LEAD SOUND DESIGNER · TECHNICAL AUDIO · COMPOSER';
+ modeReadout.textContent=isMedia?'MULTIMEDIA':'SOUND';
+ modeToggle.setAttribute('aria-pressed',String(isMedia));
+ modeToggle.querySelector(':scope > span').textContent=isMedia?'Sound portfolio':'Multimedia';
+ themeColor?.setAttribute('content',isMedia?'#080a0e':'#48b8be');
+}
+async function switchPortfolioMode(mode,animate=true){
+ if(modeSwitching||mode===portfolioMode)return;
+ modeSwitching=true;document.body.classList.add('mode-transitioning');
+ const reduce=transitionMotion.matches;
+ const delay=milliseconds=>new Promise(resolve=>setTimeout(resolve,milliseconds));
+ if(animate&&!reduce){document.body.classList.add('mode-switch-out');await delay(260)}
+ applyPortfolioMode(mode);
+ const target=mode==='multimedia'?'media-work':'reel';
+ history.pushState(null,'','#'+target);
+ ++transitionId;screenAnimation?.cancel();clearMosaic();
+ document.querySelectorAll('[data-view]').forEach(link=>{
+  if(link.dataset.view===target)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');
+ });
+ const next=document.getElementById(target);
+ document.querySelectorAll('.view').forEach(view=>{view.hidden=view!==next;view.inert=view!==next});
+ contentPane.hidden=false;contentPane.scrollTop=0;
+ window.dispatchEvent(new CustomEvent('astraleviewopen',{detail:{id:target}}));
+ if(animate&&!reduce){requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.remove('mode-switch-out')));await delay(430)}
+ else document.body.classList.remove('mode-switch-out');
+ document.body.classList.remove('mode-transitioning');modeSwitching=false;
+ playSound('open');
+ navigationItems.find(item=>!item.hidden&&item.dataset.view===target)?.focus({preventScroll:true});
+}
+modeToggle.onclick=()=>switchPortfolioMode(portfolioMode==='sound'?'multimedia':'sound');
+
+// Multimedia archive interactions reuse the site's custom cinema player.
+document.querySelectorAll('[data-media-discipline]').forEach(button=>button.addEventListener('click',()=>{
+ const discipline=button.dataset.mediaDiscipline;
+ document.querySelectorAll('[data-media-discipline]').forEach(control=>control.setAttribute('aria-selected',String(control===button)));
+ document.querySelectorAll('[data-media-panel]').forEach(panel=>panel.hidden=panel.dataset.mediaPanel!==discipline);
+ playSound('click');
+}));
+const mediaLightbox=$('#mediaLightbox');
+const mediaLightboxImage=mediaLightbox.querySelector('img');
+const mediaLightboxTitle=$('#mediaLightboxTitle');
+document.querySelectorAll('[data-media-image]').forEach(button=>button.addEventListener('click',()=>{
+ mediaLightboxImage.src=button.dataset.mediaImage;
+ mediaLightboxImage.alt=button.querySelector('img').alt;
+ mediaLightboxTitle.textContent=button.dataset.mediaTitle;
+ mediaLightbox.showModal();
+}));
+document.querySelectorAll('[data-media-video]').forEach(button=>button.addEventListener('click',()=>{
+ window.ASTRALE_REEL.open({src:button.dataset.mediaVideo,title:button.dataset.mediaTitle});
+}));
+
+window.addEventListener('hashchange',()=>{
+ if(!entered)return;
+ const id=location.hash.slice(1);
+ if(id.startsWith('media-')&&portfolioMode!=='multimedia')applyPortfolioMode('multimedia');
+ else if(['reel','work','about','credits'].includes(id)&&portfolioMode!=='sound')applyPortfolioMode('sound');
+ showView(id);
+});
 document.querySelector('.brand')?.addEventListener('click',e=>{e.preventDefault();navigate('reel')});
-setSound(true,false);enter(location.hash.slice(1)||'reel',false);
+const initialView=location.hash.slice(1)||'reel';
+applyPortfolioMode(initialView.startsWith('media-')?'multimedia':'sound');
+setSound(true,false);enter(initialView,false);
