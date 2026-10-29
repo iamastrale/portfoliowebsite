@@ -74,7 +74,8 @@ body.mode-multimedia #settings .settings-toggle[aria-pressed=true]{color:#b9d4ff
  .media-projects-visual .media-art:nth-child(3){grid-column:10/15;grid-row:1/2}
  .media-projects-visual .media-art:nth-child(4){grid-column:6/11;grid-row:2/3}
  .media-projects-visual .media-art:nth-child(5){grid-column:11/15;grid-row:2/3}
- .media-projects-visual .media-art:nth-child(6){grid-column:1/15;grid-row:3/4}
+ .media-projects-visual .media-art:nth-child(6){grid-column:1/10;grid-row:3/4}
+ .media-projects-visual .media-art:nth-child(7){grid-column:10/15;grid-row:3/4}
 }
 .media-projects-sound{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:1px 5px 12px 1px}
 .media-sound-card{position:relative;display:grid;grid-template-columns:minmax(130px,.85fr) 1.15fr;min-height:150px;padding:0;border:1px solid #52607366;background:#0a0e15;overflow:hidden;text-align:left}
