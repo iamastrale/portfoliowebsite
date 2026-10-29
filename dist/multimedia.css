@@ -50,7 +50,7 @@ body.mode-multimedia #settings .settings-toggle[aria-pressed=true]{color:#b9d4ff
 #experience .media-panel-heading h2{margin:0;color:#eff4fa;font:700 clamp(25px,3.2vw,42px)/.95 var(--display);letter-spacing:-.05em;text-align:left}
 .media-panel-heading p{margin:7px 0 0;color:#7f8b9b;font:700 7px/1 var(--mono);letter-spacing:.14em;text-align:left}
 .media-discipline-switch{display:flex;gap:5px;width:auto;margin:10px 0 9px}
-.media-discipline-switch button{display:flex;align-items:center;justify-content:space-between;gap:30px;min-width:142px;padding:9px 11px;border:1px solid #505b6c5c;color:#7f8a9a;background:#0b1018;font:700 8px/1 var(--mono);letter-spacing:.12em;text-align:left}
+.media-discipline-switch button{display:flex;align-items:center;justify-content:flex-start;min-width:142px;padding:9px 11px;border:1px solid #505b6c5c;color:#7f8a9a;background:#0b1018;font:700 8px/1 var(--mono);letter-spacing:.12em;text-align:left}
 .media-discipline-switch button span{color:#566171}
 .media-discipline-switch button[aria-selected=true]{color:#eaf2ff;border-color:#7da9ef;background:linear-gradient(90deg,#18243a,#101621);box-shadow:inset 3px 0 #8bb7fa,0 6px 20px #0004}
 .media-projects{min-height:0;overflow:auto;scrollbar-color:#729bd4 transparent}
