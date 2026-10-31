@@ -74,7 +74,21 @@ $('#playShowreel').addEventListener('focus',startReelPreview);
 $('#playShowreel').addEventListener('blur',stopReelPreview);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopReelPreview()});
 
-document.querySelectorAll('dialog').forEach(d=>{d.querySelector('.close').onclick=()=>d.close();d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}})});
+const contentShell=$('.content-shell');
+for(const id of ['reelPlayer','musicPlayer','technicalCaseStudy']){
+ const player=document.getElementById(id);
+ player.classList.add('inline-player');
+ contentShell.append(player);
+ player.addEventListener('close',()=>{
+  player.classList.remove('is-closing');
+  if(!contentShell.querySelector('dialog.inline-player[open]'))contentShell.classList.remove('inline-player-active','inline-player-opening');
+ });
+}
+function closeInlinePlayers(){
+ contentShell.querySelectorAll('dialog.inline-player[open]').forEach(player=>player.close());
+}
+
+document.querySelectorAll('dialog').forEach(d=>{const close=()=>{if(!d.classList.contains('inline-player')){d.close();return}d.classList.add('is-closing');setTimeout(()=>{if(d.open)d.close()},210)};d.querySelector('.close').onclick=close;d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)close()}})});
 const technicalCase=$('#technicalCaseStudy');
 const blueprintLightbox=$('#blueprintLightbox');
 const expandBlueprint=$('#expandBlueprint');
@@ -119,7 +133,9 @@ technicalCase.querySelectorAll('.technical-player').forEach(player=>{
 function openTechnicalCase(){
  if(technicalCase.open)return;
  window.ASTRALE_PLAY_SOUND?.('videoClick');
- technicalCase.showModal();
+ contentShell.classList.add('inline-player-opening','inline-player-active');
+ technicalCase.show();
+ setTimeout(()=>contentShell.classList.remove('inline-player-opening'),360);
  technicalCase.querySelector('video')?.focus({preventScroll:true});
 }
 technicalCase.addEventListener('close',()=>{
@@ -164,6 +180,7 @@ function revealMosaic(){
 }
 async function showView(id,focus=true){
  if(!screenIds.includes(id))id='reel';
+ closeInlinePlayers();
  if(id==='work')renderProjects();
  const revision=++transitionId;
  clearMosaic();

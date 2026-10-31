@@ -259,18 +259,15 @@
       ensureAudioGraph();
       setTrack(current, false);
       window.ASTRALE_PLAY_SOUND?.('videoClick');
-      await window.ASTRALE_PLAYER_TRANSITION.fragmentMenu();
-      if (revision !== openingRevision) return;
+      const contentShell = document.querySelector('.content-shell');
+      contentShell?.classList.add('inline-player-opening', 'inline-player-active');
       window.ASTRALE_PLAY_SOUND?.('videoLoad');
-      dialog.showModal();
+      dialog.show();
       resizeCanvas();
       startVisualization();
-      if (!reduced.matches) shell.animate([
-        { opacity: 0, transform: 'translateY(8px)' },
-        { opacity: 1, transform: 'translateY(0)' }
-      ], { duration: 180, easing: 'ease-out' });
-      await wait(reduced.matches ? 0 : 180);
+      await wait(reduced.matches ? 0 : 340);
       if (!dialog.open || revision !== openingRevision) return;
+      contentShell?.classList.remove('inline-player-opening');
       requestPlayback(true);
       opening = false;
     }

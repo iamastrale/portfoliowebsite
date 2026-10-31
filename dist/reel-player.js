@@ -58,6 +58,7 @@
    menuFragments?.remove();menuFragments=null;
    document.getElementById('experience')?.classList.remove('reel-fragmenting','reel-menu-suspended');
    document.body.classList.remove('reel-transition-dark');
+   document.querySelector('.content-shell')?.classList.remove('inline-player-opening','inline-player-active');
  }
  async function fragmentMenu(){
    const experience=document.getElementById('experience');
@@ -172,17 +173,14 @@
    const revision=++openRevision;
    const source=options.src||defaultSource,title=options.title||'Showreel',poster=options.poster===undefined?(source===defaultSource?defaultPoster:''):options.poster;
    opening=true;window.ASTRALE_PLAY_SOUND?.('videoClick');status();video.pause();video.src=source;video.poster=poster;video.load();video.currentTime=0;playerTitle.textContent=title;video.setAttribute('aria-label',title);sync();
-   await fragmentMenu();
-   if(revision!==openRevision)return;
+   const contentShell=document.querySelector('.content-shell');
+   contentShell?.classList.add('inline-player-opening','inline-player-active');
    window.ASTRALE_PLAY_SOUND?.('videoLoad');
-   shell.classList.add('cinema-preroll');dialog.showModal();sync();reveal();
-   await wait(reduced.matches?120:690);
+   shell.classList.add('cinema-ready');dialog.show();sync();
+   await wait(reduced.matches?0:340);
    if(revision!==openRevision)return;
    if(!dialog.open){opening=false;return}
-   shell.classList.remove('cinema-preroll');shell.classList.add('cinema-ready');
-   await wait(reduced.matches?80:360);
-   if(revision!==openRevision)return;
-   if(!dialog.open){opening=false;return}
+   contentShell?.classList.remove('inline-player-opening');
    video.play().catch(()=>status('Press play to start the showreel.'));
    opening=false;
  }};
